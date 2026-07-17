@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Quizify — Weekly Quiz Portal · PG & Research Dept of CS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+:root{
+  --bg:#04040d;--bg2:#07071a;--bg3:#0a0a1f;
+  --c:#06b6d4;--v:#7c3aed;--g:#10b981;--gold:#f59e0b;--red:#ef4444;
+  --glass:rgba(255,255,255,.05);--gb:rgba(255,255,255,.08);
+  --ink:#edf2ff;--mu:rgba(237,242,255,.5);--dim:rgba(237,242,255,.25);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+a{text-decoration:none;color:inherit}
+/* aurora */
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none}
+/* layout */
+.z{position:relative;z-index:10}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+/* NAV */
+nav{position:fixed;top:0;inset-x:0;z-index:200;height:66px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 32px;
+  background:rgba(4,4,13,.75);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,.07)}
+.nlogo{font-family:'Cinzel',serif;font-weight:900;font-size:1.45rem;letter-spacing:5px;
+  background:linear-gradient(135deg,var(--c),var(--v),var(--g));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nlinks{display:flex;align-items:center;gap:4px}
+.nlinks a{font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;letter-spacing:.8px;
+  color:var(--mu);padding:7px 14px;border-radius:8px;transition:all .2s}
+.nlinks a:hover{color:var(--ink);background:rgba(255,255,255,.06)}
+.nbtn{font-family:'Cinzel',serif;font-weight:700;font-size:.78rem;letter-spacing:1.5px;
+  background:linear-gradient(135deg,var(--v),var(--c));color:#fff;border:none;
+  border-radius:10px;padding:10px 22px;cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 20px rgba(124,58,237,.3)}
+.nbtn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(6,182,212,.4)}
+/* HERO */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:100px 24px 56px;text-align:center}
+.h-eye{display:inline-flex;align-items:center;gap:8px;font-family:'Cinzel',serif;
+  font-size:.68rem;font-weight:700;letter-spacing:3px;color:var(--c);text-transform:uppercase;
+  background:rgba(6,182,212,.09);border:1px solid rgba(6,182,212,.22);
+  border-radius:20px;padding:6px 18px;margin-bottom:24px}
+.h-title{font-family:'Cinzel',serif;font-weight:900;
+  font-size:clamp(3.5rem,11vw,7.5rem);letter-spacing:10px;line-height:.9;margin-bottom:22px;
+  background:linear-gradient(160deg,#fff 0%,var(--c) 35%,var(--v) 65%,var(--g) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.h-sub{font-size:clamp(.85rem,2vw,1.05rem);color:var(--mu);max-width:540px;
+  line-height:1.8;margin:0 auto 52px}
+.h-sub strong{color:var(--ink)}
+/* QUIZ CARD — aurora spinning border */
+.qcard-wrap{width:min(560px,100%);margin:0 auto;border-radius:26px;padding:3px;
+  background:conic-gradient(from var(--a),var(--v),var(--c),var(--g),var(--c),var(--v));
+  animation:spin-border 3s linear infinite;position:relative}
+@keyframes spin-border{to{--a:360deg}}
+.qcard-wrap::before{content:'';position:absolute;inset:-8px;border-radius:32px;
+  background:conic-gradient(from var(--a),var(--v)40,transparent 60%,var(--c) 80%,transparent 100%);
+  animation:spin-border 3s linear infinite;filter:blur(18px);opacity:.6;z-index:-1}
+.qcard-inner{background:var(--bg2);border-radius:24px;padding:36px 30px}
+.qlive-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.qlive-dot{width:10px;height:10px;background:var(--red);border-radius:50%;flex-shrink:0;
+  animation:ldot 1.2s infinite;box-shadow:0 0 8px var(--red)}
+@keyframes ldot{0%,100%{opacity:1}50%{opacity:.3}}
+.qlive-tag{font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:2px;
+  color:var(--red);text-transform:uppercase}
+.qlive-week{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:1.5px;color:var(--mu);
+  margin-left:auto}
+.qtitle{font-family:'Cinzel',serif;font-size:1.35rem;font-weight:700;
+  line-height:1.3;margin-bottom:8px}
+.qmeta{display:flex;align-items:center;gap:18px;margin-bottom:28px;flex-wrap:wrap}
+.qmeta-item{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--mu)}
+.qmeta-icon{font-size:1rem}
+/* JOIN BUTTON */
+.btn-join{display:block;width:100%;padding:18px;border:none;cursor:pointer;
+  border-radius:14px;font-family:'Cinzel',serif;font-weight:700;font-size:1.1rem;
+  letter-spacing:2px;color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#6d28d9,#0891b2,#059669);
+  background-size:200% 200%;animation:btnShift 3s ease infinite,btnGlow 2s ease infinite}
+@keyframes btnShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes btnGlow{0%,100%{box-shadow:0 0 24px rgba(6,182,212,.5),0 0 60px rgba(124,58,237,.3)}
+  50%{box-shadow:0 0 48px rgba(6,182,212,.8),0 0 100px rgba(124,58,237,.5)}}
+.btn-join::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.15) 50%,transparent 100%);
+  transform:translateX(-100%);animation:btnShine 3s ease infinite}
+@keyframes btnShine{0%{transform:translateX(-100%)}40%,100%{transform:translateX(100%)}}
+.btn-join:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.btn-join-note{text-align:center;font-size:.72rem;color:var(--dim);
+  margin-top:12px;font-family:'Cinzel',serif;letter-spacing:.5px}
+/* WAITING card */
+.qwait-inner{background:var(--bg2);border-radius:24px;padding:36px 30px;text-align:center}
+.qwait-wrap{width:min(560px,100%);margin:0 auto;border-radius:26px;padding:3px;
+  background:linear-gradient(135deg,rgba(124,58,237,.4),rgba(6,182,212,.4))}
+.qwait-icon{font-size:3.2rem;margin-bottom:16px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.qwait-title{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;margin-bottom:8px}
+.qwait-sub{font-size:.83rem;color:var(--mu);line-height:1.65;margin-bottom:24px}
+/* shimmer */
+.shim{height:12px;border-radius:6px;margin-bottom:10px;
+  background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.1) 50%,rgba(255,255,255,.04) 75%);
+  background-size:200%;animation:shim 1.6s infinite}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* countdown */
+.cd{display:flex;justify-content:center;align-items:center;gap:10px;margin:20px 0}
+.cdu{text-align:center}
+.cdu b{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700;
+  color:var(--c);display:block;line-height:1;text-shadow:0 0 20px rgba(6,182,212,.5)}
+.cdu span{font-family:'Cinzel',serif;font-size:.58rem;color:var(--dim);
+  letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;display:block}
+.cdsp{font-family:'Space Mono',monospace;font-size:1.6rem;color:var(--v);
+  margin-top:-6px;text-shadow:0 0 16px rgba(124,58,237,.5)}
+/* scroll hint */
+.scroll-hint{margin-top:48px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  opacity:.35;animation:fadeHint 2s ease-in-out infinite}
+@keyframes fadeHint{0%,100%{opacity:.35}50%{opacity:.6}}
+.scroll-hint p{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:3px;color:var(--mu)}
+.scroll-arr{width:22px;height:22px;border-right:2px solid var(--mu);border-bottom:2px solid var(--mu);
+  transform:rotate(45deg);animation:bounce .9s ease infinite alternate}
+@keyframes bounce{from{transform:rotate(45deg) translate(-3px,-3px)}to{transform:rotate(45deg) translate(3px,3px)}}
+/* NOTICE BAR */
+.notice{display:none;align-items:center;justify-content:center;gap:10px;
+  padding:13px 24px;font-size:.82rem;text-align:center;
+  background:linear-gradient(90deg,rgba(239,68,68,.12),rgba(245,158,11,.1),rgba(239,68,68,.12));
+  border-bottom:1px solid rgba(239,68,68,.2)}
+.notice strong{font-family:'Cinzel',serif;color:#fca5a5;letter-spacing:.5px}
+/* SECTION WRAPPER */
+.sec{padding:88px 0}
+.sec-eye{display:flex;align-items:center;gap:8px;font-family:'Cinzel',serif;
+  font-size:.68rem;font-weight:700;letter-spacing:3px;color:var(--c);
+  text-transform:uppercase;margin-bottom:12px}
+.sec-h{font-family:'Cinzel',serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;
+  margin-bottom:12px;line-height:1.2}
+.sec-sub{font-size:.88rem;color:var(--mu);max-width:520px;line-height:1.75;margin-bottom:44px}
+/* STEPS */
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.step{background:var(--glass);border:1px solid var(--gb);border-radius:22px;
+  padding:32px 24px;transition:transform .25s,box-shadow .25s;position:relative;overflow:hidden}
+.step::before{content:'';position:absolute;inset:0;opacity:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(6,182,212,.08),transparent 70%);
+  transition:opacity .3s}
+.step:hover{transform:translateY(-5px);box-shadow:0 20px 48px rgba(0,0,0,.35)}
+.step:hover::before{opacity:1}
+.step-ico{width:72px;height:72px;border-radius:20px;
+  display:flex;align-items:center;justify-content:center;font-size:2rem;
+  margin-bottom:20px;position:relative}
+.step-ico.ic1{background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(6,182,212,.15));
+  border:1px solid rgba(124,58,237,.3);box-shadow:0 8px 24px rgba(124,58,237,.15)}
+.step-ico.ic2{background:linear-gradient(135deg,rgba(6,182,212,.25),rgba(16,185,129,.15));
+  border:1px solid rgba(6,182,212,.3);box-shadow:0 8px 24px rgba(6,182,212,.15)}
+.step-ico.ic3{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(239,68,68,.1));
+  border:1px solid rgba(245,158,11,.3);box-shadow:0 8px 24px rgba(245,158,11,.12)}
+.step-n{font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:2px;
+  color:var(--dim);text-transform:uppercase;margin-bottom:8px}
+.step-title{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;margin-bottom:10px}
+.step-desc{font-size:.82rem;color:var(--mu);line-height:1.7}
+.step-arrow{position:absolute;top:28px;right:-12px;z-index:2;
+  width:24px;height:24px;border-right:2px solid rgba(6,182,212,.3);
+  border-top:2px solid rgba(6,182,212,.3);transform:rotate(45deg)}
+/* WINNERS */
+.win-sec{background:rgba(255,255,255,.016);border-top:1px solid var(--gb);border-bottom:1px solid var(--gb)}
+.champions-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+.champ-card{background:var(--glass);border:1px solid rgba(245,158,11,.3);
+  border-radius:22px;padding:26px 20px;text-align:center;
+  background:linear-gradient(160deg,rgba(245,158,11,.08),rgba(4,4,13,.95));
+  transition:transform .25s,box-shadow .25s;position:relative;overflow:hidden}
+.champ-card::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% -20%,rgba(245,158,11,.15),transparent 70%)}
+.champ-card:hover{transform:translateY(-5px);
+  box-shadow:0 16px 40px rgba(245,158,11,.2),0 0 60px rgba(245,158,11,.08)}
+.champ-week{font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;
+  letter-spacing:2px;color:var(--c);text-transform:uppercase;margin-bottom:14px}
+.champ-crown{font-size:2.4rem;margin-bottom:10px;display:block;
+  filter:drop-shadow(0 4px 12px rgba(245,158,11,.5))}
+.champ-avatar{width:60px;height:60px;border-radius:50%;margin:0 auto 12px;
+  background:linear-gradient(135deg,var(--gold),#f97316);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:#fff;
+  border:3px solid rgba(245,158,11,.4);box-shadow:0 0 20px rgba(245,158,11,.3)}
+.champ-name{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;margin-bottom:4px}
+.champ-dept{font-size:.75rem;color:var(--mu);margin-bottom:14px}
+.champ-score{display:inline-flex;align-items:center;gap:6px;
+  background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);
+  border-radius:20px;padding:5px 14px;
+  font-family:'Space Mono',monospace;font-size:.95rem;color:var(--gold);font-weight:700}
+.no-champs{padding:40px;text-align:center;font-size:.85rem;color:var(--dim);
+  font-family:'Cinzel',serif;letter-spacing:.5px}
+/* BADGES */
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.badge-tier{border-radius:22px;padding:30px 22px;position:relative;overflow:hidden;
+  transition:transform .25s,box-shadow .25s}
+.badge-tier:hover{transform:translateY(-4px)}
+.bt-gold{background:linear-gradient(160deg,rgba(245,158,11,.12),rgba(4,4,13,.95));
+  border:1px solid rgba(245,158,11,.35)}
+.bt-gold:hover{box-shadow:0 16px 48px rgba(245,158,11,.18)}
+.bt-silver{background:linear-gradient(160deg,rgba(192,199,212,.09),rgba(4,4,13,.95));
+  border:1px solid rgba(192,199,212,.25)}
+.bt-silver:hover{box-shadow:0 16px 48px rgba(192,199,212,.1)}
+.bt-bronze{background:linear-gradient(160deg,rgba(180,83,9,.1),rgba(4,4,13,.95));
+  border:1px solid rgba(180,83,9,.3)}
+.bt-bronze:hover{box-shadow:0 16px 48px rgba(180,83,9,.15)}
+.bt-head{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.bt-icon{font-size:2.2rem;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
+.bt-name{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700}
+.bt-desc{font-size:.78rem;color:var(--mu);line-height:1.6;margin-bottom:18px}
+.bt-divider{height:1px;background:rgba(255,255,255,.06);margin-bottom:16px}
+.holder-row{display:flex;align-items:center;gap:10px;padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.04)}
+.holder-row:last-child{border-bottom:none}
+.hav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-family:'Cinzel',serif;font-weight:700;font-size:.9rem;flex-shrink:0}
+.hav-gold{background:linear-gradient(135deg,var(--gold),#f97316);color:#fff}
+.hav-silver{background:linear-gradient(135deg,#c0c7d4,#e2e8f0);color:#334155}
+.hav-bronze{background:linear-gradient(135deg,#cd7f32,#b45309);color:#fff}
+.hname{font-size:.82rem;font-weight:600;font-family:'Cinzel',serif}
+.hdept{font-size:.7rem;color:var(--mu)}
+.no-hold{font-size:.78rem;color:var(--dim);font-style:italic;padding:10px 0}
+/* ABOUT */
+.about-bg{background:var(--bg3);border-top:1px solid var(--gb)}
+.about-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:52px;align-items:start}
+.about-tag{display:inline-flex;align-items:center;gap:6px;font-family:'Cinzel',serif;
+  font-size:.65rem;font-weight:700;letter-spacing:2px;color:#c4b5fd;text-transform:uppercase;
+  background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.25);
+  border-radius:20px;padding:5px 14px;margin-bottom:18px}
+.about-h{font-family:'Cinzel',serif;font-size:clamp(1.35rem,3vw,1.9rem);font-weight:700;
+  line-height:1.35;margin-bottom:16px}
+.about-h span{background:linear-gradient(135deg,var(--c),var(--v));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.about-p{font-size:.86rem;color:var(--mu);line-height:1.85;margin-bottom:16px}
+.features{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+.feat{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;
+  background:rgba(255,255,255,.03);border:1px solid var(--gb);border-radius:14px}
+.feat-ico{font-size:1.4rem;flex-shrink:0;margin-top:1px}
+.feat-title{font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;margin-bottom:3px}
+.feat-desc{font-size:.75rem;color:var(--mu);line-height:1.55}
+/* dept card */
+.dept-card{background:var(--glass);border:1px solid var(--gb);border-radius:24px;
+  padding:32px 24px;text-align:center;position:sticky;top:90px}
+.dept-seal{width:88px;height:88px;border-radius:50%;margin:0 auto 18px;
+  background:linear-gradient(135deg,var(--v),var(--c));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:1.7rem;font-weight:900;color:#fff;
+  box-shadow:0 0 32px rgba(124,58,237,.35)}
+.dept-n{font-family:'Cinzel',serif;font-size:.98rem;font-weight:700;margin-bottom:8px;line-height:1.5}
+.dept-sub{font-size:.76rem;color:var(--mu);line-height:1.7}
+.accred{display:inline-flex;align-items:center;gap:5px;margin-top:14px;
+  font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--g);
+  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);
+  border-radius:20px;padding:5px 14px}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.stat-box{background:rgba(255,255,255,.04);border:1px solid var(--gb);
+  border-radius:14px;padding:16px;text-align:center}
+.stat-n{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:900;color:var(--c)}
+.stat-l{font-size:.68rem;color:var(--mu);margin-top:3px;font-family:'Cinzel',serif;letter-spacing:.5px}
+.portal-btn{display:block;margin-top:20px;width:100%;padding:14px;
+  background:linear-gradient(135deg,var(--v),var(--c));border:none;border-radius:12px;
+  color:#fff;font-family:'Cinzel',serif;font-weight:700;font-size:.85rem;letter-spacing:1.5px;
+  cursor:pointer;transition:all .2s}
+.portal-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(6,182,212,.3)}
+/* FOOTER */
+footer{background:rgba(4,4,13,.98);border-top:1px solid rgba(255,255,255,.07);padding:56px 0 0;margin-top:auto}
+.ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:48px}
+.ft-brand h3{font-family:'Cinzel',serif;font-weight:900;font-size:1.3rem;letter-spacing:5px;
+  background:linear-gradient(135deg,var(--c),var(--v));-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
+.ft-brand p{font-size:.78rem;color:var(--mu);line-height:1.75;max-width:260px;margin-bottom:18px}
+.ft-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Cinzel',serif;
+  font-size:.62rem;font-weight:700;letter-spacing:1.5px;color:var(--g);
+  background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);
+  border-radius:20px;padding:4px 12px}
+.ft-col h4{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;letter-spacing:2.5px;
+  color:var(--c);text-transform:uppercase;margin-bottom:16px}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.ft-col li{display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--mu);
+  transition:color .2s;cursor:default}
+.ft-col li:hover{color:var(--ink)}
+.ft-col li.link{cursor:pointer}
+.ft-col a{color:var(--mu);transition:color .2s}
+.ft-col a:hover{color:var(--ink)}
+.ft-bottom{border-top:1px solid rgba(255,255,255,.06);padding:20px 0;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.ft-copy{font-size:.72rem;color:var(--dim);line-height:1.7}
+.ft-copy strong{color:var(--mu);font-family:'Cinzel',serif}
+.ft-right{font-size:.7rem;color:var(--dim);text-align:right}
+/* REVEAL */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease}
+.rv.vis{opacity:1;transform:none}
+/* RESPONSIVE */
+@media(max-width:900px){
+  .steps-grid,.badge-grid,.about-grid,.ft{grid-template-columns:1fr}
+  .about-grid{gap:32px}
+  .ft{grid-template-columns:1fr 1fr}
+  nav{padding:0 16px}
+  .nlinks{display:none}
+}
+@media(max-width:600px){
+  .champions-row{grid-template-columns:1fr 1fr}
+  .ft{grid-template-columns:1fr}
+  .ft-bottom{flex-direction:column;text-align:center}
+  .ft-right{text-align:center}
+}
+@media(max-width:400px){
+  .h-title{letter-spacing:5px;font-size:3rem}
+  .champions-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<!-- NOTICE BAR -->
+<div class="notice z" id="notice">
+  <span style="font-size:1rem">🚨</span>
+  <strong id="noticeText">This week's quiz is LIVE — don't miss it!</strong>
+  <a href="quizify.html" style="font-family:'Cinzel',serif;font-size:.72rem;color:var(--c);border:1px solid rgba(6,182,212,.3);border-radius:20px;padding:4px 12px;margin-left:8px;white-space:nowrap">Join Now →</a>
+</div>
+
+<!-- NAV -->
+<nav class="z">
+  <div class="nlogo">QUIZIFY</div>
+  <div class="nlinks">
+    <a href="#winners">🏆 Champions</a>
+    <a href="#badges">🏅 Badges</a>
+    <a href="#steps">📋 How It Works</a>
+    <a href="#about">🎓 About</a>
+  </div>
+  <button class="nbtn" onclick="location.href='quizify.html'">🔑 Login to Portal</button>
+</nav>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ HERO ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section id="hero" class="z">
+  <div class="h-eye">⚡ PG &amp; Research Department of Computer Science</div>
+  <h1 class="h-title">QUIZIFY</h1>
+  <p class="h-sub">The official weekly quiz portal of <strong>Nilgiri College of Arts &amp; Science</strong>.<br>Test your knowledge every week. Earn badges. Become a champion.</p>
+
+  <!-- QUIZ STATUS — filled by JS -->
+  <div id="quizCardMount" style="width:min(560px,100%);margin:0 auto"></div>
+
+  <div class="scroll-hint">
+    <p>Scroll Down</p>
+    <div class="scroll-arr"></div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ HOW IT WORKS ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section id="steps" class="z sec" style="border-top:1px solid var(--gb)">
+  <div class="wrap rv">
+    <div class="sec-eye">📋 How It Works</div>
+    <h2 class="sec-h">Three steps to quiz glory</h2>
+    <p class="sec-sub">Every Monday a new challenge drops. Attempt it before Sunday midnight to stay in the running for the semester championship.</p>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-ico ic1">✍️</div>
+        <div class="step-n">Step 01</div>
+        <div class="step-title">Register &amp; Enrol</div>
+        <div class="step-desc">Create your portal account once. Each week, fill in the quick registration form with your name, department, roll number, and photo before the quiz opens.</div>
+        <div class="step-arrow"></div>
+      </div>
+      <div class="step">
+        <div class="step-ico ic2">⚡</div>
+        <div class="step-n">Step 02</div>
+        <div class="step-title">Attempt the Quiz</div>
+        <div class="step-desc">Answer 10 carefully curated CS questions within the time limit. Questions cover programming, data structures, algorithms, and technology concepts.</div>
+        <div class="step-arrow"></div>
+      </div>
+      <div class="step">
+        <div class="step-ico ic3">🏆</div>
+        <div class="step-n">Step 03</div>
+        <div class="step-title">Earn Your Badge</div>
+        <div class="step-desc">Top scorers receive 🥉 Bronze, 🥈 Silver, or 🥇 Gold badges. Semester Gold champions are honoured at the annual prize ceremony with a cash award.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ CHAMPIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section id="winners" class="z win-sec sec">
+  <div class="wrap rv">
+    <div class="sec-eye">🏆 Hall of Fame</div>
+    <h2 class="sec-h">Weekly Champions</h2>
+    <p class="sec-sub">The top scorer from each completed week. Every champion is recognised by the PG &amp; Research Dept of CS.</p>
+    <div class="champions-row" id="champRow">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ BADGE SHOWCASE ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section id="badges" class="z sec" style="border-top:1px solid var(--gb)">
+  <div class="wrap rv">
+    <div class="sec-eye">🏅 Recognition Programme</div>
+    <h2 class="sec-h">Badge Holders</h2>
+    <p class="sec-sub">Awarded by the department at the end of each semester. Gold badge holders are invited to the annual prize ceremony.</p>
+    <div class="badge-grid" id="badgeGrid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ ABOUT ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section id="about" class="z sec about-bg">
+  <div class="wrap rv">
+    <div class="about-grid">
+      <div>
+        <div class="about-tag">🎓 About This Portal</div>
+        <h2 class="about-h">Organised by the<br><span>PG &amp; Research Department of Computer Science</span></h2>
+        <p class="about-p">Quizify is the official academic quiz platform of <strong style="color:var(--ink)">Nilgiri College of Arts &amp; Science</strong>, built and maintained by the PG &amp; Research Department of Computer Science. The weekly quiz programme invites students from <em>all departments</em> to engage with computing, programming, and technology.</p>
+        <p class="about-p">Beyond weekly quizzes, Quizify powers live classroom quiz sessions for faculty — create a quiz, share a code, and monitor your students in real time.</p>
+        <div class="features">
+          <div class="feat">
+            <div class="feat-ico">📅</div>
+            <div><div class="feat-title">Weekly Quizzes</div><div class="feat-desc">A fresh CS challenge every Monday, open to all departments across the college.</div></div>
+          </div>
+          <div class="feat">
+            <div class="feat-ico">🖥️</div>
+            <div><div class="feat-title">Live Classroom Quizzes</div><div class="feat-desc">Teachers create instant quiz sessions with a 6-digit code. Students join and compete live.</div></div>
+          </div>
+          <div class="feat">
+            <div class="feat-ico">📊</div>
+            <div><div class="feat-title">Real-Time Monitoring</div><div class="feat-desc">Faculty track who joined, who left early, and scores as they come in — live.</div></div>
+          </div>
+          <div class="feat">
+            <div class="feat-ico">🏅</div>
+            <div><div class="feat-title">Semester Badge Programme</div><div class="feat-desc">Consistent performers earn Bronze, Silver, or Gold recognition. Cash prizes await Gold champions.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="dept-card">
+        <div class="dept-seal">🎓</div>
+        <div class="dept-n">PG &amp; Research Department of Computer Science</div>
+        <div class="dept-sub">Nilgiri College of Arts &amp; Science<br>Affiliated to Bharathiar University<br><br>Dedicated to computing education, applied research, and student excellence.</div>
+        <div class="accred">✅ &nbsp;NAAC A++ Accredited</div>
+        <div class="stats-row" id="statsRow">
+          <div class="stat-box"><div class="stat-n" id="stS">—</div><div class="stat-l">Students</div></div>
+          <div class="stat-box"><div class="stat-n" id="stW">—</div><div class="stat-l">Weeks Done</div></div>
+          <div class="stat-box"><div class="stat-n" id="stQ">—</div><div class="stat-l">Class Quizzes</div></div>
+          <div class="stat-box"><div class="stat-n" id="stD">—</div><div class="stat-l">Departments</div></div>
+        </div>
+        <button class="portal-btn" onclick="location.href='quizify.html'">🚀 &nbsp;Enter the Portal</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ FOOTER ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<footer class="z">
+  <div class="wrap">
+    <div class="ft">
+      <div class="ft-brand">
+        <h3>QUIZIFY</h3>
+        <p>The official weekly academic quiz portal, organised and maintained by the PG &amp; Research Department of Computer Science, Nilgiri College of Arts &amp; Science.</p>
+        <div class="ft-badge">✅ &nbsp;NAAC A++ Accredited College</div>
+      </div>
+      <div class="ft-col">
+        <h4>🔗 Portal</h4>
+        <ul>
+          <li class="link"><a href="quizify.html">🏠 Home Dashboard</a></li>
+          <li class="link"><a href="quizify.html#/student">🎓 Student Login</a></li>
+          <li class="link"><a href="quizify.html#/teacher">🖥️ Teacher Login</a></li>
+          <li class="link"><a href="quizify.html#/admin">⚙️ Admin Panel</a></li>
+          <li class="link"><a href="quizify.html#/signup">✨ Create Account</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>📋 Programme</h4>
+        <ul>
+          <li>📅 Weekly Quizzes</li>
+          <li>🖥️ Classroom Quizzes</li>
+          <li>📊 Live Monitoring</li>
+          <li>🏅 Badge Programme</li>
+          <li>🏆 Semester Awards</li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>🏛️ Institution</h4>
+        <ul>
+          <li>🎓 PG &amp; Research Dept of CS</li>
+          <li>🏫 Nilgiri College</li>
+          <li>📍 Arts &amp; Science</li>
+          <li>🔗 Bharathiar University</li>
+          <li>✅ NAAC A++ Accredited</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <div class="ft-copy">
+        <strong>Quizify</strong> &nbsp;·&nbsp; Organised by PG &amp; Research Department of Computer Science &nbsp;·&nbsp;
+        Nilgiri College of Arts &amp; Science &nbsp;·&nbsp; NAAC A++ &nbsp;·&nbsp; © 2025 All Rights Reserved
+      </div>
+      <div class="ft-right">
+        Weekly Academic Quiz Programme<br>
+        Open to all students across every department
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── Aurora ─────────────────────────────────────────────────────── */
+const cv=document.getElementById('cv'),cx=cv.getContext('2d');
+const rsz=()=>{cv.width=innerWidth;cv.height=innerHeight};rsz();window.addEventListener('resize',rsz);
+const B=[{x:.1,y:.2,r:.48,c:'#7c3aed',vx:.00018,vy:.00015},{x:.9,y:.7,r:.52,c:'#06b6d4',vx:-.00014,vy:.00020},
+  {x:.5,y:.92,r:.4,c:'#10b981',vx:.00024,vy:-.00018},{x:.7,y:.1,r:.32,c:'#7c3aed',vx:-.00020,vy:.00026},
+  {x:.25,y:.65,r:.35,c:'#06b6d4',vx:.00016,vy:-.00022}];
+(function anim(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#04040d';cx.fillRect(0,0,cv.width,cv.height);
+B.forEach(b=>{b.x+=b.vx;b.y+=b.vy;if(b.x<-.15||b.x>1.15)b.vx*=-1;if(b.y<-.15||b.y>1.15)b.vy*=-1;
+const g=cx.createRadialGradient(b.x*cv.width,b.y*cv.height,0,b.x*cv.width,b.y*cv.height,b.r*Math.max(cv.width,cv.height));
+g.addColorStop(0,b.c+'32');g.addColorStop(1,'transparent');cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});
+requestAnimationFrame(anim);})();
+
+/* ── Data ───────────────────────────────────────────────────────── */
+function db(){try{return JSON.parse(localStorage.getItem('quizify_db')||'{}')}catch{return{}}}
+function esc(s){return(s==null?'':String(s)).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+function pad(n){return String(n).padStart(2,'0')}
+
+/* ── Quiz Card ──────────────────────────────────────────────────── */
+function renderQuizCard(){
+  const d=db();const qs=d.quizzes||[];
+  let wqs=[];try{wqs=JSON.parse(localStorage.getItem('qf_weekly')||'[]')}catch{}
+  const active=qs.find(q=>q.type==='weekly'&&q.open)||wqs.find(q=>q.status==='active');
+  const mount=document.getElementById('quizCardMount');
+  const notice=document.getElementById('notice');
+
+  if(active){
+    const allW=[...qs.filter(q=>q.type==='weekly'),...wqs];
+    const idx=allW.indexOf(active);const num=Math.max(1,idx+1);
+    notice.style.display='flex';
+    document.getElementById('noticeText').textContent=`Week ${num} Quiz is LIVE now — "${esc(active.title||'Weekly CS Challenge')}"`;
+    mount.innerHTML=`<div class="qcard-wrap">
+      <div class="qcard-inner">
+        <div class="qlive-row">
+          <span class="qlive-dot"></span>
+          <span class="qlive-tag">🔴 &nbsp;Live Now</span>
+          <span class="qlive-week">📅 &nbsp;Week ${num}</span>
+        </div>
+        <div class="qtitle">${esc(active.title||'Weekly CS Challenge')}</div>
+        <div class="qmeta">
+          <span class="qmeta-item"><span class="qmeta-icon">❓</span>${active.questions?.length||10} Questions</span>
+          <span class="qmeta-item"><span class="qmeta-icon">⏱️</span>${active.timer||15} Minutes</span>
+          <span class="qmeta-item"><span class="qmeta-icon">🎓</span>All Departments</span>
+        </div>
+        <button class="btn-join" onclick="location.href='quizify.html'">
+          ⚡ &nbsp;Join Quiz Now
+        </button>
+        <div class="btn-join-note">🔐 Login required &nbsp;·&nbsp; 📸 Registration with photo</div>
+      </div>
+    </div>`;
+  } else {
+    notice.style.display='none';
+    const allDone=[...qs.filter(q=>q.type==='weekly'&&!q.open),...(wqs.filter(q=>q.status==='completed'))];
+    const nextN=allDone.length+1;
+    mount.innerHTML=`<div class="qwait-wrap">
+      <div class="qwait-inner">
+        <div class="qwait-icon">🔭</div>
+        <div class="qwait-title">Week ${nextN} Quiz — Coming Soon</div>
+        <div class="qwait-sub">The admin is preparing this week's challenge. Stay tuned — it drops every Monday morning!</div>
+        <div class="shim" style="width:75%;margin:0 auto 8px"></div>
+        <div class="shim" style="width:50%;margin:0 auto"></div>
+        <div style="margin-top:20px;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:2px;color:var(--dim);text-transform:uppercase">Next quiz drops in</div>
+        <div class="cd" id="cdRow">
+          <div class="cdu"><b id="cdd">00</b><span>Days</span></div>
+          <span class="cdsp">:</span>
+          <div class="cdu"><b id="cdh">00</b><span>Hrs</span></div>
+          <span class="cdsp">:</span>
+          <div class="cdu"><b id="cdm">00</b><span>Min</span></div>
+          <span class="cdsp">:</span>
+          <div class="cdu"><b id="cds">00</b><span>Sec</span></div>
+        </div>
+        <button class="btn-join" style="margin-top:6px;background:linear-gradient(135deg,rgba(124,58,237,.6),rgba(6,182,212,.6));animation:none;box-shadow:none" onclick="location.href='quizify.html'">
+          🔑 &nbsp;Login to Portal
+        </button>
+      </div>
+    </div>`;
+    countdown();
+  }
+}
+
+function countdown(){
+  const tick=()=>{
+    const now=new Date(),day=now.getDay(),diff=(day===1?7:(8-day)%7)||7;
+    const nxt=new Date(now);nxt.setDate(now.getDate()+diff);nxt.setHours(9,0,0,0);
+    const ms=Math.max(0,nxt-now);
+    const u=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=pad(v)};
+    u('cdd',Math.floor(ms/864e5));u('cdh',Math.floor(ms%864e5/36e5));
+    u('cdm',Math.floor(ms%36e5/6e4));u('cds',Math.floor(ms%6e4/1e3));
+  };tick();setInterval(tick,1000);
+}
+
+/* ── Champions (only #1 per week) ──────────────────────────────── */
+function renderChampions(){
+  const d=db();
+  let wresults=[];try{wresults=JSON.parse(localStorage.getItem('qf_wresults')||'[]')}catch{}
+  let weekly=[];try{weekly=JSON.parse(localStorage.getItem('qf_weekly')||'[]').filter(w=>w.status==='completed')}catch{}
+  const oldRes=d.weeklyResults||{};
+
+  let cards='';
+
+  // New format
+  if(weekly.length){
+    weekly.slice().reverse().forEach((wq,i)=>{
+      const wNum=weekly.length-i;
+      const wr=wresults.filter(r=>r.wqId===wq.id).sort((a,b)=>a.rank-b.rank);
+      const top=wr[0];if(!top)return;
+      cards+=champCard(top.name,top.dept||top.department,'',top.score,top.total,`Week ${wNum}`,wq.title);
+    });
+  } else if(Object.keys(oldRes).length){
+    Object.entries(oldRes).reverse().forEach(([wk,entries])=>{
+      const top=entries[0];if(!top)return;
+      cards+=champCard(top.name,top.dept||top.department,'',top.score,top.outOf||10,`Week ${wk}`,'');
+    });
+  } else {
+    // Seeded fallback
+    [
+      {wk:'Week 1',name:'Karthik Raja',dept:'Computer Science',score:9,total:10,title:'Python Fundamentals'},
+      {wk:'Week 2',name:'Aisha Patel',dept:'Electronics',score:10,total:10,title:'Data Structures'},
+    ].forEach(r=>{ cards+=champCard(r.name,r.dept,'',r.score,r.total,r.wk,r.title); });
+  }
+  document.getElementById('champRow').innerHTML=cards||
+    `<div class="no-champs">🌟 No completed weeks yet — be the first champion!</div>`;
+}
+
+function champCard(name,dept,email,score,total,week,title){
+  const ini=(name||'?')[0].toUpperCase();
+  return`<div class="champ-card">
+    <div class="champ-week">🗓️ &nbsp;${esc(week)}${title?' — '+esc(title.split('–').slice(-1)[0].trim()):''}</div>
+    <span class="champ-crown">👑</span>
+    <div class="champ-avatar">${ini}</div>
+    <div class="champ-name">${esc(name)}</div>
+    <div class="champ-dept">🏛️ &nbsp;${esc(dept||'—')}</div>
+    <div class="champ-score">⭐ &nbsp;${score}/${total}</div>
+  </div>`;
+}
+
+/* ── Badges ─────────────────────────────────────────────────────── */
+function renderBadges(){
+  const d=db();let users=d.users||[];
+  try{const u2=JSON.parse(localStorage.getItem('qf_users')||'[]');if(u2.length){const e=new Set(users.map(u=>u.email));users=[...users,...u2.filter(u=>!e.has(u.email))];}}catch{}
+  const students=users.filter(u=>u.role==='student');
+
+  const tiers=[
+    {k:'gold',icon:'🥇',name:'Gold Badge',desc:'Semester champion. Recognised at the annual prize ceremony with a cash award.',av:'hav-gold',c:'bt-gold'},
+    {k:'silver',icon:'🥈',name:'Silver Badge',desc:'Outstanding performer. Consistently top 10 across multiple weeks.',av:'hav-silver',c:'bt-silver'},
+    {k:'bronze',icon:'🥉',name:'Bronze Badge',desc:'Dedicated participant. Regular engagement in the weekly quiz programme.',av:'hav-bronze',c:'bt-bronze'},
+  ];
+
+  // Fallback holders for demo
+  const fallback={
+    gold:[{name:'Karthik Raja',dept:'Computer Science'}],
+    silver:[{name:'Aisha Patel',dept:'Electronics'}],
+    bronze:[{name:'Rahul Sharma',dept:'Computer Science'}],
+  };
+
+  document.getElementById('badgeGrid').innerHTML=tiers.map(t=>{
+    const holders=students.filter(u=>(u.badges||[u.badge]).filter(Boolean).includes(t.k));
+    const show=holders.length?holders:fallback[t.k];
+    return`<div class="badge-tier ${t.c}">
+      <div class="bt-head"><span class="bt-icon">${t.icon}</span><div class="bt-name">${t.name}</div></div>
+      <div class="bt-desc">${t.desc}</div>
+      <div class="bt-divider"></div>
+      ${show.map(u=>`<div class="holder-row">
+        <div class="hav ${t.av}">${(u.name||'?')[0].toUpperCase()}</div>
+        <div><div class="hname">${esc(u.name)}</div><div class="hdept">🏛️ ${esc(u.dept||u.department||'')}</div></div>
+      </div>`).join('')}
+      ${!holders.length&&!fallback[t.k]?`<div class="no-hold">No ${t.name.toLowerCase()} holders yet</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+/* ── Stats ──────────────────────────────────────────────────────── */
+function renderStats(){
+  const d=db();let users=d.users||[];
+  let qu=d.quizzes||[];let wq=[];
+  try{const u2=JSON.parse(localStorage.getItem('qf_users')||'[]');if(u2.length)users=u2;}catch{}
+  try{const p=JSON.parse(localStorage.getItem('qf_private')||'[]');if(p.length)qu=[...qu,...p];}catch{}
+  try{wq=JSON.parse(localStorage.getItem('qf_weekly')||'[]');}catch{}
+  const st=users.filter(u=>u.role==='student').length;
+  const wkDone=wq.filter(q=>q.status==='completed').length+qu.filter(q=>q.type==='weekly'&&!q.open).length;
+  const cqz=qu.filter(q=>q.type==='private'||q.code).length;
+  const depts=[...new Set(users.filter(u=>u.role==='student').map(u=>u.dept||u.department).filter(Boolean))].length;
+  document.getElementById('stS').textContent=st||'120+';
+  document.getElementById('stW').textContent=wkDone||'2';
+  document.getElementById('stQ').textContent=cqz||'8';
+  document.getElementById('stD').textContent=depts||'6';
+}
+
+/* ── Scroll reveal ──────────────────────────────────────────────── */
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')}),{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+/* ── Init ───────────────────────────────────────────────────────── */
+renderQuizCard();
+renderChampions();
+renderBadges();
+renderStats();
+setInterval(renderQuizCard,30000);
+</script>
+</body>
+</html>

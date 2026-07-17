@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quizify · PG &amp; Research Dept. of Computer Science</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+/* ============ AURORA DESIGN TOKENS ============ */
+:root{
+  --bg:#070B1E; --bg2:#0A0E27; --panel:rgba(20,27,58,.55);
+  --panel-solid:#111735; --line:rgba(120,160,255,.16);
+  --cyan:#22D3EE; --teal:#34D399; --violet:#8B5CF6; --magenta:#EC4899;
+  --gold:#FBBF24; --bronze:#CD7F32; --silver:#C0C7D4;
+  --ink:#EAF0FF; --muted:#93A0C7; --muted2:#5E6C97;
+  --good:#34D399; --bad:#FB7185; --warn:#FBBF24;
+  --r:18px; --shadow:0 24px 60px -20px rgba(0,0,0,.65);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  font-family:Inter,system-ui,sans-serif;color:var(--ink);
+  background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+/* aurora backdrop */
+.aurora{position:fixed;inset:0;z-index:-2;background:
+  radial-gradient(60% 50% at 50% -10%, #10204a 0%, transparent 60%),var(--bg);}
+.aurora::before,.aurora::after,.blob{content:"";position:fixed;border-radius:50%;
+  filter:blur(70px);opacity:.55;z-index:-1;mix-blend-mode:screen;pointer-events:none}
+.aurora::before{width:60vw;height:60vw;left:-15vw;top:-20vh;
+  background:radial-gradient(circle,var(--violet),transparent 60%);animation:drift1 26s ease-in-out infinite}
+.aurora::after{width:55vw;height:55vw;right:-15vw;top:5vh;
+  background:radial-gradient(circle,var(--cyan),transparent 60%);animation:drift2 30s ease-in-out infinite}
+.blob{width:50vw;height:50vw;left:25vw;bottom:-25vh;
+  background:radial-gradient(circle,var(--teal),transparent 60%);animation:drift3 34s ease-in-out infinite}
+@keyframes drift1{50%{transform:translate(12vw,10vh) scale(1.15)}}
+@keyframes drift2{50%{transform:translate(-10vw,8vh) scale(1.1)}}
+@keyframes drift3{50%{transform:translate(-8vw,-12vh) scale(1.2)}}
+@media (prefers-reduced-motion:reduce){.aurora::before,.aurora::after,.blob{animation:none}}
+
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none}
+input,select,textarea{font-family:inherit}
+
+/* ============ SHELL ============ */
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:40;backdrop-filter:blur(14px);
+  background:linear-gradient(#070b1eef,#070b1ea6);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:18px;height:66px}
+.brand{font-family:'Cinzel',serif;font-weight:900;font-size:1.5rem;letter-spacing:2px;
+  background:linear-gradient(92deg,var(--cyan),var(--violet) 55%,var(--magenta));
+  -webkit-background-clip:text;background-clip:text;color:transparent;display:flex;align-items:center;gap:10px}
+.brand .spark{width:26px;height:26px;border-radius:8px;
+  background:conic-gradient(from 210deg,var(--cyan),var(--violet),var(--magenta),var(--teal),var(--cyan));
+  box-shadow:0 0 18px #22d3ee88}
+.navspace{flex:1}
+.pill{font-size:.72rem;color:var(--muted);border:1px solid var(--line);padding:5px 10px;border-radius:999px}
+.navlinks{display:flex;gap:6px}
+.navlinks a{padding:8px 13px;border-radius:10px;font-size:.82rem;font-weight:600;color:var(--muted);font-family:'Cinzel',serif;letter-spacing:.5px}
+.navlinks a.active,.navlinks a:hover{color:var(--ink);background:rgba(120,160,255,.12)}
+.who{display:flex;align-items:center;gap:10px}
+.avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);
+  background:#1b2246;display:grid;place-items:center;font-weight:800;color:var(--cyan);font-size:.9rem}
+
+/* ============ COMPONENTS ============ */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  backdrop-filter:blur(12px);box-shadow:var(--shadow)}
+.pad{padding:22px}
+.btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;font-weight:700;font-family:'Cinzel',serif;letter-spacing:.5px;
+  padding:12px 20px;border-radius:12px;font-size:.95rem;transition:.15s;color:#06122a;
+  background:linear-gradient(92deg,var(--cyan),var(--teal));box-shadow:0 10px 26px -10px #22d3ee88}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn.violet{background:linear-gradient(92deg,var(--violet),var(--magenta));color:#fff;box-shadow:0 10px 26px -10px #8b5cf6aa}
+.btn.gold{background:linear-gradient(92deg,var(--gold),#f59e0b);color:#3a2600}
+.btn.sm{padding:8px 13px;font-size:.85rem;border-radius:10px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;filter:none}
+label.f{display:block;font-size:.75rem;color:var(--muted);margin:0 0 6px;font-weight:600;font-family:'Cinzel',serif;letter-spacing:.5px;text-transform:uppercase}
+.inp{width:100%;padding:12px 14px;border-radius:12px;background:#0c1128;color:var(--ink);
+  border:1px solid var(--line);font-size:.95rem;outline:none;transition:.15s}
+.inp:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #22d3ee2e}
+.row{display:flex;gap:14px;flex-wrap:wrap}
+.grid{display:grid;gap:16px}
+h1,h2,h3{margin:0}
+.h-display{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.8px}
+.eyebrow{font-size:.72rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--cyan);font-weight:700;font-family:'Cinzel',serif}
+.muted{color:var(--muted)}.small{font-size:.85rem}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;
+  padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.tag.live{color:var(--teal);border-color:#34d39955;background:#34d39914}
+.tag.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);animation:pulse 1.3s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.badge{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;font-size:.9rem;font-weight:900}
+.badge.gold{background:radial-gradient(circle at 30% 25%,#fff6d6,var(--gold));color:#5a3d00;box-shadow:0 0 14px #fbbf2488}
+.badge.silver{background:radial-gradient(circle at 30% 25%,#fff,var(--silver));color:#33405e}
+.badge.bronze{background:radial-gradient(circle at 30% 25%,#f3c69a,var(--bronze));color:#3a2000}
+.center{display:grid;place-items:center;min-height:calc(100vh - 66px);padding:32px 0}
+.divider{height:1px;background:var(--line);margin:18px 0}
+.link{color:var(--cyan);cursor:pointer;font-weight:600}
+.toast{position:fixed;right:20px;bottom:20px;z-index:120;display:flex;flex-direction:column;gap:10px}
+.toast .t{background:var(--panel-solid);border:1px solid var(--line);border-left:4px solid var(--teal);
+  padding:14px 16px;border-radius:12px;box-shadow:var(--shadow);max-width:340px;animation:slidein .3s}
+@keyframes slidein{from{transform:translateX(30px);opacity:0}}
+.modalbg{position:fixed;inset:0;background:#03061290;backdrop-filter:blur(6px);z-index:100;
+  display:grid;place-items:center;padding:20px;animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.modal{width:min(560px,100%);max-height:88vh;overflow:auto}
+.hide{display:none!important}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.stat{padding:16px 18px}
+.stat .n{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;
+  background:linear-gradient(92deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .l{font-size:.78rem;color:var(--muted);margin-top:2px}
+.resultbox{padding:14px;border-radius:14px;background:#0c1128;border:1px solid var(--line);cursor:pointer;transition:.15s}
+.resultbox:hover{border-color:var(--cyan);transform:translateY(-2px);box-shadow:0 10px 24px -14px #22d3ee88}
+.resultbox .nm{font-weight:700}
+.resultbox .sc{font-family:'Cinzel',serif;font-weight:900;font-size:1.15rem}
+.opt{display:flex;gap:10px;align-items:center;padding:12px 14px;border:1px solid var(--line);
+  border-radius:12px;background:#0c1128;cursor:pointer;transition:.12s;margin-bottom:10px}
+.opt:hover{border-color:var(--violet)}
+.opt.sel{border-color:var(--cyan);background:#22d3ee14;box-shadow:0 0 0 2px #22d3ee40 inset}
+.opt.correct{border-color:var(--teal);background:#34d39918}
+.opt.wrong{border-color:var(--bad);background:#fb718518}
+.dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--muted2);flex:none}
+.opt.sel .dot{border-color:var(--cyan);background:var(--cyan)}
+.qbuilder{border:1px dashed var(--line);border-radius:14px;padding:16px;margin-bottom:14px;background:#0b0f26}
+.countdown{display:flex;gap:12px}
+.cd{background:#0c1128;border:1px solid var(--line);border-radius:12px;padding:10px 14px;text-align:center;min-width:66px}
+.cd b{font-family:'Cinzel',serif;font-size:1.6rem;display:block;color:var(--cyan)}
+.cd span{font-size:.62rem;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+.barrow{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.barrow .lbl{width:150px;font-size:.85rem;color:var(--muted);flex:none;text-align:right}
+.bar{flex:1;height:22px;border-radius:8px;background:#0c1128;overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:8px;
+  background:linear-gradient(92deg,var(--cyan),var(--violet))}
+.barrow .val{width:34px;font-weight:700;font-size:.85rem}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:11px 12px;font-size:.88rem;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:1px}
+.chip{font-size:.7rem;padding:3px 9px;border-radius:999px;background:#0c1128;border:1px solid var(--line)}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.seg button{padding:8px 14px;border-radius:10px;background:#0c1128;border:1px solid var(--line);color:var(--muted);font-weight:600;font-size:.85rem}
+.seg button.on{color:#06122a;background:linear-gradient(92deg,var(--cyan),var(--teal));border-color:transparent}
+.photoup{display:flex;align-items:center;gap:14px}
+.photoprev{width:76px;height:76px;border-radius:14px;object-fit:cover;border:1px solid var(--line);background:#0c1128}
+.notif{display:flex;gap:12px;padding:14px;border-radius:12px;background:#0c1128;border:1px solid var(--line);margin-bottom:10px}
+@media(max-width:640px){.nav{gap:10px}.navlinks{display:none}.barrow .lbl{width:96px}}
+</style>
+</head>
+<body>
+<div class="aurora"><div class="blob"></div></div>
+
+<header class="top" id="topbar"></header>
+<main id="view"></main>
+<footer id="sitefooter" style="text-align:center;padding:18px 16px 22px;font-size:.75rem;color:var(--muted2);letter-spacing:.6px;line-height:1.8;border-top:1px solid var(--line);background:rgba(7,11,30,.7)">
+  <span style="font-family:'Cinzel',serif;color:var(--muted);font-weight:600">Organised by PG &amp; Research Department of Computer Science</span><br>
+  Nilgiri College of Arts &amp; Science &nbsp;·&nbsp; NAAC A++ &nbsp;·&nbsp; Quizify Portal &nbsp;·&nbsp; All Rights Reserved
+</footer>
+<div class="toast" id="toast"></div>
+<div id="modalRoot"></div>
+
+<script>
+/* =========================================================================
+   QUIZIFY — single-file portal. Data persists in localStorage.
+   Open this file in a normal browser (Chrome/Edge/Safari) so login persists.
+   ========================================================================= */
+const $ = (s,r=document)=>r.querySelector(s);
+const el = (t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const esc = s => (s==null?'':String(s)).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const uid = p => p+Math.random().toString(36).slice(2,8);
+const code6 = ()=>Array.from({length:6},()=>'ABCDEFGHJKMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*31)]).join('');
+
+/* ---------- storage ---------- */
+const DB = {
+  read(){try{return JSON.parse(localStorage.getItem('quizify_db'))||{}}catch(e){return{}}},
+  write(d){localStorage.setItem('quizify_db',JSON.stringify(d));},
+  get(){ if(!this._d) this._d=this.read(); return this._d; },
+  save(){ this.write(this._d); },
+};
+let session = JSON.parse(sessionStorage.getItem('quizify_session')||'null');
+const setSession = u=>{session=u; sessionStorage.setItem('quizify_session',JSON.stringify(u));};
+
+/* ---------- toast ---------- */
+function toast(msg,ms=3200){
+  const t=el('div','t',msg); $('#toast').appendChild(t);
+  setTimeout(()=>{t.style.opacity=0;t.style.transform='translateX(30px)';setTimeout(()=>t.remove(),300);},ms);
+}
+/* ---------- modal ---------- */
+function modal(node){
+  const bg=el('div','modalbg'); const box=el('div','modal card pad'); box.appendChild(node);
+  bg.appendChild(box); bg.addEventListener('mousedown',e=>{if(e.target===bg)bg.remove();});
+  $('#modalRoot').innerHTML=''; $('#modalRoot').appendChild(bg); return bg;
+}
+const closeModal=()=>$('#modalRoot').innerHTML='';
+
+/* ---------- seed demo data ---------- */
+function seed(){
+  const d=DB.get();
+  if(d._seeded) return;
+  d.users=[
+    {id:'admin1',name:'Dr. Darlon',email:'admin@quizify.edu',pass:'admin123',role:'admin',dept:'Computer Science',badge:'gold'},
+    {id:'teach1',name:'Prof. Anita',email:'teacher@quizify.edu',pass:'teach123',role:'teacher',dept:'Physics'},
+    {id:'stu1',name:'Jasmin',email:'jasmin@quizify.edu',pass:'stu12345',role:'student',dept:'Computer Science',badge:'silver'},
+  ];
+  d.quizzes=[]; d.attempts=[]; d.registrations=[]; d.notifications=[];
+  d.winners=[
+    {week:1,name:'Rahul S',dept:'Computer Science',score:'10/10'},
+    {week:2,name:'Meera K',dept:'Mathematics',score:'9/10'},
+    {week:3,name:'Jasmin',dept:'Computer Science',score:'10/10'},
+  ];
+  // seeded weekly quiz results for admin drill-down (weeks 1-3)
+  const names=[['Jasmin','Computer Science',8],['Rahul S','Computer Science',10],['Meera K','Mathematics',9],
+    ['Arun P','Physics',6],['Divya R','Commerce',7],['Sana M','Computer Science',5]];
+  d.weeklyResults={};
+  [1,2,3].forEach(w=>{ d.weeklyResults[w]=names.map(([n,dp,s])=>({
+    name:n,dept:dp,email:n.toLowerCase().replace(/[^a-z]/g,'')+'@quizify.edu',
+    score:Math.max(3,Math.min(10,s + (w-2))),total:10,photo:null })); });
+  // department usage of private quizzes (for dashboard chart)
+  d.deptUsage={'Physics':7,'Mathematics':5,'Commerce':4,'Chemistry':3,'English':2,'Computer Science':9};
+  d._seeded=true; DB.save();
+}
+seed();
+
+/* ---------- helpers ---------- */
+function nextMonday(){
+  const n=new Date(); const day=n.getDay();
+  const add=((8-day)%7)||7; const t=new Date(n); t.setDate(n.getDate()+add);
+  t.setHours(10,0,0,0); return t;
+}
+function activeWeekly(){ return DB.get().quizzes.find(q=>q.type==='weekly'&&q.open); }
+function initials(n){return (n||'?').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase();}
+
+/* =====================================================================
+   ROUTER
+   ===================================================================== */
+function go(hash){ location.hash=hash; }
+window.addEventListener('hashchange',render);
+window.addEventListener('load',render);
+
+function render(){
+  renderTop();
+  const h=(location.hash||'#/').replace(/^#/,'');
+  const v=$('#view');
+  // auth gate
+  if(!session){
+    if(h==='/signup') return v.replaceChildren(SignupView());
+    return v.replaceChildren(LoginView());
+  }
+  const parts=h.split('/').filter(Boolean);
+  const root=parts[0]||'home';
+
+  if(h==='/'||root==='home'){ return v.replaceChildren(HomeRedirect()); }
+  if(root==='profile') return v.replaceChildren(ProfileView());
+  if(root==='student') return v.replaceChildren(StudentView());
+  if(root==='teacher') return guard('teacher','admin', ()=>v.replaceChildren(TeacherView()));
+  if(root==='admin') return guard('admin', null, ()=>v.replaceChildren(AdminView()));
+  if(root==='create'){ // create?type=weekly|private
+    return v.replaceChildren(BuilderView(parts[1]||'private'));
+  }
+  if(root==='play'){ return v.replaceChildren(PlayView(parts[1])); } // play/:code
+  if(root==='monitor'){ return v.replaceChildren(MonitorView(parts[1])); }
+  v.replaceChildren(HomeRedirect());
+}
+function guard(...args){ const cb=args.pop(); if(args.filter(Boolean).includes(session.role)) return cb();
+  $('#view').replaceChildren(msgCard('Access restricted','This area is only for '+args.filter(Boolean).join(' / ')+' accounts.')); }
+function HomeRedirect(){ go('#/'+session.role); return el('div'); }
+
+/* =====================================================================
+   TOP BAR
+   ===================================================================== */
+function renderTop(){
+  const bar=$('#topbar');
+  if(!session){
+    bar.innerHTML=`<div class="wrap"><div class="nav">
+      <div class="brand"><span class="spark"></span>QUIZIFY</div>
+      <div class="navspace"></div>
+      <span class="pill">PG &amp; Research Dept. of Computer Science</span>
+    </div></div>`;
+    return;
+  }
+  const links={
+    student:[['#/student','Home'],['#/profile','Profile']],
+    teacher:[['#/teacher','My Quizzes'],['#/create/private','Create'],['#/profile','Profile']],
+    admin:[['#/admin','Dashboard'],['#/create/weekly','Weekly Quiz'],['#/profile','Profile']],
+  }[session.role];
+  const cur=location.hash||'#/';
+  bar.innerHTML=`<div class="wrap"><div class="nav">
+    <div class="brand" style="cursor:pointer" onclick="go('#/')"><span class="spark"></span>QUIZIFY</div>
+    <div class="navspace"></div>
+    <nav class="navlinks">${links.map(([h,t])=>`<a href="${h}" class="${cur.startsWith(h)?'active':''}">${t}</a>`).join('')}</nav>
+    <div class="who">
+      <div class="avatar" title="${esc(session.name)}">${session.photo?`<img src="${session.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`:initials(session.name)}</div>
+      <button class="btn ghost sm" onclick="logout()">Log out</button>
+    </div>
+  </div></div>`;
+}
+function logout(){ setSession(null); sessionStorage.removeItem('quizify_session'); go('#/'); toast('Logged out.'); }
+
+/* =====================================================================
+   AUTH VIEWS
+   ===================================================================== */
+function LoginView(){
+  const w=el('div','center');
+  const c=el('div','card pad'); c.style.width='min(430px,100%)';
+  c.innerHTML=`
+    <div class="eyebrow">Welcome back</div>
+    <h1 class="h-display" style="font-size:1.7rem;margin:6px 0 4px">Sign in to Quizify</h1>
+    <p class="muted small" style="margin:0 0 20px">Weekly quizzes &amp; classroom challenges, one aurora portal.</p>
+    <label class="f">Email</label><input class="inp" id="le" placeholder="you@quizify.edu" style="margin-bottom:14px">
+    <label class="f">Password</label><input class="inp" id="lp" type="password" placeholder="••••••••" style="margin-bottom:18px">
+    <button class="btn block" id="lbtn">Enter Portal</button>
+    <div class="divider"></div>
+    <p class="small muted" style="text-align:center">New here? <span class="link" onclick="go('#/signup')">Create an account</span></p>
+    <div class="card pad" style="margin-top:16px;background:#0c1128;border:1px solid rgba(34,211,238,.18)">
+      <div class="eyebrow" style="margin-bottom:10px">⚡ Demo Accounts — Click to Auto-Fill</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <button class="btn ghost sm" style="justify-content:space-between;padding:10px 14px" onclick="fill('admin@quizify.edu','admin123')"><span style="color:var(--gold)">Admin</span><span style="font-family:monospace;font-size:.75rem;opacity:.7">admin@quizify.edu / admin123</span></button>
+        <button class="btn ghost sm" style="justify-content:space-between;padding:10px 14px" onclick="fill('teacher@quizify.edu','teach123')"><span style="color:var(--teal)">Teacher</span><span style="font-family:monospace;font-size:.75rem;opacity:.7">teacher@quizify.edu / teach123</span></button>
+        <button class="btn ghost sm" style="justify-content:space-between;padding:10px 14px" onclick="fill('jasmin@quizify.edu','stu12345')"><span style="color:var(--cyan)">Student</span><span style="font-family:monospace;font-size:.75rem;opacity:.7">jasmin@quizify.edu / stu12345</span></button>
+      </div>
+    </div>`;
+  w.appendChild(c);
+  setTimeout(()=>{
+    const doLogin=()=>{
+      const email=$('#le').value.trim().toLowerCase(), pass=$('#lp').value;
+      const u=DB.get().users.find(x=>x.email.toLowerCase()===email&&x.pass===pass);
+      if(!u) return toast('❌ Wrong email or password. Use a demo account above.');
+      setSession(u); toast('Welcome back, '+u.name+'! 👋'); go('#/'+u.role);
+    };
+    $('#lbtn').onclick=doLogin;
+    [$('#le'),$('#lp')].forEach(inp=>inp&&inp.addEventListener('keydown',e=>e.key==='Enter'&&doLogin()));
+    window.fill=(e,p)=>{$('#le').value=e;$('#lp').value=p;};
+  },0);
+  return w;
+}
+function SignupView(){
+  const w=el('div','center');
+  const c=el('div','card pad'); c.style.width='min(460px,100%)';
+  c.innerHTML=`
+    <div class="eyebrow">Join the portal</div>
+    <h1 class="h-display" style="font-size:1.7rem;margin:6px 0 16px">Create your account</h1>
+    <label class="f">Full name</label><input class="inp" id="sn" style="margin-bottom:12px">
+    <label class="f">Email</label><input class="inp" id="se" style="margin-bottom:12px">
+    <div class="row"><div style="flex:1">
+      <label class="f">Department</label>
+      <select class="inp" id="sd">
+        <option>Computer Science</option><option>Physics</option><option>Mathematics</option>
+        <option>Chemistry</option><option>Commerce</option><option>English</option><option>Other</option>
+      </select></div>
+      <div style="flex:1"><label class="f">Role</label>
+      <select class="inp" id="sr"><option value="student">Student</option><option value="teacher">Teacher</option></select></div>
+    </div>
+    <label class="f" style="margin-top:12px">Password</label><input class="inp" id="sp" type="password" style="margin-bottom:18px">
+    <button class="btn block" id="sbtn">Create account</button>
+    <div class="divider"></div>
+    <p class="small muted" style="text-align:center">Already registered? <span class="link" onclick="go('#/')">Sign in</span></p>`;
+  w.appendChild(c);
+  setTimeout(()=>{ $('#sbtn').onclick=()=>{
+    const name=$('#sn').value.trim(),email=$('#se').value.trim().toLowerCase(),
+      dept=$('#sd').value,role=$('#sr').value,pass=$('#sp').value;
+    if(!name||!email||pass.length<6) return toast('Fill all fields (password ≥ 6 chars).');
+    const d=DB.get(); if(d.users.some(u=>u.email.toLowerCase()===email)) return toast('Email already registered.');
+    const u={id:uid('u'),name,email,pass,role,dept}; d.users.push(u); DB.save();
+    setSession(u); toast('Account created!'); go('#/'+role);
+  };},0);
+  return w;
+}
+
+/* =====================================================================
+   PROFILE
+   ===================================================================== */
+function ProfileView(){
+  const d=DB.get(); const me=d.users.find(u=>u.id===session.id)||session;
+  const myAttempts=d.attempts.filter(a=>a.userId===me.id);
+  const myNotifs=d.notifications.filter(n=>n.userId===me.id).reverse();
+  const w=el('div','wrap'); w.style.padding='28px 20px 60px';
+  const badgeHtml = me.badge?`<span class="badge ${me.badge}">${me.badge[0].toUpperCase()}</span> <b style="text-transform:capitalize">${me.badge} badge</b>`:'<span class="muted small">No badge yet — keep participating!</span>';
+  w.innerHTML=`
+   <div class="grid" style="grid-template-columns:340px 1fr;align-items:start">
+    <div class="card pad">
+      <div style="display:flex;flex-direction:column;align-items:center;text-align:center">
+        <div class="avatar" style="width:96px;height:96px;font-size:1.8rem;border-width:3px">${me.photo?`<img src="${me.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`:initials(me.name)}</div>
+        <h2 class="h-display" style="margin:14px 0 2px">${esc(me.name)}</h2>
+        <span class="tag">${esc(me.role)}</span>
+        <div class="divider"></div>
+        <div style="align-self:stretch;text-align:left">
+          <div class="small muted">Email</div><div style="margin-bottom:10px">${esc(me.email)}</div>
+          <div class="small muted">Department</div><div style="margin-bottom:10px">${esc(me.dept||'—')}</div>
+          <div class="small muted">Recognition</div><div style="margin-top:6px">${badgeHtml}</div>
+        </div>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card pad">
+        <div class="eyebrow">Activity</div>
+        <h3 class="h-display" style="margin:6px 0 14px">Your quiz history</h3>
+        ${myAttempts.length? `<table><thead><tr><th>Quiz</th><th>Type</th><th>Score</th><th>When</th></tr></thead><tbody>
+          ${myAttempts.slice().reverse().map(a=>`<tr><td>${esc(a.title)}</td><td><span class="chip">${a.type}</span></td><td><b>${a.score}/${a.total}</b></td><td class="muted small">${new Date(a.at).toLocaleString()}</td></tr>`).join('')}
+        </tbody></table>` : '<p class="muted small">No attempts yet. Join a quiz from your home page!</p>'}
+      </div>
+      <div class="card pad">
+        <div class="eyebrow">Inbox</div>
+        <h3 class="h-display" style="margin:6px 0 14px">Notifications</h3>
+        ${myNotifs.length? myNotifs.map(n=>`<div class="notif"><div class="badge ${n.badge||'silver'}" style="flex:none">${(n.badge||'i')[0].toUpperCase()}</div><div><div>${esc(n.text)}</div><div class="muted small">${new Date(n.at).toLocaleString()}</div></div></div>`).join('') : '<p class="muted small">No notifications yet.</p>'}
+      </div>
+    </div>
+   </div>`;
+  return w;
+}
+
+/* =====================================================================
+   STUDENT VIEW
+   ===================================================================== */
+function StudentView(){
+  const d=DB.get(); const me=session;
+  const wk=activeWeekly();
+  const reg=d.registrations.find(r=>r.userId===me.id&&r.quizId===(wk&&wk.id));
+  const w=el('div','wrap'); w.style.padding='28px 20px 60px';
+
+  // header
+  w.appendChild(el('div',null,`<div class="eyebrow">PG &amp; Research Dept. of Computer Science</div>
+    <h1 class="h-display" style="font-size:2rem;margin:6px 0 24px">Hey ${esc(me.name.split(' ')[0])} 👋</h1>`));
+
+  const grid=el('div','grid'); grid.style.gridTemplateColumns='1.4fr 1fr'; grid.style.alignItems='start';
+  w.appendChild(grid);
+
+  /* --- Weekly quiz card --- */
+  const weeklyCard=el('div','card pad');
+  if(wk){
+    weeklyCard.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="eyebrow">This week's challenge</div><span class="tag live">Live now</span></div>
+      <h2 class="h-display" style="margin:8px 0 4px;font-size:1.5rem">${esc(wk.title)}</h2>
+      <p class="muted small">${wk.questions.length} questions · ${wk.timer} min · Organized by Computer Science Dept.</p>
+      <div class="divider"></div>
+      ${reg? `<button class="btn block" id="joinW">Join quiz →</button>`
+        : `<div class="card pad" style="background:#0c1128">
+             <b>One step first:</b> <span class="muted small">register with your photo to be eligible for winner recognition & badges.</span>
+             <button class="btn violet block" id="regW" style="margin-top:12px">Register for weekly quiz</button>
+           </div>`}
+    `;
+  } else {
+    weeklyCard.innerHTML=`
+      <div class="eyebrow">This week's challenge</div>
+      <div style="text-align:center;padding:22px 6px">
+        <div style="font-size:2.6rem">🗓️</div>
+        <h2 class="h-display" style="margin:8px 0 6px;font-size:1.4rem">No quiz running right now</h2>
+        <p class="muted">Wait until next week's quiz drops — <b>be ready, don't miss it!</b></p>
+        <div class="countdown" id="cd" style="justify-content:center;margin-top:16px"></div>
+      </div>`;
+  }
+  grid.appendChild(weeklyCard);
+
+  /* --- side column --- */
+  const side=el('div','grid');
+  // join private by code
+  const joinCard=el('div','card pad');
+  joinCard.innerHTML=`<div class="eyebrow">Classroom quiz</div>
+    <h3 class="h-display" style="margin:6px 0 10px">Join with a code</h3>
+    <p class="muted small" style="margin:0 0 12px">Got a 6-letter code from your teacher? Enter it to join.</p>
+    <input class="inp" id="jcode" placeholder="e.g. QK7MZP" style="text-transform:uppercase;margin-bottom:10px">
+    <button class="btn block" id="jbtn">Join classroom quiz →</button>`;
+  side.appendChild(joinCard);
+
+  // winners
+  const wCard=el('div','card pad');
+  wCard.innerHTML=`<div class="eyebrow">Hall of fame</div>
+    <h3 class="h-display" style="margin:6px 0 12px">Previous winners 🏆</h3>
+    ${d.winners.slice().reverse().map(x=>`<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)">
+      <span class="badge gold" style="flex:none">${x.week}</span>
+      <div style="flex:1"><b>${esc(x.name)}</b><div class="muted small">${esc(x.dept)} · Week ${x.week}</div></div>
+      <span class="chip">${esc(x.score)}</span></div>`).join('')}`;
+  side.appendChild(wCard);
+  grid.appendChild(side);
+
+  setTimeout(()=>{
+    if(!wk){ startCountdown($('#cd'),nextMonday()); }
+    const jb=$('#jbtn'); if(jb) jb.onclick=()=>{
+      const c=$('#jcode').value.trim().toUpperCase();
+      const q=DB.get().quizzes.find(x=>x.type==='private'&&x.code===c);
+      if(!q) return toast('No quiz found for that code.');
+      if(!q.open) return toast('That quiz is not accepting entries right now.');
+      go('#/play/'+c);
+    };
+    const rb=$('#regW'); if(rb) rb.onclick=()=>registerModal(wk);
+    const jw=$('#joinW'); if(jw) jw.onclick=()=>go('#/play/'+wk.code);
+  },0);
+  return w;
+}
+
+function registerModal(wk){
+  const n=el('div');
+  n.innerHTML=`<div class="eyebrow">Weekly quiz registration</div>
+    <h2 class="h-display" style="margin:6px 0 14px">Register — ${esc(wk.title)}</h2>
+    <label class="f">Full name</label><input class="inp" id="rn" value="${esc(session.name)}" style="margin-bottom:12px">
+    <label class="f">Department</label><input class="inp" id="rd" value="${esc(session.dept||'')}" style="margin-bottom:12px">
+    <label class="f">Email</label><input class="inp" id="re" value="${esc(session.email)}" style="margin-bottom:14px">
+    <label class="f">Your photo</label>
+    <div class="photoup"><img class="photoprev" id="pv" alt=""><input type="file" accept="image/*" id="pf"></div>
+    <div class="divider"></div>
+    <div class="row" style="justify-content:flex-end"><button class="btn ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn" id="rsub">Submit registration</button></div>`;
+  modal(n);
+  let photo=null;
+  setTimeout(()=>{
+    $('#pf').onchange=e=>{const f=e.target.files[0];if(!f)return;downscale(f,220,dataUrl=>{photo=dataUrl;$('#pv').src=dataUrl;});};
+    $('#rsub').onclick=()=>{
+      if(!photo) return toast('Please add a photo to complete registration.');
+      const d=DB.get();
+      d.registrations.push({id:uid('r'),quizId:wk.id,userId:session.id,
+        name:$('#rn').value,dept:$('#rd').value,email:$('#re').value,photo,at:Date.now()});
+      DB.save(); closeModal(); toast('Registered! You can now join the quiz.'); render();
+    };
+  },0);
+}
+
+/* =====================================================================
+   TEACHER VIEW
+   ===================================================================== */
+function TeacherView(){
+  const d=DB.get();
+  const mine=d.quizzes.filter(q=>q.type==='private'&&q.createdBy===session.id);
+  const w=el('div','wrap'); w.style.padding='28px 20px 60px';
+  w.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px">
+      <div><div class="eyebrow">Classroom quizzes</div>
+      <h1 class="h-display" style="font-size:1.9rem;margin:6px 0 0">My quizzes</h1>
+      <p class="muted small" style="margin:6px 0 0">Create a quiz, share the code, and monitor your class live.</p></div>
+      <button class="btn violet" onclick="go('#/create/private')">+ Create quiz</button>
+    </div><div class="divider"></div>`;
+  if(!mine.length){
+    w.appendChild(msgInline('No quizzes yet','Build your first classroom quiz — questions & options entered just like a Google Form.'));
+  } else {
+    const g=el('div','grid'); g.style.gridTemplateColumns='repeat(auto-fill,minmax(300px,1fr))';
+    mine.slice().reverse().forEach(q=>{
+      const joined=d.attempts.filter(a=>a.quizId===q.id).length;
+      const c=el('div','card pad');
+      c.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="tag ${q.open?'live':''}">${q.open?'Live':'Closed'}</span>
+          <span class="chip" style="font-family:'Cinzel',serif;letter-spacing:2px">${q.code}</span></div>
+        <h3 class="h-display" style="margin:12px 0 4px">${esc(q.title)}</h3>
+        <p class="muted small">${q.questions.length} questions · ${q.timer} min · ${joined} attempts</p>
+        <div class="divider"></div>
+        <div class="row">
+          <button class="btn sm" onclick="go('#/monitor/${q.id}')">Monitor</button>
+          <button class="btn ghost sm" onclick="previewQuiz('${q.id}')">Preview</button>
+          <button class="btn ghost sm" onclick="toggleOpen('${q.id}')">${q.open?'Close':'Reopen'}</button>
+        </div>`;
+      g.appendChild(c);
+    });
+    w.appendChild(g);
+  }
+  return w;
+}
+function toggleOpen(id){const d=DB.get();const q=d.quizzes.find(x=>x.id===id);q.open=!q.open;DB.save();render();toast('Quiz '+(q.open?'opened':'closed')+'.');}
+
+/* =====================================================================
+   QUIZ BUILDER (Google-Form style) — used by teacher & admin
+   ===================================================================== */
+let draft=null;
+function BuilderView(type){
+  if(type==='weekly' && session.role!=='admin') return msgCard('Admins only','Only the admin uploads weekly quizzes.');
+  draft={type,title:'',timer:10,week:(DB.get().winners.length+1),questions:[freshQ()]};
+  const w=el('div','wrap'); w.style.padding='28px 20px 60px';
+  w.innerHTML=`<div class="eyebrow">${type==='weekly'?'Admin · Weekly quiz':'Classroom quiz'}</div>
+    <h1 class="h-display" style="font-size:1.9rem;margin:6px 0 4px">Create a ${type==='weekly'?'weekly':'classroom'} quiz</h1>
+    <p class="muted small" style="margin:0 0 20px">Fill it in like a Google Form. Hit <b>Preview</b> to see the aurora player, then <b>Save &amp; publish</b>.</p>`;
+  const grid=el('div','grid'); grid.style.gridTemplateColumns='1fr'; grid.style.maxWidth='760px';
+  const meta=el('div','card pad');
+  meta.innerHTML=`<label class="f">Quiz title</label><input class="inp" id="qtitle" placeholder="e.g. Data Structures Sprint" style="margin-bottom:14px">
+    <div class="row">
+      <div style="flex:1"><label class="f">Time limit (minutes)</label><input class="inp" id="qtimer" type="number" min="1" value="10"></div>
+      ${type==='weekly'?`<div style="flex:1"><label class="f">Week number</label><input class="inp" id="qweek" type="number" min="1" value="${draft.week}"></div>`:''}
+    </div>`;
+  grid.appendChild(meta);
+  const qwrap=el('div',null); qwrap.id='qwrap'; grid.appendChild(qwrap);
+  const add=el('button','btn ghost','+ Add question'); add.onclick=()=>{draft.questions.push(freshQ());paintQ();};
+  grid.appendChild(add);
+  const bar=el('div','row'); bar.style.marginTop='10px';
+  const prev=el('button','btn ghost','Preview'); prev.onclick=()=>{syncDraft();previewDraft();};
+  const save=el('button','btn','Save & publish'); save.onclick=saveDraft;
+  bar.append(prev,save); grid.appendChild(bar);
+  w.appendChild(grid);
+  setTimeout(paintQ,0);
+  return w;
+}
+function freshQ(){return{q:'',opts:['','',''],correct:0};}
+function paintQ(){
+  const wrap=$('#qwrap'); if(!wrap)return; wrap.innerHTML='';
+  draft.questions.forEach((q,i)=>{
+    const b=el('div','qbuilder');
+    b.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <b class="muted small">Question ${i+1}</b>
+        ${draft.questions.length>1?`<button class="btn ghost sm" data-del="${i}">Remove</button>`:''}</div>
+      <input class="inp" data-q="${i}" placeholder="Type your question" value="${esc(q.q)}" style="margin-bottom:12px">
+      <div data-opts="${i}"></div>
+      <button class="btn ghost sm" data-addopt="${i}">+ Add option</button>
+      <div class="muted small" style="margin-top:8px">Tap the circle to mark the correct answer.</div>`;
+    wrap.appendChild(b);
+    const ow=b.querySelector(`[data-opts="${i}"]`);
+    q.opts.forEach((o,j)=>{
+      const r=el('div'); r.style.cssText='display:flex;gap:10px;align-items:center;margin-bottom:8px';
+      r.innerHTML=`<button class="dot" data-correct="${i}-${j}" title="Mark correct" style="${q.correct===j?'background:var(--teal);border-color:var(--teal)':''}"></button>
+        <input class="inp" data-opt="${i}-${j}" placeholder="Option ${j+1}" value="${esc(o)}">
+        ${q.opts.length>2?`<button class="btn ghost sm" data-delopt="${i}-${j}">✕</button>`:''}`;
+      ow.appendChild(r);
+    });
+  });
+  wrap.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{syncDraft();draft.questions.splice(+b.dataset.del,1);paintQ();});
+  wrap.querySelectorAll('[data-addopt]').forEach(b=>b.onclick=()=>{syncDraft();draft.questions[+b.dataset.addopt].opts.push('');paintQ();});
+  wrap.querySelectorAll('[data-delopt]').forEach(b=>b.onclick=()=>{const[i,j]=b.dataset.delopt.split('-').map(Number);syncDraft();draft.questions[i].opts.splice(j,1);if(draft.questions[i].correct>=draft.questions[i].opts.length)draft.questions[i].correct=0;paintQ();});
+  wrap.querySelectorAll('[data-correct]').forEach(b=>b.onclick=()=>{const[i,j]=b.dataset.correct.split('-').map(Number);syncDraft();draft.questions[i].correct=j;paintQ();});
+}
+function syncDraft(){
+  const t=$('#qtitle'); if(t)draft.title=t.value;
+  const tm=$('#qtimer'); if(tm)draft.timer=Math.max(1,+tm.value||10);
+  const wk=$('#qweek'); if(wk)draft.week=+wk.value||draft.week;
+  $('#qwrap').querySelectorAll('[data-q]').forEach(i=>draft.questions[+i.dataset.q].q=i.value);
+  $('#qwrap').querySelectorAll('[data-opt]').forEach(i=>{const[a,b]=i.dataset.opt.split('-').map(Number);draft.questions[a].opts[b]=i.value;});
+}
+function validDraft(){
+  if(!draft.title.trim()) return 'Add a quiz title.';
+  for(const q of draft.questions){ if(!q.q.trim())return'Every question needs text.';
+    if(q.opts.filter(o=>o.trim()).length<2)return'Each question needs at least 2 options.'; }
+  return null;
+}
+function saveDraft(){
+  syncDraft(); const err=validDraft(); if(err)return toast(err);
+  const d=DB.get();
+  if(draft.type==='weekly'){
+    d.quizzes.filter(q=>q.type==='weekly').forEach(q=>q.open=false); // one live weekly at a time
+    d.quizzes.push({id:uid('q'),type:'weekly',open:true,code:code6(),title:draft.title,
+      timer:draft.timer,week:draft.week,questions:draft.questions,createdBy:session.id,at:Date.now()});
+    DB.save(); toast('Weekly quiz published — it is now live for students!'); go('#/admin');
+  } else {
+    const code=code6();
+    d.quizzes.push({id:uid('q'),type:'private',open:true,code,title:draft.title,dept:session.dept,
+      timer:draft.timer,questions:draft.questions,createdBy:session.id,at:Date.now()});
+    d.deptUsage[session.dept]=(d.deptUsage[session.dept]||0)+1;
+    DB.save();
+    codeModal(code,draft.title); 
+  }
+}
+function codeModal(code,title){
+  const n=el('div');
+  n.innerHTML=`<div style="text-align:center">
+    <div style="font-size:2.4rem">🎉</div>
+    <h2 class="h-display" style="margin:8px 0 4px">Quiz published!</h2>
+    <p class="muted small">Share this code with your class. Students join with their name + this code.</p>
+    <div class="card pad" style="margin:16px 0;background:#0c1128">
+      <div class="muted small">Join code</div>
+      <div class="h-display" style="font-size:2.4rem;letter-spacing:8px;color:var(--cyan)">${code}</div>
+    </div>
+    <div class="row" style="justify-content:center">
+      <button class="btn ghost" onclick="navigator.clipboard&&navigator.clipboard.writeText('${code}');toast('Code copied.')">Copy code</button>
+      <button class="btn" onclick="closeModal();go('#/teacher')">Go to my quizzes</button>
+    </div></div>`;
+  modal(n);
+}
+
+/* ---------- aurora preview / player of a stored quiz ---------- */
+function previewQuiz(id){ const q=DB.get().quizzes.find(x=>x.id===id); previewData(q); }
+function previewDraft(){ previewData(draft); }
+function previewData(q){
+  const n=el('div');
+  n.innerHTML=`<div class="eyebrow">Aurora preview · not scored</div>
+    <div style="text-align:center;margin:6px 0 16px">
+      <div class="brand" style="justify-content:center;font-size:1.6rem"><span class="spark"></span>QUIZIFY</div>
+      <h2 class="h-display" style="margin:10px 0 2px">${esc(q.title||'Untitled quiz')}</h2>
+      <p class="muted small">${q.questions.length} questions · ${q.timer} min</p></div>`;
+  q.questions.forEach((qq,i)=>{
+    const c=el('div','card pad'); c.style.marginBottom='12px'; c.style.background='#0c1128';
+    c.innerHTML=`<b>Q${i+1}. ${esc(qq.q||'(no text)')}</b>
+      <div style="margin-top:10px">${qq.opts.filter(o=>o.trim()).map((o,j)=>`<div class="opt ${qq.correct===j?'correct':''}"><span class="dot"></span>${esc(o)}</div>`).join('')}</div>`;
+    n.appendChild(c);
+  });
+  const b=el('div','row'); b.style.justifyContent='flex-end';
+  const close=el('button','btn','Close preview'); close.onclick=closeModal; b.appendChild(close);
+  n.appendChild(b);
+  modal(n);
+}
+
+/* =====================================================================
+   PLAY VIEW (take a quiz) — auto-logout of quiz on leaving window
+   ===================================================================== */
+let playState=null;
+function PlayView(code){
+  const d=DB.get(); const q=d.quizzes.find(x=>x.code===code);
+  if(!q) return msgCard('Quiz not found','That code does not match a live quiz.');
+  const w=el('div','wrap'); w.style.padding='24px 20px 60px';
+  playState={q,answers:Array(q.questions.length).fill(-1),idx:0,left:false,
+    deadline:Date.now()+q.timer*60000};
+  // record "joined"
+  d.attempts.push({id:uid('a'),quizId:q.id,userId:session.id,type:q.type,title:q.title,
+    status:'in-progress',joinedAt:Date.now(),name:session.name,dept:session.dept});
+  playState.attemptId=d.attempts[d.attempts.length-1].id; DB.save();
+
+  // AUTO-EXIT if the student leaves the window during a live quiz
+  playState.blurHandler=()=>{
+    if(document.hidden && playState && !playState.done){
+      markLeft(); toast('You left the quiz window — you were signed out of this quiz.');
+      go('#/'+session.role);
+    }
+  };
+  document.addEventListener('visibilitychange',playState.blurHandler);
+
+  const head=el('div','card pad'); head.style.marginBottom='16px';
+  head.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+    <div><div class="eyebrow">${q.type==='weekly'?'Weekly quiz':'Classroom quiz'} · Code ${q.code}</div>
+    <h2 class="h-display" style="margin:6px 0 0">${esc(q.title)}</h2></div>
+    <div class="cd"><b id="tmr">--:--</b><span>time left</span></div></div>
+    <div class="muted small" style="margin-top:10px">⚠ Stay on this tab — leaving the window ends your attempt automatically.</div>`;
+  w.appendChild(head);
+  const body=el('div'); body.id='playbody'; w.appendChild(body);
+  setTimeout(()=>{paintPlay();tickTimer();},0);
+  return w;
+}
+function markLeft(){
+  if(!playState)return; const d=DB.get(); const a=d.attempts.find(x=>x.id===playState.attemptId);
+  if(a&&a.status==='in-progress'){a.status='left';a.at=Date.now();a.score=0;a.total=playState.q.questions.length;}
+  DB.save(); cleanupPlay();
+}
+function cleanupPlay(){ if(playState&&playState.blurHandler)document.removeEventListener('visibilitychange',playState.blurHandler); }
+function tickTimer(){
+  if(!playState||playState.done)return;
+  const ms=playState.deadline-Date.now();
+  const t=$('#tmr'); if(!t){return;}
+  if(ms<=0){submitPlay(true);return;}
+  const m=Math.floor(ms/60000),s=Math.floor(ms%60000/1000);
+  t.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  setTimeout(tickTimer,500);
+}
+function paintPlay(){
+  const {q,idx,answers}=playState; const body=$('#playbody');
+  const qq=q.questions[idx];
+  body.innerHTML=`<div class="card pad">
+    <div class="muted small" style="margin-bottom:10px">Question ${idx+1} of ${q.questions.length}</div>
+    <h3 style="margin:0 0 16px">${esc(qq.q)}</h3>
+    <div id="opts"></div>
+    <div class="divider"></div>
+    <div class="row" style="justify-content:space-between">
+      <button class="btn ghost" id="prev" ${idx===0?'disabled':''}>← Back</button>
+      ${idx<q.questions.length-1?'<button class="btn" id="next">Next →</button>':'<button class="btn gold" id="fin">Finish &amp; submit</button>'}
+    </div></div>`;
+  const ow=$('#opts');
+  qq.opts.filter(o=>o.trim()).forEach((o,j)=>{
+    const d=el('div','opt'+(answers[idx]===j?' sel':''),`<span class="dot"></span>${esc(o)}`);
+    d.onclick=()=>{playState.answers[idx]=j;paintPlay();};
+    ow.appendChild(d);
+  });
+  const p=$('#prev'); if(p)p.onclick=()=>{playState.idx--;paintPlay();};
+  const nx=$('#next'); if(nx)nx.onclick=()=>{playState.idx++;paintPlay();};
+  const fn=$('#fin'); if(fn)fn.onclick=()=>submitPlay(false);
+}
+function submitPlay(timeUp){
+  if(!playState||playState.done)return; playState.done=true;
+  const {q,answers}=playState;
+  let score=0; q.questions.forEach((qq,i)=>{ if(answers[i]===qq.correct)score++; });
+  const d=DB.get(); const a=d.attempts.find(x=>x.id===playState.attemptId);
+  a.status='done'; a.score=score; a.total=q.questions.length; a.at=Date.now();
+  // record weekly result for admin drill-down
+  if(q.type==='weekly'){
+    d.weeklyResults[q.week]=d.weeklyResults[q.week]||[];
+    const reg=d.registrations.find(r=>r.userId===session.id&&r.quizId===q.id);
+    d.weeklyResults[q.week].push({name:session.name,dept:session.dept,email:session.email,
+      score,total:q.questions.length,photo:reg?reg.photo:(session.photo||null)});
+  }
+  DB.save(); cleanupPlay();
+  // result screen
+  const n=el('div');
+  const pct=Math.round(score/q.questions.length*100);
+  n.innerHTML=`<div style="text-align:center">
+    <div style="font-size:2.6rem">${pct>=80?'🌟':pct>=50?'✅':'💪'}</div>
+    <h2 class="h-display" style="margin:8px 0 2px">${timeUp?'Time is up!':'Submitted!'}</h2>
+    <p class="muted small">${esc(q.title)}</p>
+    <div class="h-display" style="font-size:3rem;margin:12px 0;background:linear-gradient(92deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent">${score}/${q.questions.length}</div>
+    <button class="btn" onclick="closeModal();go('#/'+session.role)">Back to home</button></div>`;
+  modal(n);
+}
+
+/* =====================================================================
+   MONITOR VIEW (teacher live monitor)
+   ===================================================================== */
+function MonitorView(id){
+  const d=DB.get(); const q=d.quizzes.find(x=>x.id===id);
+  if(!q) return msgCard('Not found','Quiz not found.');
+  const atts=d.attempts.filter(a=>a.quizId===id);
+  const joined=atts.length, left=atts.filter(a=>a.status==='left').length,
+        done=atts.filter(a=>a.status==='done').length, active=atts.filter(a=>a.status==='in-progress').length;
+  const w=el('div','wrap'); w.style.padding='24px 20px 60px';
+  w.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+    <div><div class="eyebrow">Live monitor · Code ${q.code}</div>
+    <h1 class="h-display" style="font-size:1.8rem;margin:6px 0 0">${esc(q.title)}</h1></div>
+    <button class="btn ghost sm" onclick="render()">↻ Refresh</button></div>
+    <div class="statgrid" style="margin:18px 0">
+      <div class="card stat"><div class="n">${joined}</div><div class="l">Joined</div></div>
+      <div class="card stat"><div class="n" style="background:linear-gradient(92deg,var(--teal),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent">${active}</div><div class="l">In progress</div></div>
+      <div class="card stat"><div class="n" style="background:none;color:var(--good)">${done}</div><div class="l">Completed</div></div>
+      <div class="card stat"><div class="n" style="background:none;color:var(--bad)">${left}</div><div class="l">Left early</div></div>
+    </div>
+    <div class="card pad"><h3 class="h-display" style="margin:0 0 12px">Participants</h3>
+    ${atts.length?`<table><thead><tr><th>Name</th><th>Dept</th><th>Status</th><th>Score</th></tr></thead><tbody>
+      ${atts.map(a=>`<tr><td><b>${esc(a.name)}</b></td><td class="muted">${esc(a.dept||'—')}</td>
+        <td><span class="chip" style="${a.status==='left'?'color:var(--bad)':a.status==='done'?'color:var(--good)':'color:var(--cyan)'}">${a.status}</span></td>
+        <td>${a.status==='done'?`<b>${a.score}/${a.total}</b>`:'—'}</td></tr>`).join('')}
+    </tbody></table>`:'<p class="muted small">No one has joined yet. Share the code!</p>'}</div>`;
+  return w;
+}
+
+/* =====================================================================
+   ADMIN VIEW  (dashboard, weekly results drilldown, badges, dept usage)
+   ===================================================================== */
+function AdminView(){
+  const w=el('div','wrap'); w.style.padding='24px 20px 60px';
+  w.innerHTML=`<div class="eyebrow">PG &amp; Research Dept. of Computer Science</div>
+    <h1 class="h-display" style="font-size:2rem;margin:6px 0 4px">Admin dashboard</h1>
+    <p class="muted small" style="margin:0 0 18px">Weekly quizzes, department usage &amp; student recognition — all in one place.</p>
+    <div class="seg" id="tabs">
+      <button data-t="overview" class="on">Overview</button>
+      <button data-t="weekly">Weekly results</button>
+      <button data-t="depts">Department usage</button>
+      <button data-t="badges">Badges &amp; awards</button>
+      <button data-t="allq">All quizzes</button>
+    </div>
+    <div id="tabbody"></div>`;
+  setTimeout(()=>{
+    const tabs=$('#tabs');
+    tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      tabs.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');paintAdmin(b.dataset.t);});
+    paintAdmin('overview');
+  },0);
+  return w;
+}
+function paintAdmin(tab){
+  const d=DB.get(); const body=$('#tabbody'); body.innerHTML='';
+  if(tab==='overview') return body.appendChild(adminOverview(d));
+  if(tab==='weekly')   return body.appendChild(adminWeekly(d));
+  if(tab==='depts')    return body.appendChild(adminDepts(d));
+  if(tab==='badges')   return body.appendChild(adminBadges(d));
+  if(tab==='allq')     return body.appendChild(adminAllQuizzes(d));
+}
+function adminOverview(d){
+  const wrap=el('div','grid');
+  const totalPrivate=d.quizzes.filter(q=>q.type==='private').length;
+  const totalWeekly=d.quizzes.filter(q=>q.type==='weekly').length;
+  const students=d.users.filter(u=>u.role==='student').length;
+  const weeklyPart=Object.values(d.weeklyResults||{}).reduce((a,r)=>a+r.length,0);
+  const stats=el('div','statgrid');
+  stats.innerHTML=`
+    <div class="card stat"><div class="n">${students}</div><div class="l">Registered students</div></div>
+    <div class="card stat"><div class="n">${totalWeekly}</div><div class="l">Weekly quizzes run</div></div>
+    <div class="card stat"><div class="n">${totalPrivate}</div><div class="l">Classroom quizzes</div></div>
+    <div class="card stat"><div class="n">${weeklyPart}</div><div class="l">Weekly participations</div></div>`;
+  wrap.appendChild(stats);
+  // participation-by-week chart
+  const weeks=Object.keys(d.weeklyResults||{}).sort((a,b)=>a-b);
+  const chart=el('div','card pad');
+  chart.innerHTML=`<div class="eyebrow">Weekly quiz</div><h3 class="h-display" style="margin:6px 0 16px">Participation by week</h3>`;
+  const max=Math.max(1,...weeks.map(w=>d.weeklyResults[w].length));
+  weeks.forEach(wk=>{const c=d.weeklyResults[wk].length;
+    chart.appendChild(el('div','barrow',`<div class="lbl">Week ${wk}</div><div class="bar"><i style="width:${c/max*100}%"></i></div><div class="val">${c}</div>`));});
+  wrap.appendChild(chart);
+  // live weekly banner
+  const wk=activeWeekly();
+  const banner=el('div','card pad');
+  banner.innerHTML= wk
+    ? `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div><span class="tag live">Weekly quiz live</span><h3 class="h-display" style="margin:8px 0 0">${esc(wk.title)}</h3>
+        <p class="muted small" style="margin:4px 0 0">${wk.questions.length} questions · Week ${wk.week}</p></div>
+        <button class="btn ghost" onclick="previewQuiz('${wk.id}')">Preview</button></div>`
+    : `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div><div class="eyebrow">No live weekly quiz</div><p class="muted small" style="margin:6px 0 0">Publish this week's challenge for students.</p></div>
+        <button class="btn" onclick="go('#/create/weekly')">+ Upload weekly quiz</button></div>`;
+  wrap.appendChild(banner);
+  return wrap;
+}
+function adminWeekly(d){
+  const wrap=el('div','grid');
+  const weeks=Object.keys(d.weeklyResults||{}).sort((a,b)=>a-b);
+  const seg=el('div','card pad');
+  seg.innerHTML=`<div class="eyebrow">Weekly results</div><h3 class="h-display" style="margin:6px 0 4px">Pick a week to drill in</h3>
+    <p class="muted small" style="margin:0 0 14px">Click a week, then click any student box to see their full registration &amp; result.</p>
+    <div class="seg" id="wkseg">${weeks.map((w,i)=>`<button data-w="${w}" class="${i===weeks.length-1?'on':''}">Week ${w}</button>`).join('')}</div>
+    <div id="wkbody"></div>`;
+  wrap.appendChild(seg);
+  setTimeout(()=>{
+    const ws=$('#wkseg');
+    ws.querySelectorAll('button').forEach(b=>b.onclick=()=>{ws.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');paintWeek(b.dataset.w);});
+    paintWeek(weeks[weeks.length-1]);
+  },0);
+  return wrap;
+}
+function paintWeek(w){
+  const d=DB.get(); const list=d.weeklyResults[w]||[]; const body=$('#wkbody'); if(!body)return;
+  if(!list.length){body.innerHTML='<p class="muted small">No submissions for this week.</p>';return;}
+  body.innerHTML='';
+  const g=el('div','grid'); g.style.gridTemplateColumns='repeat(auto-fill,minmax(150px,1fr))';
+  list.forEach((r,i)=>{
+    const box=el('div','resultbox');
+    box.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="avatar" style="width:34px;height:34px;font-size:.75rem">${r.photo?`<img src="${r.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`:initials(r.name)}</div>
+      <span class="sc" style="color:${r.score/r.total>=.7?'var(--teal)':r.score/r.total>=.4?'var(--gold)':'var(--bad)'}">${r.score}/${r.total}</span></div>
+      <div class="nm" style="margin-top:8px">${esc(r.name)}</div>
+      <div class="muted small">${esc(r.dept)}</div>`;
+    box.onclick=()=>studentDetail(r);
+    g.appendChild(box);
+  });
+  body.appendChild(g);
+}
+function studentDetail(r){
+  const n=el('div');
+  n.innerHTML=`<div style="text-align:center;margin-bottom:14px">
+    <div class="avatar" style="width:96px;height:96px;font-size:1.8rem;margin:0 auto;border-width:3px">${r.photo?`<img src="${r.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`:initials(r.name)}</div>
+    <h2 class="h-display" style="margin:12px 0 2px">${esc(r.name)}</h2>
+    <span class="tag">${esc(r.dept)}</span></div>
+    <div class="card pad" style="background:#0c1128">
+      <div class="row" style="justify-content:space-between"><span class="muted small">Email</span><b>${esc(r.email)}</b></div><div class="divider"></div>
+      <div class="row" style="justify-content:space-between"><span class="muted small">Department</span><b>${esc(r.dept)}</b></div><div class="divider"></div>
+      <div class="row" style="justify-content:space-between"><span class="muted small">Result</span><b class="h-display" style="color:var(--cyan)">${r.score} / ${r.total}</b></div>
+    </div>
+    <div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn" onclick="closeModal()">Close</button></div>`;
+  modal(n);
+}
+function adminDepts(d){
+  const wrap=el('div','grid');
+  const c=el('div','card pad');
+  c.innerHTML=`<div class="eyebrow">Classroom quizzes</div><h3 class="h-display" style="margin:6px 0 6px">Department usage</h3>
+    <p class="muted small" style="margin:0 0 16px">How many private quizzes each department has created on Quizify.</p>`;
+  const entries=Object.entries(d.deptUsage||{}).sort((a,b)=>b[1]-a[1]);
+  const max=Math.max(1,...entries.map(e=>e[1]));
+  entries.forEach(([dep,n])=>c.appendChild(el('div','barrow',
+    `<div class="lbl">${esc(dep)}</div><div class="bar"><i style="width:${n/max*100}%;background:linear-gradient(92deg,var(--violet),var(--magenta))"></i></div><div class="val">${n}</div>`)));
+  wrap.appendChild(c);
+  return wrap;
+}
+function adminBadges(d){
+  const wrap=el('div','grid');
+  const students=d.users.filter(u=>u.role==='student');
+  const c=el('div','card pad');
+  c.innerHTML=`<div class="eyebrow">Recognition</div><h3 class="h-display" style="margin:6px 0 6px">Badges &amp; semester awards</h3>
+    <p class="muted small" style="margin:0 0 14px">Award bronze / silver / gold for interaction &amp; performance. Students get notified instantly.</p>`;
+  if(!students.length)c.innerHTML+='<p class="muted small">No students registered yet.</p>';
+  students.forEach(s=>{
+    const row=el('div'); row.style.cssText='display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)';
+    row.innerHTML=`<div class="avatar" style="width:40px;height:40px;font-size:.8rem">${initials(s.name)}</div>
+      <div style="flex:1"><b>${esc(s.name)}</b><div class="muted small">${esc(s.dept||'—')}</div></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        ${s.badge?`<span class="badge ${s.badge}">${s.badge[0].toUpperCase()}</span>`:'<span class="muted small">none</span>'}
+        <button class="btn ghost sm" data-b="bronze" data-s="${s.id}">Bronze</button>
+        <button class="btn ghost sm" data-b="silver" data-s="${s.id}">Silver</button>
+        <button class="btn gold sm" data-b="gold" data-s="${s.id}">Gold</button>
+      </div>`;
+    c.appendChild(row);
+  });
+  wrap.appendChild(c);
+  const award=el('div','card pad');
+  award.innerHTML=`<div class="eyebrow">End of semester</div><h3 class="h-display" style="margin:6px 0 6px">Cash-prize finalist</h3>
+    <p class="muted small" style="margin:0 0 12px">Recognise the top performer with a cash prize + notification.</p>
+    <div class="row"><select class="inp" id="finstu" style="flex:1">${students.map(s=>`<option value="${s.id}">${esc(s.name)} — ${esc(s.dept||'')}</option>`).join('')}</select>
+    <input class="inp" id="finamt" placeholder="₹ amount" style="width:140px">
+    <button class="btn gold" id="finbtn">Announce finalist 🏅</button></div>`;
+  wrap.appendChild(award);
+  setTimeout(()=>{
+    c.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>awardBadge(b.dataset.s,b.dataset.b));
+    $('#finbtn').onclick=()=>{
+      const sid=$('#finstu').value, amt=$('#finamt').value.trim()||'a cash prize';
+      const s=DB.get().users.find(u=>u.id===sid);
+      notify(sid,`🏅 Semester finalist! You've been recognised by the CS Dept with ${amt.startsWith('₹')?amt:'₹'+amt}. Congratulations, ${s.name}!`,'gold');
+      awardBadge(sid,'gold',true); toast(s.name+' announced as finalist!');
+    };
+  },0);
+  return wrap;
+}
+function awardBadge(sid,badge,silent){
+  const d=DB.get(); const s=d.users.find(u=>u.id===sid); if(!s)return;
+  s.badge=badge; DB.save();
+  notify(sid,`🎖️ You've earned the ${badge.toUpperCase()} badge for being highly interactive & responsive in Computer Science!`,badge);
+  if(!silent)toast(s.name+' now has a '+badge+' badge.');
+  paintAdmin('badges');
+}
+function notify(userId,text,badge){ const d=DB.get(); d.notifications.push({id:uid('n'),userId,text,badge,at:Date.now()}); DB.save(); }
+function adminAllQuizzes(d){
+  const wrap=el('div','grid');
+  const c=el('div','card pad');
+  c.innerHTML=`<div class="eyebrow">Oversight</div><h3 class="h-display" style="margin:6px 0 6px">All quizzes across departments</h3>
+    <p class="muted small" style="margin:0 0 14px">Every weekly &amp; classroom quiz created on the portal.</p>`;
+  if(!d.quizzes.length){c.innerHTML+='<p class="muted small">No quizzes created yet.</p>';return wrap.appendChild(c),wrap;}
+  const t=el('table');
+  t.innerHTML=`<thead><tr><th>Title</th><th>Type</th><th>Dept</th><th>Code</th><th>Qs</th><th>Status</th><th></th></tr></thead>
+    <tbody>${d.quizzes.slice().reverse().map(q=>{
+      const creator=d.users.find(u=>u.id===q.createdBy);
+      return `<tr><td><b>${esc(q.title)}</b><div class="muted small">by ${esc(creator?creator.name:'—')}</div></td>
+      <td><span class="chip">${q.type}</span></td><td class="muted">${esc(q.dept||'CS')}</td>
+      <td style="font-family:'Cinzel',serif;letter-spacing:1px">${q.code}</td><td>${q.questions.length}</td>
+      <td><span class="chip" style="${q.open?'color:var(--teal)':''}">${q.open?'live':'closed'}</span></td>
+      <td><button class="btn ghost sm" onclick="previewQuiz('${q.id}')">View</button></td></tr>`;}).join('')}</tbody>`;
+  c.appendChild(t); wrap.appendChild(c); return wrap;
+}
+
+/* =====================================================================
+   SHARED small helpers
+   ===================================================================== */
+function msgCard(title,sub){ const w=el('div','center'); const c=el('div','card pad'); c.style.maxWidth='460px';c.style.textAlign='center';
+  c.innerHTML=`<h2 class="h-display">${esc(title)}</h2><p class="muted" style="margin-top:8px">${esc(sub)}</p>
+  <button class="btn ghost" style="margin-top:16px" onclick="go('#/')">Back home</button>`; w.appendChild(c); return w; }
+function msgInline(title,sub){ const c=el('div','card pad'); c.style.textAlign='center';
+  c.innerHTML=`<div style="font-size:2rem">✨</div><h3 class="h-display" style="margin:8px 0 4px">${esc(title)}</h3><p class="muted small">${esc(sub)}</p>`; return c; }
+function startCountdown(node,target){
+  if(!node)return;
+  function upd(){ let ms=target-Date.now(); if(ms<0)ms=0;
+    const dds=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),s=Math.floor(ms%6e4/1e3);
+    node.innerHTML=[['Days',dds],['Hrs',h],['Min',m],['Sec',s]].map(([l,v])=>`<div class="cd"><b>${String(v).padStart(2,'0')}</b><span>${l}</span></div>`).join('');
+    if(node.isConnected)setTimeout(upd,1000);
+  } upd();
+}
+function downscale(file,max,cb){
+  const img=new Image(); const rd=new FileReader();
+  rd.onload=()=>{img.onload=()=>{
+    let{width:w,height:h}=img; const sc=Math.min(1,max/Math.max(w,h)); w*=sc;h*=sc;
+    const cv=el('canvas'); cv.width=w;cv.height=h; cv.getContext('2d').drawImage(img,0,0,w,h);
+    cb(cv.toDataURL('image/jpeg',0.8));
+  };img.src=rd.result;};
+  rd.readAsDataURL(file);
+}
+render();
+</script>
+</body>
+</html>
