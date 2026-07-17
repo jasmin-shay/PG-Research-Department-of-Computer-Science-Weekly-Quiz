@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Quizify — Admin Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#04040d;font-family:'Inter',sans-serif;color:#edf2ff;
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:hidden}
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none}
+.z{position:relative;z-index:10}
+.back{position:fixed;top:20px;left:24px;z-index:100;font-family:'Cinzel',serif;font-size:.72rem;
+  font-weight:600;letter-spacing:1px;color:rgba(237,242,255,.5);border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;padding:8px 14px;cursor:pointer;transition:all .2s;text-decoration:none;
+  background:rgba(4,4,13,.7);backdrop-filter:blur(10px)}
+.back:hover{color:#edf2ff;border-color:rgba(245,158,11,.4);color:#f59e0b}
+.wrap{width:100%;max-width:420px}
+/* BADGE */
+.role-badge{display:flex;flex-direction:column;align-items:center;margin-bottom:32px;text-align:center}
+.role-icon-wrap{width:80px;height:80px;border-radius:24px;
+  background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(124,58,237,.15));
+  border:2px solid rgba(245,158,11,.4);box-shadow:0 0 40px rgba(245,158,11,.2);
+  display:flex;align-items:center;justify-content:center;font-size:2.6rem;margin-bottom:16px}
+.role-title{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;letter-spacing:3px;
+  background:linear-gradient(135deg,#f59e0b,#7c3aed);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.role-sub{font-size:.8rem;color:rgba(237,242,255,.45);margin-top:6px;letter-spacing:.5px}
+/* CARD */
+.card{background:rgba(255,255,255,.05);backdrop-filter:blur(24px);
+  border:1px solid rgba(245,158,11,.2);border-radius:24px;padding:36px}
+/* INPUTS */
+.fg{margin-bottom:18px}
+.fg label{display:block;font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;
+  letter-spacing:1.5px;color:rgba(237,242,255,.45);text-transform:uppercase;margin-bottom:8px}
+.fg input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:11px;padding:13px 16px;color:#edf2ff;font-family:'Inter',sans-serif;
+  font-size:.9rem;outline:none;transition:all .2s}
+.fg input:focus{border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.12)}
+/* BUTTON */
+.btn{width:100%;padding:14px;border:none;border-radius:12px;cursor:pointer;
+  font-family:'Cinzel',serif;font-weight:700;font-size:.88rem;letter-spacing:2px;
+  background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;
+  box-shadow:0 4px 24px rgba(245,158,11,.3);transition:all .2s;margin-top:6px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,158,11,.4);filter:brightness(1.08)}
+.btn:active{transform:translateY(0)}
+/* ERROR */
+.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:9px;
+  padding:10px 14px;font-size:.82rem;color:#fca5a5;margin-bottom:14px;display:none}
+/* DEMO */
+.demo{margin-top:20px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);
+  border-radius:14px;padding:16px}
+.demo-title{font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:2px;
+  color:#f59e0b;text-transform:uppercase;margin-bottom:10px}
+.demo-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s;
+  border-bottom:1px solid rgba(255,255,255,.05)}
+.demo-row:last-child{border-bottom:none}
+.demo-row:hover{background:rgba(255,255,255,.05)}
+.demo-lbl{font-family:'Cinzel',serif;font-size:.7rem;color:#f59e0b;font-weight:600}
+.demo-cred{font-family:monospace;font-size:.72rem;color:rgba(237,242,255,.4)}
+/* FOOTER */
+.ft{text-align:center;margin-top:28px;font-size:.7rem;color:rgba(237,242,255,.22);line-height:1.7}
+.ft strong{color:rgba(237,242,255,.35);font-family:'Cinzel',serif}
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<a href="quizify-login.html" class="back z">← Change Role</a>
+
+<div class="wrap z">
+  <div class="role-badge">
+    <div class="role-icon-wrap">👑</div>
+    <div class="role-title">Admin Portal</div>
+    <div class="role-sub">PG & Research Department of Computer Science</div>
+  </div>
+
+  <div class="card">
+    <div class="err" id="err"></div>
+    <div class="fg"><label>Email Address</label><input id="em" type="email" placeholder="admin@quizify.edu" autocomplete="email"/></div>
+    <div class="fg"><label>Password</label><input id="pw" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
+    <button class="btn" onclick="doLogin()">👑 &nbsp;Enter Admin Portal</button>
+    <div class="demo">
+      <div class="demo-title">⚡ Demo Credentials</div>
+      <div class="demo-row" onclick="fill('admin@quizify.edu','admin123')">
+        <span class="demo-lbl">Admin Account</span>
+        <span class="demo-cred">admin@quizify.edu / admin123</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ft">
+    <strong>Quizify Admin Panel</strong><br>
+    Organised by PG & Research Dept of CS &nbsp;·&nbsp; Nilgiri College &nbsp;·&nbsp; NAAC A++
+  </div>
+</div>
+
+<script>
+// Aurora
+const cv=document.getElementById('cv'),cx=cv.getContext('2d');
+const rsz=()=>{cv.width=innerWidth;cv.height=innerHeight};rsz();window.addEventListener('resize',rsz);
+const B=[{x:.15,y:.25,r:.5,c:'#f59e0b',vx:.00018,vy:.00015},{x:.85,y:.7,r:.48,c:'#7c3aed',vx:-.00015,vy:.00020},{x:.5,y:.88,r:.38,c:'#f59e0b',vx:.00022,vy:-.00018}];
+(function a(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#04040d';cx.fillRect(0,0,cv.width,cv.height);
+B.forEach(b=>{b.x+=b.vx;b.y+=b.vy;if(b.x<0||b.x>1)b.vx*=-1;if(b.y<0||b.y>1)b.vy*=-1;
+const g=cx.createRadialGradient(b.x*cv.width,b.y*cv.height,0,b.x*cv.width,b.y*cv.height,b.r*Math.max(cv.width,cv.height));
+g.addColorStop(0,b.c+'2e');g.addColorStop(1,'transparent');cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});
+requestAnimationFrame(a);})();
+
+// Seed users if DB not exists
+function ensureDB(){
+  let db=JSON.parse(localStorage.getItem('quizify_db')||'null');
+  if(!db||!db._seeded){
+    if(!db)db={};
+    if(!db.users)db.users=[
+      {id:'admin1',name:'Dr. Darlon',email:'admin@quizify.edu',pass:'admin123',role:'admin',dept:'Computer Science',badge:'gold'},
+      {id:'teach1',name:'Prof. Anita',email:'teacher@quizify.edu',pass:'teach123',role:'teacher',dept:'Physics'},
+      {id:'stu1',name:'Jasmin',email:'jasmin@quizify.edu',pass:'stu12345',role:'student',dept:'Computer Science',badge:'silver'},
+    ];
+    if(!db.quizzes)db.quizzes=[];if(!db.attempts)db.attempts=[];
+    if(!db.registrations)db.registrations=[];if(!db.notifications)db.notifications=[];
+    if(!db.weeklyResults)db.weeklyResults={};if(!db.deptUsage)db.deptUsage={};
+    if(!db.winners)db.winners=[];db._seeded=true;
+    localStorage.setItem('quizify_db',JSON.stringify(db));
+  }
+  return db;
+}
+
+function doLogin(){
+  const em=document.getElementById('em').value.trim().toLowerCase();
+  const pw=document.getElementById('pw').value;
+  const errEl=document.getElementById('err');
+  if(!em||!pw){showErr('Please enter your email and password.');return}
+  const db=ensureDB();
+  const u=(db.users||[]).find(x=>x.email.toLowerCase()===em&&x.pass===pw);
+  if(!u){showErr('Incorrect email or password.');return}
+  if(u.role!=='admin'){showErr('This is the Admin portal. Please use the '+u.role+' login page.');return}
+  sessionStorage.setItem('quizify_session',JSON.stringify(u));
+  location.href='quizify.html#/admin';
+}
+function showErr(m){const e=document.getElementById('err');e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',4000)}
+function fill(e,p){document.getElementById('em').value=e;document.getElementById('pw').value=p}
+document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+const ses=JSON.parse(sessionStorage.getItem('quizify_session')||'null');
+if(ses&&ses.role==='admin')location.href='quizify.html#/admin';
+</script>
+</body>
+</html>

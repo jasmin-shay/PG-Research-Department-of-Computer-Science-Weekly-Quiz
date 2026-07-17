@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Quizify — Choose Your Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100vh}
+body{background:#04040d;font-family:'Inter',sans-serif;color:#edf2ff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:80px 20px 40px;overflow-x:hidden}
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none}
+.z{position:relative;z-index:10}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:62px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 32px;
+  background:rgba(4,4,13,.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.07)}
+.nlogo{font-family:'Cinzel',serif;font-weight:900;font-size:1.4rem;letter-spacing:5px;
+  background:linear-gradient(135deg,#06b6d4,#7c3aed,#10b981);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nhome{font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;letter-spacing:1px;
+  color:rgba(237,242,255,.5);border:1px solid rgba(255,255,255,.08);border-radius:8px;
+  padding:7px 14px;cursor:pointer;transition:all .2s;text-decoration:none}
+.nhome:hover{color:#edf2ff;border-color:rgba(255,255,255,.2)}
+/* HEADER */
+.hd{text-align:center;margin-bottom:48px}
+.hd-eye{display:inline-block;font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;
+  letter-spacing:3px;color:#06b6d4;text-transform:uppercase;
+  background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);
+  border-radius:20px;padding:6px 18px;margin-bottom:16px}
+.hd-title{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(1.8rem,5vw,3rem);
+  margin-bottom:10px;letter-spacing:2px}
+.hd-sub{font-size:.9rem;color:rgba(237,242,255,.5);line-height:1.7}
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;width:100%;max-width:900px}
+.role-card{border-radius:24px;padding:3px;cursor:pointer;transition:transform .25s;position:relative}
+.role-card:hover{transform:translateY(-6px)}
+.role-card.admin-c{background:linear-gradient(135deg,#f59e0b,#7c3aed,#f59e0b)}
+.role-card.teacher-c{background:linear-gradient(135deg,#10b981,#06b6d4,#10b981)}
+.role-card.student-c{background:linear-gradient(135deg,#06b6d4,#7c3aed,#06b6d4)}
+.role-inner{background:#08081a;border-radius:22px;padding:36px 26px;height:100%;
+  display:flex;flex-direction:column;align-items:center;text-align:center}
+.role-icon{font-size:3.2rem;margin-bottom:18px;filter:drop-shadow(0 4px 16px rgba(0,0,0,.4))}
+.role-name{font-family:'Cinzel',serif;font-size:1.25rem;font-weight:900;letter-spacing:2px;margin-bottom:6px}
+.role-name.admin-col{color:#f59e0b}
+.role-name.teacher-col{color:#10b981}
+.role-name.student-col{color:#06b6d4}
+.role-tag{font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:rgba(237,242,255,.4);margin-bottom:20px}
+.role-features{list-style:none;width:100%;margin-bottom:28px;text-align:left}
+.role-features li{display:flex;align-items:center;gap:8px;padding:7px 0;
+  font-size:.8rem;color:rgba(237,242,255,.6);border-bottom:1px solid rgba(255,255,255,.05)}
+.role-features li:last-child{border-bottom:none}
+.role-features li span{font-size:.95rem}
+.role-btn{display:block;width:100%;padding:13px;border:none;border-radius:12px;
+  font-family:'Cinzel',serif;font-weight:700;font-size:.82rem;letter-spacing:1.5px;
+  cursor:pointer;transition:all .2s;margin-top:auto}
+.role-btn.admin-btn{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+.role-btn.teacher-btn{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.role-btn.student-btn{background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff}
+.role-btn:hover{filter:brightness(1.1);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+/* FOOTER */
+footer{margin-top:48px;text-align:center;font-size:.72rem;color:rgba(237,242,255,.25);
+  line-height:1.8;border-top:1px solid rgba(255,255,255,.06);padding-top:24px;width:100%;max-width:900px}
+footer strong{color:rgba(237,242,255,.4);font-family:'Cinzel',serif}
+@media(max-width:700px){.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<nav class="z">
+  <div class="nlogo">QUIZIFY</div>
+  <a href="quizify-home.html" class="nhome">← Back to Home</a>
+</nav>
+
+<div class="z hd">
+  <div class="hd-eye">⚡ PG & Research Department of Computer Science</div>
+  <h1 class="hd-title">Welcome to Quizify</h1>
+  <p class="hd-sub">Select your role to access your personalised portal.<br>Nilgiri College of Arts & Science &nbsp;·&nbsp; NAAC A++</p>
+</div>
+
+<div class="cards z">
+  <!-- ADMIN -->
+  <div class="role-card admin-c" onclick="location.href='login-admin.html'">
+    <div class="role-inner">
+      <div class="role-icon">👑</div>
+      <div class="role-name admin-col">Admin</div>
+      <div class="role-tag">PG & Research Dept</div>
+      <ul class="role-features">
+        <li><span>📊</span> Live analytics dashboard</li>
+        <li><span>📤</span> Upload weekly quizzes</li>
+        <li><span>📋</span> View all student results</li>
+        <li><span>🏅</span> Award badges & prizes</li>
+        <li><span>🗂️</span> Oversee all dept quizzes</li>
+      </ul>
+      <button class="role-btn admin-btn">Enter Admin Portal</button>
+    </div>
+  </div>
+  <!-- TEACHER -->
+  <div class="role-card teacher-c" onclick="location.href='login-teacher.html'">
+    <div class="role-inner">
+      <div class="role-icon">🖥️</div>
+      <div class="role-name teacher-col">Teacher</div>
+      <div class="role-tag">Faculty / Lecturer</div>
+      <ul class="role-features">
+        <li><span>✏️</span> Create classroom quizzes</li>
+        <li><span>🔑</span> Generate student join codes</li>
+        <li><span>👁️</span> Monitor live quiz sessions</li>
+        <li><span>📊</span> See participant results</li>
+        <li><span>👁️</span> Preview quiz in aurora style</li>
+      </ul>
+      <button class="role-btn teacher-btn">Enter Teacher Portal</button>
+    </div>
+  </div>
+  <!-- STUDENT -->
+  <div class="role-card student-c" onclick="location.href='login-student.html'">
+    <div class="role-inner">
+      <div class="role-icon">🎓</div>
+      <div class="role-name student-col">Student</div>
+      <div class="role-tag">All Departments</div>
+      <ul class="role-features">
+        <li><span>⚡</span> Join the weekly CS quiz</li>
+        <li><span>🔑</span> Enter class quiz by code</li>
+        <li><span>🏆</span> See the weekly leaderboard</li>
+        <li><span>🏅</span> Earn Bronze / Silver / Gold</li>
+        <li><span>👤</span> View your quiz history</li>
+      </ul>
+      <button class="role-btn student-btn">Enter Student Portal</button>
+    </div>
+  </div>
+</div>
+
+<footer class="z">
+  <strong>Organised by PG & Research Department of Computer Science</strong><br>
+  Nilgiri College of Arts & Science &nbsp;·&nbsp; NAAC A++ Accredited &nbsp;·&nbsp; Quizify Portal &nbsp;·&nbsp; © 2025
+</footer>
+
+<script>
+const cv=document.getElementById('cv'),cx=cv.getContext('2d');
+const rsz=()=>{cv.width=innerWidth;cv.height=innerHeight};rsz();window.addEventListener('resize',rsz);
+const B=[{x:.1,y:.2,r:.5,c:'#7c3aed',vx:.00018,vy:.00014},{x:.9,y:.7,r:.52,c:'#06b6d4',vx:-.00014,vy:.00020},
+  {x:.5,y:.9,r:.4,c:'#10b981',vx:.00022,vy:-.00016},{x:.7,y:.15,r:.35,c:'#f59e0b',vx:-.00020,vy:.00025}];
+(function anim(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#04040d';cx.fillRect(0,0,cv.width,cv.height);
+B.forEach(b=>{b.x+=b.vx;b.y+=b.vy;if(b.x<0||b.x>1)b.vx*=-1;if(b.y<0||b.y>1)b.vy*=-1;
+const g=cx.createRadialGradient(b.x*cv.width,b.y*cv.height,0,b.x*cv.width,b.y*cv.height,b.r*Math.max(cv.width,cv.height));
+g.addColorStop(0,b.c+'30');g.addColorStop(1,'transparent');cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});
+requestAnimationFrame(anim);})();
+// If already logged in, redirect
+const ses=JSON.parse(sessionStorage.getItem('quizify_session')||'null');
+if(ses) location.href='quizify.html#/'+ses.role;
+</script>
+</body>
+</html>
