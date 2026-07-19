@@ -95,48 +95,28 @@ body{background:#04040d;font-family:'Inter',sans-serif;color:#edf2ff;
   </div>
 </div>
 
-<script>
-// Aurora
-const cv=document.getElementById('cv'),cx=cv.getContext('2d');
-const rsz=()=>{cv.width=innerWidth;cv.height=innerHeight};rsz();window.addEventListener('resize',rsz);
-const B=[{x:.15,y:.25,r:.5,c:'#f59e0b',vx:.00018,vy:.00015},{x:.85,y:.7,r:.48,c:'#7c3aed',vx:-.00015,vy:.00020},{x:.5,y:.88,r:.38,c:'#f59e0b',vx:.00022,vy:-.00018}];
-(function a(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#04040d';cx.fillRect(0,0,cv.width,cv.height);
-B.forEach(b=>{b.x+=b.vx;b.y+=b.vy;if(b.x<0||b.x>1)b.vx*=-1;if(b.y<0||b.y>1)b.vy*=-1;
-const g=cx.createRadialGradient(b.x*cv.width,b.y*cv.height,0,b.x*cv.width,b.y*cv.height,b.r*Math.max(cv.width,cv.height));
-g.addColorStop(0,b.c+'2e');g.addColorStop(1,'transparent');cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});
-requestAnimationFrame(a);})();
+<script>if (!em || !pw) {
+        showErr('Please enter your email and password.');
+        return;
+    }
 
-// Seed users if DB not exists
-function ensureDB(){
-  let db=JSON.parse(localStorage.getItem('quizify_db')||'null');
-  if(!db||!db._seeded){
-    if(!db)db={};
-    if(!db.users)db.users=[
-      {id:'admin1',name:'Dr. Darlon',email:'admin@quizify.edu',pass:'admin123',role:'admin',dept:'Computer Science',badge:'gold'},
-      {id:'teach1',name:'Prof. Anita',email:'teacher@quizify.edu',pass:'teach123',role:'teacher',dept:'Physics'},
-      {id:'stu1',name:'Jasmin',email:'jasmin@quizify.edu',pass:'stu12345',role:'student',dept:'Computer Science',badge:'silver'},
-    ];
-    if(!db.quizzes)db.quizzes=[];if(!db.attempts)db.attempts=[];
-    if(!db.registrations)db.registrations=[];if(!db.notifications)db.notifications=[];
-    if(!db.weeklyResults)db.weeklyResults={};if(!db.deptUsage)db.deptUsage={};
-    if(!db.winners)db.winners=[];db._seeded=true;
-    localStorage.setItem('quizify_db',JSON.stringify(db));
-  }
-  return db;
-}
+    try {
 
-function doLogin(){
-  const em=document.getElementById('em').value.trim().toLowerCase();
-  const pw=document.getElementById('pw').value;
-  const errEl=document.getElementById('err');
-  if(!em||!pw){showErr('Please enter your email and password.');return}
-  const db=ensureDB();
-  const u=(db.users||[]).find(x=>x.email.toLowerCase()===em&&x.pass===pw);
-  if(!u){showErr('Incorrect email or password.');return}
-  if(u.role!=='admin'){showErr('This is the Admin portal. Please use the '+u.role+' login page.');return}
-  sessionStorage.setItem('quizify_session',JSON.stringify(u));
-  location.href='quizify.html#/admin';
-}
+        const res = await API.login(em, pw, 'admin');
+
+        if (!res.success) {
+            showErr(res.message || 'Incorrect email or password.');
+            return;
+        }
+
+        Session.set(res.user, 'admin');
+
+        location.href = 'quizify.html#/admin';
+
+    } catch (e) {
+        showErr(e.message || 'Login failed.');
+    }
+
 function showErr(m){const e=document.getElementById('err');e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',4000)}
 function fill(e,p){document.getElementById('em').value=e;document.getElementById('pw').value=p}
 document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
