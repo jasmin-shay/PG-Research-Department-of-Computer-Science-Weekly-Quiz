@@ -2,128 +2,938 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Quizify — Admin Login</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<title>Quizify — Admin Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
+:root{--bg:#02020a;--c:#00e5ff;--v:#8b5cf6;--g:#00ff88;--gold:#ffd700;--red:#ff3355;
+  --glass:rgba(255,255,255,.05);--gb:rgba(255,255,255,.09);--ink:#edf2ff;--mu:rgba(237,242,255,.5);--dim:rgba(237,242,255,.22);
+  --sb:230px}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#04040d;font-family:'Inter',sans-serif;color:#edf2ff;
-  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:hidden}
-#cv{position:fixed;inset:0;z-index:0;pointer-events:none}
-.z{position:relative;z-index:10}
-.back{position:fixed;top:20px;left:24px;z-index:100;font-family:'Cinzel',serif;font-size:.72rem;
-  font-weight:600;letter-spacing:1px;color:rgba(237,242,255,.5);border:1px solid rgba(255,255,255,.08);
-  border-radius:8px;padding:8px 14px;cursor:pointer;transition:all .2s;text-decoration:none;
-  background:rgba(4,4,13,.7);backdrop-filter:blur(10px)}
-.back:hover{color:#edf2ff;border-color:rgba(245,158,11,.4);color:#f59e0b}
-.wrap{width:100%;max-width:420px}
-/* BADGE */
-.role-badge{display:flex;flex-direction:column;align-items:center;margin-bottom:32px;text-align:center}
-.role-icon-wrap{width:80px;height:80px;border-radius:24px;
-  background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(124,58,237,.15));
-  border:2px solid rgba(245,158,11,.4);box-shadow:0 0 40px rgba(245,158,11,.2);
-  display:flex;align-items:center;justify-content:center;font-size:2.6rem;margin-bottom:16px}
-.role-title{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;letter-spacing:3px;
-  background:linear-gradient(135deg,#f59e0b,#7c3aed);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.role-sub{font-size:.8rem;color:rgba(237,242,255,.45);margin-top:6px;letter-spacing:.5px}
-/* CARD */
-.card{background:rgba(255,255,255,.05);backdrop-filter:blur(24px);
-  border:1px solid rgba(245,158,11,.2);border-radius:24px;padding:36px}
-/* INPUTS */
-.fg{margin-bottom:18px}
-.fg label{display:block;font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;
-  letter-spacing:1.5px;color:rgba(237,242,255,.45);text-transform:uppercase;margin-bottom:8px}
-.fg input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
-  border-radius:11px;padding:13px 16px;color:#edf2ff;font-family:'Inter',sans-serif;
-  font-size:.9rem;outline:none;transition:all .2s}
-.fg input:focus{border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.12)}
-/* BUTTON */
-.btn{width:100%;padding:14px;border:none;border-radius:12px;cursor:pointer;
+body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);overflow-x:hidden;min-height:100vh}
+canvas#aur{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── LOGIN ── */
+#loginWrap{position:relative;z-index:10;min-height:100vh;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.l-logo{font-family:'Cinzel',serif;font-weight:900;font-size:2rem;letter-spacing:6px;
+  background:linear-gradient(135deg,var(--c),var(--v),var(--g));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:8px;text-align:center}
+.l-sub{font-size:.75rem;color:var(--mu);text-align:center;letter-spacing:1px;
+  font-family:'Cinzel',serif;margin-bottom:36px}
+.l-card{width:100%;max-width:420px;background:var(--glass);backdrop-filter:blur(24px);
+  border:1px solid rgba(255,215,0,.15);border-radius:24px;padding:36px}
+.l-ico{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(139,92,246,.1));
+  border:2px solid rgba(255,215,0,.3);box-shadow:0 0 32px rgba(255,215,0,.15);
+  display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto 20px}
+.l-title{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;text-align:center;
+  color:var(--gold);letter-spacing:2px;margin-bottom:4px}
+.l-role{font-size:.7rem;color:var(--dim);text-align:center;font-family:'Cinzel',serif;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:28px}
+.fl{display:block;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;
+  letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;margin-bottom:7px}
+.fi{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:11px;padding:13px 16px;color:var(--ink);font-family:'Inter',sans-serif;
+  font-size:.9rem;outline:none;transition:all .2s;margin-bottom:16px}
+.fi:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,215,0,.1)}
+.btn-login{width:100%;padding:14px;border:none;border-radius:12px;cursor:pointer;
   font-family:'Cinzel',serif;font-weight:700;font-size:.88rem;letter-spacing:2px;
-  background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;
-  box-shadow:0 4px 24px rgba(245,158,11,.3);transition:all .2s;margin-top:6px}
-.btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,158,11,.4);filter:brightness(1.08)}
-.btn:active{transform:translateY(0)}
-/* ERROR */
-.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:9px;
-  padding:10px 14px;font-size:.82rem;color:#fca5a5;margin-bottom:14px;display:none}
-/* DEMO */
-.demo{margin-top:20px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);
-  border-radius:14px;padding:16px}
-.demo-title{font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:2px;
-  color:#f59e0b;text-transform:uppercase;margin-bottom:10px}
-.demo-row{display:flex;justify-content:space-between;align-items:center;
-  padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s;
-  border-bottom:1px solid rgba(255,255,255,.05)}
-.demo-row:last-child{border-bottom:none}
-.demo-row:hover{background:rgba(255,255,255,.05)}
-.demo-lbl{font-family:'Cinzel',serif;font-size:.7rem;color:#f59e0b;font-weight:600}
-.demo-cred{font-family:monospace;font-size:.72rem;color:rgba(237,242,255,.4)}
-/* FOOTER */
-.ft{text-align:center;margin-top:28px;font-size:.7rem;color:rgba(237,242,255,.22);line-height:1.7}
-.ft strong{color:rgba(237,242,255,.35);font-family:'Cinzel',serif}
+  background:linear-gradient(135deg,#f59e0b,var(--v));color:#fff;
+  box-shadow:0 4px 24px rgba(245,158,11,.3);transition:all .2s;margin-top:4px}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,158,11,.4)}
+.l-err{background:rgba(255,51,85,.1);border:1px solid rgba(255,51,85,.3);border-radius:9px;
+  padding:11px 14px;font-size:.82rem;color:#ff8099;margin-bottom:14px;display:none;line-height:1.5}
+.l-suc{background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.25);border-radius:9px;
+  padding:11px 14px;font-size:.82rem;color:#6ee7b7;margin-bottom:14px;display:none}
+.setup-toggle{font-family:'Cinzel',serif;font-size:.7rem;color:var(--dim);text-align:center;
+  margin-top:18px;cursor:pointer;transition:color .2s;letter-spacing:.5px}
+.setup-toggle:hover{color:var(--c)}
+.setup-box{margin-top:16px;background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.15);
+  border-radius:14px;padding:20px;display:none}
+.setup-box p{font-size:.78rem;color:var(--mu);line-height:1.6;margin-bottom:16px}
+
+/* ── DASHBOARD ── */
+#dashboard{display:none;position:relative;z-index:10;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:var(--sb);background:rgba(2,2,10,.97);border-right:1px solid var(--gb);
+  position:fixed;top:0;left:0;height:100vh;z-index:100;display:flex;flex-direction:column;overflow-y:auto}
+.sb-head{padding:22px 20px 16px;border-bottom:1px solid var(--gb)}
+.sb-logo{font-family:'Cinzel',serif;font-weight:900;font-size:1.2rem;letter-spacing:4px;
+  background:linear-gradient(135deg,var(--gold),var(--v));-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text}
+.sb-role{font-family:'Cinzel',serif;font-size:.6rem;color:var(--dim);letter-spacing:2px;margin-top:4px}
+.sb-nav{flex:1;padding:14px 0}
+.nav-item{display:flex;align-items:center;gap:12px;padding:13px 20px;cursor:pointer;
+  transition:all .2s;border-left:3px solid transparent;font-family:'Cinzel',serif;
+  font-size:.75rem;letter-spacing:.5px;color:var(--mu)}
+.nav-item:hover{background:var(--glass);color:var(--ink)}
+.nav-item.active{background:rgba(255,215,0,.07);border-left-color:var(--gold);color:var(--gold)}
+.nav-icon{font-size:1.1rem;width:22px;text-align:center;flex-shrink:0}
+.sb-foot{padding:16px 20px;border-top:1px solid var(--gb)}
+.admin-info{font-size:.78rem;font-weight:600;font-family:'Cinzel',serif;margin-bottom:4px;
+  color:var(--gold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-email{font-size:.65rem;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.logout-btn{width:100%;margin-top:10px;padding:9px;border:1px solid rgba(255,51,85,.3);
+  background:rgba(255,51,85,.08);border-radius:8px;color:#ff8099;font-family:'Cinzel',serif;
+  font-size:.7rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s}
+.logout-btn:hover{background:rgba(255,51,85,.15);border-color:rgba(255,51,85,.5)}
+
+/* MAIN AREA */
+.main-area{margin-left:var(--sb);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:16px 32px;
+  border-bottom:1px solid var(--gb);background:rgba(2,2,10,.9);backdrop-filter:blur(12px);
+  position:sticky;top:0;z-index:50}
+.topbar-title{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;letter-spacing:1.5px;color:var(--gold)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.top-badge{font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:1.5px;
+  color:var(--gold);background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);
+  border-radius:20px;padding:5px 12px;text-transform:uppercase}
+.page-content{flex:1;padding:28px 32px;overflow-y:auto}
+.sec{display:none;animation:fadeUp .3s ease}
+.sec.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS & GRIDS */
+.card{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--gb);
+  border-radius:18px;padding:24px;margin-bottom:20px}
+.card.gold-card{border-color:rgba(255,215,0,.2)}
+.sec-eye{font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:3px;
+  color:var(--c);text-transform:uppercase;margin-bottom:8px}
+.sec-h{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;margin-bottom:6px}
+.sec-sub{font-size:.83rem;color:var(--mu);margin-bottom:28px;line-height:1.65}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:22px}
+.sbox{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:18px;text-align:center}
+.sn{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700}
+.sl{font-size:.65rem;color:var(--mu);margin-top:4px;font-family:'Cinzel',serif;letter-spacing:.5px}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}
+.chart-card{background:var(--glass);border:1px solid var(--gb);border-radius:16px;padding:20px}
+.chart-h{font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;letter-spacing:1.5px;
+  color:var(--mu);text-transform:uppercase;margin-bottom:14px}
+.ch-wrap{position:relative;height:200px}
+.ch-wrap-sm{position:relative;height:170px}
+
+/* FORM ELEMENTS */
+.fg{margin-bottom:16px}
+.fg label{display:block;font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;
+  letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;margin-bottom:7px}
+.fg input,.fg select,.fg textarea{width:100%;background:rgba(255,255,255,.05);
+  border:1px solid var(--gb);border-radius:10px;padding:12px 15px;color:var(--ink);
+  font-family:'Inter',sans-serif;font-size:.88rem;outline:none;transition:all .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--c);box-shadow:0 0 0 3px rgba(0,229,255,.08)}
+.fg select{background:#0a0a18;cursor:pointer}
+.fg select option{background:#0a0a18}
+.fg textarea{resize:vertical;min-height:65px}
+.btn{padding:11px 22px;border:none;border-radius:10px;cursor:pointer;
+  font-family:'Cinzel',serif;font-weight:700;font-size:.75rem;letter-spacing:1.5px;
+  transition:all .2s;display:inline-flex;align-items:center;gap:7px}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.btn-primary{background:linear-gradient(135deg,var(--v),var(--c));color:#fff}
+.btn-gold{background:linear-gradient(135deg,#f59e0b,var(--v));color:#fff}
+.btn-success{background:linear-gradient(135deg,#10b981,var(--c));color:#fff}
+.btn-ghost{background:var(--glass);border:1px solid var(--gb);color:var(--ink)}
+.btn-danger{background:rgba(255,51,85,.12);border:1px solid rgba(255,51,85,.3);color:#ff8099}
+.btn-full{width:100%}
+
+/* QUESTION BUILDER */
+.q-builder{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.12);
+  border-radius:14px;padding:22px;margin-bottom:16px}
+.q-builder-label{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;letter-spacing:1.5px;
+  color:var(--c);text-transform:uppercase;display:block;margin-bottom:10px}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.opt-row{display:flex;align-items:center;gap:8px}
+.opt-ltr{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--mu);width:18px;flex-shrink:0}
+.opt-in{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--gb);border-radius:8px;
+  padding:10px 12px;color:var(--ink);font-family:'Inter',sans-serif;font-size:.83rem;outline:none}
+.opt-in:focus{border-color:var(--c)}
+.ans-row{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
+.ans-row label{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--mu);cursor:pointer}
+.ans-row input[type=radio]{accent-color:var(--g)}
+.q-list-item{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+  background:rgba(255,255,255,.03);border:1px solid var(--gb);border-radius:10px;
+  padding:14px;margin-bottom:8px}
+.q-item-body .q-num{font-family:'Cinzel',serif;font-size:.6rem;color:var(--g);font-weight:700;letter-spacing:1px;margin-bottom:4px}
+.q-item-body .q-text{font-size:.84rem;margin-bottom:4px}
+.q-item-body .q-ans{font-size:.72rem;color:var(--g)}
+.q-count{font-family:'Cinzel',serif;font-size:.72rem;color:var(--mu);margin-bottom:14px}
+
+/* RESULTS */
+.week-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.wtab{font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;letter-spacing:.8px;
+  background:var(--glass);border:1px solid var(--gb);border-radius:8px;padding:8px 16px;
+  cursor:pointer;transition:all .2s}
+.wtab:hover{background:rgba(255,255,255,.08)}
+.wtab.active{background:rgba(0,229,255,.12);border-color:var(--c);color:var(--c)}
+.student-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px}
+.stu-card{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:18px;
+  text-align:center;cursor:pointer;transition:all .2s}
+.stu-card:hover{border-color:var(--c);transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,229,255,.1)}
+.stu-av{width:52px;height:52px;border-radius:50%;margin:0 auto 10px;
+  background:linear-gradient(135deg,var(--v),var(--c));display:flex;align-items:center;
+  justify-content:center;font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:#fff}
+.stu-name-sm{font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;margin-bottom:5px}
+.stu-score{font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--c);font-weight:700}
+.stu-dept-sm{font-size:.68rem;color:var(--mu);margin-top:3px}
+
+/* BADGES TABLE */
+.badge-table{width:100%;border-collapse:collapse}
+.badge-table th{padding:10px 14px;text-align:left;font-family:'Cinzel',serif;font-size:.62rem;
+  font-weight:700;letter-spacing:1.5px;color:var(--mu);border-bottom:1px solid var(--gb);text-transform:uppercase}
+.badge-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:.83rem}
+.badge-table tr:last-child td{border-bottom:none}
+.badge-table tr:hover td{background:rgba(255,255,255,.02)}
+.badge-pill{display:inline-block;padding:3px 10px;border-radius:20px;font-family:'Cinzel',serif;
+  font-size:.6rem;font-weight:700;letter-spacing:1px}
+.bp-gold{background:rgba(255,215,0,.15);color:var(--gold);border:1px solid rgba(255,215,0,.3)}
+.bp-silver{background:rgba(192,199,212,.12);color:#c0c7d4;border:1px solid rgba(192,199,212,.25)}
+.bp-bronze{background:rgba(180,83,9,.12);color:#cd7f32;border:1px solid rgba(180,83,9,.25)}
+.bp-none{background:rgba(255,255,255,.05);color:var(--dim);border:1px solid var(--gb)}
+.badge-sel{background:#0a0a18;border:1px solid var(--gb);border-radius:7px;padding:6px 10px;
+  color:var(--ink);font-family:'Cinzel',serif;font-size:.7rem;outline:none;cursor:pointer}
+
+/* STATUS PILL */
+.sp{display:inline-block;padding:3px 10px;border-radius:20px;font-family:'Cinzel',serif;font-size:.6rem;font-weight:700}
+.sp-active{background:rgba(0,255,136,.12);color:var(--g);border:1px solid rgba(0,255,136,.25)}
+.sp-waiting{background:rgba(255,215,0,.12);color:var(--gold);border:1px solid rgba(255,215,0,.25)}
+.sp-completed{background:rgba(100,116,139,.12);color:#94a3b8;border:1px solid rgba(100,116,139,.25)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);
+  z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-box{background:#08081a;border:1px solid var(--gb);border-radius:22px;
+  max-width:520px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-head{padding:22px 26px 16px;border-bottom:1px solid var(--gb);
+  display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;color:var(--c)}
+.modal-close{background:none;border:none;color:var(--mu);font-size:20px;cursor:pointer;transition:color .2s}
+.modal-close:hover{color:var(--ink)}
+.modal-body{padding:22px 26px}
+.detail-row{display:flex;justify-content:space-between;padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);font-size:.83rem}
+.detail-row:last-child{border-bottom:none}
+.dk{color:var(--mu);font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.5px}
+.dv{color:var(--ink);font-weight:600}
+.stu-detail-av{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;
+  background:linear-gradient(135deg,var(--v),var(--c));color:#fff;flex-shrink:0;object-fit:cover}
+
+/* ALERTS */
+.alert{padding:11px 15px;border-radius:10px;font-size:.82rem;margin-bottom:14px;line-height:1.55}
+.alert-info{background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.2);color:#67e8f9}
+.alert-warn{background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.2);color:#fcd34d}
+.alert-err{background:rgba(255,51,85,.08);border:1px solid rgba(255,51,85,.25);color:#ff8099}
+.alert-suc{background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.22);color:#6ee7b7}
+
+/* LOADING SPINNER */
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.1);
+  border-top-color:var(--c);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-row{display:flex;align-items:center;gap:10px;font-size:.83rem;color:var(--mu);padding:16px 0}
+
+/* TABLE */
+.nice-table{width:100%;border-collapse:collapse}
+.nice-table th{padding:10px 14px;text-align:left;font-family:'Cinzel',serif;font-size:.62rem;
+  font-weight:700;letter-spacing:1.5px;color:var(--mu);border-bottom:1px solid var(--gb);text-transform:uppercase}
+.nice-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:.82rem}
+.nice-table tr:last-child td{border-bottom:none}
+.nice-table tr:hover td{background:rgba(255,255,255,.02)}
+
+/* FACULTY */
+.approved-row{display:flex;align-items:center;justify-content:space-between;
+  padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.04);gap:10px}
+.approved-row:last-child{border-bottom:none}
+.ar-email{font-family:'Space Mono',monospace;font-size:.78rem;color:var(--c)}
+.ar-info{font-size:.72rem;color:var(--mu)}
+
+/* RESPONSE MSG */
+.res-msg{font-family:'Cinzel',serif;font-size:.75rem;padding:10px 14px;border-radius:8px;
+  margin-top:10px;display:none}
+
+@media(max-width:800px){
+  .sidebar{width:60px}.nav-item span:not(.nav-icon){display:none}
+  .main-area{margin-left:60px}.chart-row{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
-<canvas id="cv"></canvas>
-<a href="quizify-login.html" class="back z">← Change Role</a>
+<canvas id="aur"></canvas>
 
-<div class="wrap z">
-  <div class="role-badge">
-    <div class="role-icon-wrap">👑</div>
-    <div class="role-title">Admin Portal</div>
-    <div class="role-sub">PG & Research Department of Computer Science</div>
-  </div>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  LOGIN                                                  -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="loginWrap">
+  <div class="l-logo">QUIZIFY</div>
+  <div class="l-sub">PG &amp; Research Department of Computer Science &nbsp;·&nbsp; Nilgiri College</div>
 
-  <div class="card">
-    <div class="err" id="err"></div>
-    <div class="fg"><label>Email Address</label><input id="em" type="email" placeholder="admin@quizify.edu" autocomplete="email"/></div>
-    <div class="fg"><label>Password</label><input id="pw" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
-    <button class="btn" onclick="doLogin()">👑 &nbsp;Enter Admin Portal</button>
-    <div class="demo">
-      <div class="demo-title">⚡ Demo Credentials</div>
-      <div class="demo-row" onclick="fill('admin@quizify.edu','admin123')">
-        <span class="demo-lbl">Admin Account</span>
-        <span class="demo-cred">admin@quizify.edu / admin123</span>
-      </div>
+  <div class="l-card">
+    <div class="l-ico">👑</div>
+    <div class="l-title">Admin Portal</div>
+    <div class="l-role">Authorised personnel only</div>
+
+    <div class="l-err" id="lErr"></div>
+    <div class="l-suc" id="lSuc"></div>
+
+    <label class="fl">Admin Email</label>
+    <input class="fi" id="lEmail" type="email" placeholder="admin@institution.edu" autocomplete="email"/>
+    <label class="fl">Password</label>
+    <input class="fi" id="lPass" type="password" placeholder="••••••••" autocomplete="current-password"/>
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">👑 &nbsp;Sign In to Admin Portal</button>
+
+    <div class="setup-toggle" onclick="toggleSetup()">
+      ⚙️ &nbsp;First time? Set up your admin account
     </div>
-  </div>
-
-  <div class="ft">
-    <strong>Quizify Admin Panel</strong><br>
-    Organised by PG & Research Dept of CS &nbsp;·&nbsp; Nilgiri College &nbsp;·&nbsp; NAAC A++
+    <div class="setup-box" id="setupBox">
+      <p>If the Admins sheet is empty, you can create the first admin account here. This option locks permanently once any admin exists.</p>
+      <label class="fl">Your Full Name</label>
+      <input class="fi" id="sName" placeholder="Dr. / Admin Name"/>
+      <label class="fl">Admin Email</label>
+      <input class="fi" id="sEmail" type="email" placeholder="admin@institution.edu"/>
+      <label class="fl">Set Password</label>
+      <input class="fi" id="sPass" type="password" placeholder="Choose a strong password"/>
+      <button class="btn-login" style="background:linear-gradient(135deg,var(--c),var(--g))" onclick="doSetup()">
+        ✅ &nbsp;Create Admin Account
+      </button>
+    </div>
   </div>
 </div>
 
-<script>if (!em || !pw) {
-        showErr('Please enter your email and password.');
-        return;
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  DASHBOARD                                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="dashboard">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">QUIZIFY</div>
+      <div class="sb-role">Admin Panel</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="nav-item active" onclick="nav('overview',this)"><span class="nav-icon">📊</span><span>Overview</span></div>
+      <div class="nav-item" onclick="nav('weekly',this)"><span class="nav-icon">📤</span><span>Weekly Quiz</span></div>
+      <div class="nav-item" onclick="nav('results',this)"><span class="nav-icon">📋</span><span>Results</span></div>
+      <div class="nav-item" onclick="nav('badges',this)"><span class="nav-icon">🏅</span><span>Award Badges</span></div>
+      <div class="nav-item" onclick="nav('allquizzes',this)"><span class="nav-icon">🗂️</span><span>All Quizzes</span></div>
+      <div class="nav-item" onclick="nav('faculty',this)"><span class="nav-icon">👥</span><span>Faculty Access</span></div>
+    </nav>
+    <div class="sb-foot">
+      <div class="admin-info" id="sbName">Admin</div>
+      <div class="admin-email" id="sbEmail">—</div>
+      <button class="logout-btn" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-area">
+    <div class="topbar">
+      <span class="topbar-title" id="topTitle">📊 &nbsp;Overview</span>
+      <div class="topbar-right">
+        <span class="top-badge">👑 Admin</span>
+      </div>
+    </div>
+    <div class="page-content">
+
+      <!-- OVERVIEW -->
+      <div class="sec active" id="sec-overview">
+        <div class="sec-eye">📊 Dashboard</div>
+        <h2 class="sec-h">Overview</h2>
+        <p class="sec-sub">Live platform statistics pulled from your Google Sheet.</p>
+        <div id="statsArea"><div class="loading-row"><div class="spinner"></div> Loading data from Google Sheets…</div></div>
+        <div class="chart-row" id="chartRow" style="display:none">
+          <div class="chart-card"><div class="chart-h">🏛️ Department Activity</div><div class="ch-wrap"><canvas id="deptChart"></canvas></div></div>
+          <div class="chart-card"><div class="chart-h">📈 Weekly Participation</div><div class="ch-wrap"><canvas id="partChart"></canvas></div></div>
+        </div>
+        <div class="chart-row" id="chartRow2" style="display:none">
+          <div class="chart-card"><div class="chart-h">🏆 Top 5 Students</div><div id="topStudents"></div></div>
+          <div class="chart-card"><div class="chart-h">🔴 Active Quiz Status</div><div id="activeQuizStatus"></div></div>
+        </div>
+      </div>
+
+      <!-- WEEKLY QUIZ -->
+      <div class="sec" id="sec-weekly">
+        <div class="sec-eye">📤 Weekly Quiz</div>
+        <h2 class="sec-h">Upload Weekly Quiz</h2>
+        <p class="sec-sub">Create and publish this week's quiz. It goes live immediately and deactivates the previous one.</p>
+
+        <div id="activeQuizBanner"></div>
+
+        <div class="card gold-card">
+          <div class="fg"><label>Quiz Title</label><input id="wTitle" placeholder="e.g. Week 4 — Database Management Systems"/></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="fg"><label>Week Number</label><input id="wNum" type="number" min="1" placeholder="4"/></div>
+            <div class="fg"><label>Time Limit (minutes)</label><input id="wTimer" type="number" value="15" min="1" max="60"/></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sec-eye" style="margin-bottom:16px">➕ Add Questions</div>
+          <div class="q-builder">
+            <span class="q-builder-label">Question Text</span>
+            <div class="fg">
+    
+    <textarea
+        id="wQ"
+        placeholder="Type the question here..."
+        rows="4">
+    </textarea>
+</div>
+            <div class="opts-grid">
+              <div class="opt-row"><span class="opt-ltr">A</span><input class="opt-in" id="wO0" placeholder="Option A"/></div>
+              <div class="opt-row"><span class="opt-ltr">B</span><input class="opt-in" id="wO1" placeholder="Option B"/></div>
+              <div class="opt-row"><span class="opt-ltr">C</span><input class="opt-in" id="wO2" placeholder="Option C"/></div>
+              <div class="opt-row"><span class="opt-ltr">D</span><input class="opt-in" id="wO3" placeholder="Option D"/></div>
+            </div>
+            <div style="margin-top:14px"><span class="q-builder-label">Correct Answer</span>
+              <div class="ans-row">
+                <label><input type="radio" name="wAns" value="0" checked> A</label>
+                <label><input type="radio" name="wAns" value="1"> B</label>
+                <label><input type="radio" name="wAns" value="2"> C</label>
+                <label><input type="radio" name="wAns" value="3"> D</label>
+              </div>
+            </div>
+            <button class="btn btn-ghost" style="margin-top:14px" onclick="addWQ()">+ Add Question</button>
+          </div>
+          <div id="wQList"></div>
+          <div class="q-count" id="wQCount">0 questions added</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-gold" onclick="publishWeeklyQuiz()">🚀 Publish Weekly Quiz</button>
+            <button class="btn btn-ghost" onclick="clearWQ()">🗑 Clear All</button>
+          </div>
+          <div id="wMsg" class="res-msg"></div>
+        </div>
+
+        <div class="card" style="margin-top:8px">
+          <div class="sec-eye" style="margin-bottom:14px">📋 All Weekly Quizzes</div>
+          <div id="allWeeklyList"><div class="loading-row"><div class="spinner"></div> Loading…</div></div>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="sec" id="sec-results">
+        <div class="sec-eye">📋 Results</div>
+        <h2 class="sec-h">Weekly Quiz Results</h2>
+        <p class="sec-sub">Click a week tab to see student results. Click any student card for full details.</p>
+        <div class="week-tabs" id="weekTabs"></div>
+        <div id="resultCards"></div>
+      </div>
+
+      <!-- BADGES -->
+      <div class="sec" id="sec-badges">
+        <div class="sec-eye">🏅 Award Badges</div>
+        <h2 class="sec-h">Badge Management</h2>
+        <p class="sec-sub">Award Bronze, Silver, or Gold badges to students. They are notified immediately in the system.</p>
+        <div class="alert alert-info" style="margin-bottom:20px">
+          🏆 Gold badge holders are recognised at the semester ceremony with a cash prize. Award wisely!
+        </div>
+        <div class="card">
+          <div id="badgeList"><div class="loading-row"><div class="spinner"></div> Loading students from Google Sheets…</div></div>
+        </div>
+      </div>
+
+      <!-- ALL QUIZZES -->
+      <div class="sec" id="sec-allquizzes">
+        <div class="sec-eye">🗂️ All Quizzes</div>
+        <h2 class="sec-h">Classroom Quizzes</h2>
+        <p class="sec-sub">All quizzes created by teachers across all departments.</p>
+        <div class="card">
+          <div id="allQuizList"><div class="loading-row"><div class="spinner"></div> Loading…</div></div>
+        </div>
+      </div>
+
+      <!-- FACULTY -->
+      <div class="sec" id="sec-faculty">
+        <div class="sec-eye">👥 Faculty Access</div>
+        <h2 class="sec-h">Approved Teacher Emails</h2>
+        <p class="sec-sub">Only emails on this list can register as teachers. Add or remove faculty access from here.</p>
+        <div class="card gold-card" style="margin-bottom:20px">
+          <div style="display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:end">
+            <div class="fg" style="margin-bottom:0"><label>Teacher Email</label><input id="newTeacherEmail" type="email" placeholder="faculty@institution.edu"/></div>
+            <div class="fg" style="margin-bottom:0"><label>Name (optional)</label><input id="newTeacherName" placeholder="Prof. Name"/></div>
+            <button class="btn btn-success" onclick="addTeacher()">+ Add</button>
+          </div>
+          <div id="addTeacherMsg" class="res-msg"></div>
+        </div>
+        <div class="card">
+          <div id="teacherList"><div class="loading-row"><div class="spinner"></div> Loading approved teachers…</div></div>
+        </div>
+      </div>
+
+    </div><!-- page-content -->
+  </div><!-- main-area -->
+</div><!-- dashboard -->
+
+<!-- STUDENT DETAIL MODAL -->
+<div class="modal-overlay" id="stuModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Student Result</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="stuModalBody"></div>
+  </div>
+</div>
+
+<script>
+// ================================================================
+//  ⚙️  CONFIG — paste your values here after deploying Code.gs
+// ================================================================
+const API_URL   = 'https://script.google.com/macros/s/AKfycbw0yYvF_vXTWl5ukxtRqcnhCeFCAvrTSM8LFEAvAzj9OtvwevZ8M2gZb-mhd6BnEPnc4A/exec';   // ← paste here
+const API_TOKEN = 'quizify-pgcs';           // ← must match Code.gs
+
+// ================================================================
+//  AURORA
+// ================================================================
+const cv=document.getElementById('aur'),cx=cv.getContext('2d');
+const rsz=()=>{cv.width=innerWidth;cv.height=innerHeight};rsz();window.addEventListener('resize',rsz);
+const B=[{x:.1,y:.2,r:.5,c:'#f59e0b',vx:.00016,vy:.00013},{x:.9,y:.7,r:.52,c:'#8b5cf6',vx:-.00013,vy:.00018},
+  {x:.5,y:.88,r:.4,c:'#00e5ff',vx:.0002,vy:-.00016},{x:.7,y:.1,r:.3,c:'#f59e0b',vx:-.00018,vy:.00022}];
+(function a(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#02020a';cx.fillRect(0,0,cv.width,cv.height);
+B.forEach(b=>{b.x+=b.vx;b.y+=b.vy;if(b.x<0||b.x>1)b.vx*=-1;if(b.y<0||b.y>1)b.vy*=-1;
+const g=cx.createRadialGradient(b.x*cv.width,b.y*cv.height,0,b.x*cv.width,b.y*cv.height,b.r*Math.max(cv.width,cv.height));
+g.addColorStop(0,b.c+'28');g.addColorStop(1,'transparent');cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});
+requestAnimationFrame(a);})();
+
+// ================================================================
+//  API HELPERS
+// ================================================================
+async function GET(action, params={}) {
+  const url=new URL(API_URL);
+  url.searchParams.set('action',action);url.searchParams.set('token',API_TOKEN);
+  Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
+  const r=await fetch(url.toString());
+  const j=await r.json();
+  if(j.status==='error')throw new Error(j.message);
+  return j.data;
+}
+async function POST(action,data={}) {
+  const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({action,token:API_TOKEN,data})});
+  const j=await r.json();
+  if(j.status==='error')throw new Error(j.message);
+  return j.data;
+}
+
+// ================================================================
+//  SESSION
+// ================================================================
+let admin=null;
+function saveSession(u){sessionStorage.setItem('qf_admin',JSON.stringify(u));admin=u;}
+function loadSession(){const r=sessionStorage.getItem('qf_admin');if(r){admin=JSON.parse(r);return true;}return false;}
+function clearSession(){sessionStorage.removeItem('qf_admin');admin=null;}
+
+// ================================================================
+//  AUTH
+// ================================================================
+async function doLogin(){
+  const email=document.getElementById('lEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('lPass').value;
+  const errEl=document.getElementById('lErr');
+  const btn=document.getElementById('loginBtn');
+  if(!email||!pass){showLErr('Please enter your email and password.');return}
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> &nbsp;Signing in…';
+  try {
+    const result=await GET('loginCheck',{email,password:pass,role:'admin'});
+    if(result.success){
+      saveSession(result.user);
+      initDashboard();
+    } else {
+      showLErr(result.message||'Login failed. Please check your credentials.');
     }
+  } catch(e){
+    showLErr('Connection error: '+e.message+'. Check your API_URL in the config.');
+  } finally {
+    btn.disabled=false;btn.innerHTML='👑 &nbsp;Sign In to Admin Portal';
+  }
+}
 
-    try {
-
-        const res = await API.login(em, pw, 'admin');
-
-        if (!res.success) {
-            showErr(res.message || 'Incorrect email or password.');
-            return;
-        }
-
-        Session.set(res.user, 'admin');
-
-        location.href = 'quizify.html#/admin';
-
-    } catch (e) {
-        showErr(e.message || 'Login failed.');
+async function doSetup(){
+  const name=document.getElementById('sName').value.trim();
+  const email=document.getElementById('sEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('sPass').value;
+  if(!name||!email||!pass){showLErr('Please fill in all setup fields.');return}
+  if(pass.length<6){showLErr('Password must be at least 6 characters.');return}
+  try {
+    const r=await POST('setupFirstAdmin',{name,email,password:pass});
+    if(r.success){
+      const s=document.getElementById('lSuc');s.textContent='✅ Admin account created! You can now sign in.';s.style.display='block';
+      document.getElementById('setupBox').style.display='none';
+      document.getElementById('lEmail').value=email;
+    } else {
+      showLErr(r.message||'Setup failed.');
     }
+  } catch(e){showLErr('Error: '+e.message);}
+}
 
-function showErr(m){const e=document.getElementById('err');e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',4000)}
-function fill(e,p){document.getElementById('em').value=e;document.getElementById('pw').value=p}
-document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
-const ses=JSON.parse(sessionStorage.getItem('quizify_session')||'null');
-if(ses&&ses.role==='admin')location.href='quizify.html#/admin';
+function showLErr(msg){const e=document.getElementById('lErr');e.innerHTML=msg;e.style.display='block';setTimeout(()=>e.style.display='none',5000);}
+function toggleSetup(){const b=document.getElementById('setupBox');b.style.display=b.style.display==='none'?'block':'none';}
+
+function logout(){clearSession();document.getElementById('dashboard').style.display='none';
+  document.getElementById('loginWrap').style.display='flex';destroyCharts();}
+
+// ================================================================
+//  DASHBOARD INIT
+// ================================================================
+function initDashboard(){
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+  document.getElementById('sbName').textContent=admin.name||'Admin';
+  document.getElementById('sbEmail').textContent=admin.email||'';
+  loadOverview();
+  loadWeeklySection();
+  loadBadges();
+  loadAllQuizzes();
+  loadFaculty();
+}
+
+function nav(section, el){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+section).classList.add('active');
+  const titles={overview:'📊 Overview',weekly:'📤 Weekly Quiz',results:'📋 Results',
+    badges:'🏅 Award Badges',allquizzes:'🗂️ All Quizzes',faculty:'👥 Faculty Access'};
+  document.getElementById('topTitle').textContent=titles[section]||section;
+  if(section==='results')loadResults();
+}
+
+// ================================================================
+//  OVERVIEW — loads from getDashboardData (single API call)
+// ================================================================
+let deptChartInst=null,partChartInst=null;
+function destroyCharts(){[deptChartInst,partChartInst].forEach(c=>{if(c)c.destroy();});deptChartInst=partChartInst=null;}
+
+async function loadOverview(){
+  try {
+    const d=await GET('getDashboardData');
+    const c=d.counts;
+    document.getElementById('statsArea').innerHTML=`<div class="stat-grid">
+      ${[['👥',c.students,'Students','var(--c)'],['🖥️',c.teachers,'Teachers','var(--g)'],
+        ['📅',c.wQuizzes,'Weekly Quizzes','var(--gold)'],['🔑',c.cQuizzes,'Class Quizzes','var(--v)'],
+        ['✍️',c.responses,'Total Responses','var(--c)'],['🏛️',c.departments,'Departments','var(--gold)']
+      ].map(([ico,n,l,col])=>`<div class="sbox"><div style="font-size:1.4rem;margin-bottom:6px">${ico}</div>
+        <div class="sn" style="color:${col}">${n}</div><div class="sl">${l}</div></div>`).join('')}
+    </div>`;
+
+    document.getElementById('chartRow').style.display='grid';
+    document.getElementById('chartRow2').style.display='grid';
+    destroyCharts();
+
+    // Dept chart
+    const deptKeys=Object.keys(d.deptUsage);const deptVals=Object.values(d.deptUsage);
+    const palDept=['rgba(0,229,255,.7)','rgba(139,92,246,.7)','rgba(0,255,136,.7)','rgba(255,215,0,.7)','rgba(255,51,85,.7)','rgba(240,171,252,.7)','rgba(251,146,60,.7)','rgba(34,211,238,.7)'];
+    setTimeout(()=>{
+      const tickCfg={color:'rgba(237,242,255,.4)',font:{family:'Cinzel, serif',size:10}};
+      const gridCfg={color:'rgba(255,255,255,.05)'};
+      const tip={backgroundColor:'rgba(8,8,26,.95)',titleFont:{family:'Cinzel,serif'},bodyFont:{family:'Cinzel,serif'},padding:12};
+      deptChartInst=new Chart(document.getElementById('deptChart'),{type:'bar',
+        data:{labels:deptKeys,datasets:[{label:'Quizzes',data:deptVals,backgroundColor:palDept,borderRadius:8,borderSkipped:false}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:tip},
+          scales:{x:{grid:{color:gridCfg.color},ticks:tickCfg},y:{grid:{color:gridCfg.color},ticks:tickCfg,beginAtZero:true}}}});
+      // Part chart
+      const wKeys=Object.keys(d.weekPart);const wVals=Object.values(d.weekPart);
+      partChartInst=new Chart(document.getElementById('partChart'),{type:'line',
+        data:{labels:wKeys,datasets:[{label:'Students',data:wVals,borderColor:'#00e5ff',
+          backgroundColor:'rgba(0,229,255,.1)',tension:.4,fill:true,pointBackgroundColor:'#00e5ff',pointRadius:4,borderWidth:2}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:tip},
+          scales:{x:{grid:{color:gridCfg.color},ticks:tickCfg},y:{grid:{color:gridCfg.color},ticks:tickCfg,beginAtZero:true}}}});
+    },100);
+
+    // Top students
+    document.getElementById('topStudents').innerHTML=d.topStudents.length
+      ?`<table class="nice-table"><tr><th>Name</th><th>Dept</th><th>Score</th></tr>
+        ${d.topStudents.map((s,i)=>`<tr><td>${['🥇','🥈','🥉','4.','5.'][i]} ${esc(s.name)}</td>
+        <td style="color:var(--mu)">${esc(s.dept)}</td>
+        <td style="font-family:'Space Mono',monospace;color:var(--c)">${s.score}</td></tr>`).join('')}
+        </table>`:'<p style="color:var(--dim);font-size:.83rem;padding:12px 0">No data yet.</p>';
+
+    // Active quiz banner in overview
+    document.getElementById('activeQuizStatus').innerHTML=d.activeQuiz
+      ?`<div class="alert alert-suc">🔴 Active: <strong>${esc(d.activeQuiz.title)}</strong><br><small>Week ${d.activeQuiz.weekNumber} · ${d.activeQuiz.timer} min timer</small></div>
+        <button class="btn btn-danger" style="margin-top:8px" onclick="endActiveQuiz('${d.activeQuiz.id}')">■ End This Quiz</button>`
+      :`<div class="alert alert-warn">No weekly quiz is currently active.<br><small>Go to Weekly Quiz to publish one.</small></div>`;
+
+  } catch(e){document.getElementById('statsArea').innerHTML=`<div class="alert alert-err">❌ Failed to load data: ${esc(e.message)}<br><small>Check your API_URL and API_TOKEN in the config.</small></div>`;}
+}
+
+// ================================================================
+//  WEEKLY QUIZ SECTION
+// ================================================================
+let wDraftQs=[];
+
+async function loadWeeklySection(){
+  try {
+    const quizzes=await GET('getAllWeeklyQuizzes');
+    const active=quizzes.find(q=>q.status==='active');
+    document.getElementById('activeQuizBanner').innerHTML=active
+      ?`<div class="alert alert-warn" style="margin-bottom:18px">⚠️ A quiz is currently LIVE: <strong>${esc(active.title)}</strong> (Week ${active.weekNumber}).
+         Publishing a new quiz will auto-close this one.
+         <button class="btn btn-danger" style="margin-left:12px;padding:6px 14px;font-size:.68rem" onclick="endActiveQuiz('${active.id}')">End Now</button></div>`:
+      `<div class="alert alert-info" style="margin-bottom:18px">✅ No quiz is currently active. You can publish a new one.</div>`;
+
+    document.getElementById('allWeeklyList').innerHTML=quizzes.length
+      ?`<table class="nice-table">
+          <tr><th>Week</th><th>Title</th><th>Timer</th><th>Status</th><th>Action</th></tr>
+          ${quizzes.slice().reverse().map(q=>`<tr>
+            <td style="font-family:'Space Mono',monospace;color:var(--c)">Wk ${q.weekNumber}</td>
+            <td>${esc(q.title)}</td>
+            <td>${q.timer} min</td>
+            <td><span class="sp sp-${q.status}">${q.status}</span></td>
+            <td>${q.status==='active'?`<button class="btn btn-danger" style="padding:5px 12px;font-size:.65rem" onclick="endActiveQuiz('${q.id}')">■ End</button>`:
+              q.status==='completed'?`<button class="btn btn-ghost" style="padding:5px 12px;font-size:.65rem" onclick="reactivateQuiz('${q.id}')">▶ Reopen</button>`:'—'}
+            </td></tr>`).join('')}
+        </table>`:'<p style="color:var(--dim);font-size:.83rem">No weekly quizzes yet. Create your first one above.</p>';
+  } catch(e){document.getElementById('allWeeklyList').innerHTML=`<div class="alert alert-err">Failed: ${esc(e.message)}</div>`;}
+}
+
+function addWQ(){
+  const q=document.getElementById('wQ').value.trim();
+  const opts=['wO0','wO1','wO2','wO3'].map(id=>document.getElementById(id).value.trim());
+  const ans=+document.querySelector('input[name="wAns"]:checked').value;
+  if(!q){alert('Please enter a question.');return}
+  if(opts.some(o=>!o)){alert('Please fill all 4 options.');return}
+  wDraftQs.push({question:q,options:opts,answer:ans});
+  renderWQList();
+  document.getElementById('wQ').value='';
+  ['wO0','wO1','wO2','wO3'].forEach(id=>document.getElementById(id).value='');
+  document.querySelector('input[name="wAns"][value="0"]').checked=true;
+}
+
+function renderWQList(){
+  document.getElementById('wQCount').textContent=wDraftQs.length+' question'+(wDraftQs.length!==1?'s':'')+' added';
+  document.getElementById('wQList').innerHTML=wDraftQs.map((q,i)=>`
+    <div class="q-list-item"><div class="q-item-body">
+      <div class="q-num">Q${i+1}</div>
+      <div class="q-text">${esc(q.question)}</div>
+      <div class="q-ans">✓ ${['A','B','C','D'][q.answer]}) ${esc(q.options[q.answer])}</div>
+    </div>
+    <button onclick="removeWQ(${i})" style="background:rgba(255,51,85,.1);border:1px solid rgba(255,51,85,.2);border-radius:7px;padding:5px 11px;color:#ff8099;font-size:.7rem;cursor:pointer;font-family:'Cinzel',serif;flex-shrink:0">Delete</button>
+    </div>`).join('');
+}
+function removeWQ(i){wDraftQs.splice(i,1);renderWQList();}
+function clearWQ(){wDraftQs=[];renderWQList();['wTitle','wQ','wO0','wO1','wO2','wO3'].forEach(id=>document.getElementById(id).value='');}
+
+async function publishWeeklyQuiz(){
+  const title=document.getElementById('wTitle').value.trim();
+  const weekNum=document.getElementById('wNum').value;
+  const timer=document.getElementById('wTimer').value;
+  const msg=document.getElementById('wMsg');
+  if(!title){alert('Please enter a quiz title.');return}
+  if(!weekNum){alert('Please enter a week number.');return}
+  if(wDraftQs.length<1){alert('Please add at least 1 question.');return}
+  showMsg(msg,'Publishing…','info');
+  try {
+    const r=await POST('createWeeklyQuiz',{title,weekNumber:+weekNum,timer:+timer,questions:wDraftQs,createdBy:admin.email});
+    showMsg(msg,'✅ Weekly quiz published and set LIVE!','suc');
+    clearWQ();loadWeeklySection();loadOverview();
+    // Auto-record winners placeholder
+  } catch(e){showMsg(msg,'❌ Error: '+e.message,'err');}
+}
+
+async function endActiveQuiz(id){
+  if(!confirm('End this quiz? Students can no longer attempt it.'))return;
+  try{await POST('updateWeeklyQuizStatus',{id,status:'completed'});loadWeeklySection();loadOverview();alert('Quiz ended.');}
+  catch(e){alert('Error: '+e.message);}
+}
+async function reactivateQuiz(id){
+  if(!confirm('Reopen this quiz? It will go LIVE again.'))return;
+  try{await POST('updateWeeklyQuizStatus',{id,status:'active'});loadWeeklySection();loadOverview();}
+  catch(e){alert('Error: '+e.message);}
+}
+
+// ================================================================
+//  RESULTS
+// ================================================================
+async function loadResults(){
+  const tabs=document.getElementById('weekTabs');
+  const cards=document.getElementById('resultCards');
+  tabs.innerHTML='<div class="loading-row"><div class="spinner"></div> Loading weeks…</div>';
+  cards.innerHTML='';
+  try {
+    const quizzes=await GET('getAllWeeklyQuizzes');
+    if(!quizzes.length){tabs.innerHTML='<p style="color:var(--dim);font-size:.83rem">No weekly quizzes yet.</p>';return;}
+    tabs.innerHTML=quizzes.slice().reverse().map((q,i)=>
+      `<div class="wtab${i===0?' active':''}" onclick="selectWeek('${q.id}','${q.weekNumber}',this)">${esc(q.title.split('–')[0].trim())||'Week '+q.weekNumber}</div>`).join('');
+    const first=quizzes[quizzes.length-1];
+    selectWeek(first.id,first.weekNumber,tabs.querySelector('.wtab.active'));
+  } catch(e){tabs.innerHTML=`<div class="alert alert-err">Failed: ${esc(e.message)}</div>`;}
+}
+
+async function selectWeek(quizId,weekNumber,el){
+  document.querySelectorAll('.wtab').forEach(t=>t.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const cards=document.getElementById('resultCards');
+  cards.innerHTML='<div class="loading-row"><div class="spinner"></div> Loading responses…</div>';
+  try {
+    const responses=await GET('getResponsesByQuiz',{quizId});
+    if(!responses.length){cards.innerHTML='<div class="alert alert-info">No responses recorded for this week yet.</div>';return;}
+    const sorted=responses.sort((a,b)=>Number(b.score)-Number(a.score));
+    cards.innerHTML=`<div style="margin-bottom:14px;font-size:.78rem;color:var(--mu);font-family:'Cinzel',serif;letter-spacing:.5px">
+      ${responses.length} student${responses.length!==1?'s':''} responded · Click any card to view details</div>
+      <div class="student-cards">${sorted.map((r,i)=>`
+        <div class="stu-card" onclick="openStudentModal(${JSON.stringify(JSON.stringify(r))})">
+          <div class="stu-av" style="${r.photo?'background:none':''}">
+            ${r.photo?`<img src="${esc(r.photo)}" style="width:52px;height:52px;border-radius:50%;object-fit:cover" onerror="this.style.display='none'"/>`:''}
+            ${!r.photo?(r.studentName||'?')[0].toUpperCase():''}
+          </div>
+          <div class="stu-name-sm">${esc(r.studentName)}</div>
+          <div class="stu-dept-sm">${esc(r.department)}</div>
+          <div class="stu-score">${r.score}/${r.total}</div>
+          ${+r.score===+r.total?'<div style="font-size:.65rem;color:var(--g);font-family:Cinzel,serif;margin-top:3px">✨ Perfect</div>':''}
+          ${r.leftEarly==='true'?'<div style="font-size:.65rem;color:#ff8099;font-family:Cinzel,serif;margin-top:3px">⚠ Left early</div>':''}
+        </div>`).join('')}
+      </div>
+      <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-success" onclick="autoRecordWinners('${quizId}','${weekNumber}')">🏆 Record Week ${weekNumber} Winners</button>
+      </div>`;
+  } catch(e){cards.innerHTML=`<div class="alert alert-err">Failed: ${esc(e.message)}</div>`;}
+}
+
+function openStudentModal(rStr){
+  const r=JSON.parse(rStr);
+  const pct=r.total>0?Math.round(+r.score/+r.total*100):0;
+  document.getElementById('stuModalBody').innerHTML=`
+    <div style="display:flex;gap:16px;align-items:center;margin-bottom:20px">
+      <div class="stu-detail-av">${r.photo?`<img src="${esc(r.photo)}" style="width:64px;height:64px;border-radius:50%;object-fit:cover"/>`:esc((r.studentName||'?')[0].toUpperCase())}</div>
+      <div><div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;margin-bottom:5px">${esc(r.studentName)}</div>
+      <div style="color:var(--c);font-size:.82rem">${esc(r.department)}</div>
+      <div style="color:var(--mu);font-size:.75rem">${esc(r.studentEmail)}</div></div>
+    </div>
+    <div class="detail-row"><span class="dk">Roll Number</span><span class="dv">${esc(r.rollNumber)||'—'}</span></div>
+    <div class="detail-row"><span class="dk">Score</span><span class="dv" style="font-family:'Space Mono',monospace;color:var(--c);font-size:1rem">${r.score} / ${r.total}</span></div>
+    <div class="detail-row"><span class="dk">Percentage</span><span class="dv" style="color:${pct>=60?'var(--g)':'#ff8099'}">${pct}%</span></div>
+    <div class="detail-row"><span class="dk">Left Early</span><span class="dv" style="color:${r.leftEarly==='true'?'#ff8099':'var(--g)'}">${r.leftEarly==='true'?'⚠ Yes':'No'}</span></div>
+    <div class="detail-row"><span class="dk">Submitted</span><span class="dv">${esc(r.submittedAt)}</span></div>`;
+  document.getElementById('stuModal').classList.add('open');
+}
+function closeModal(){document.getElementById('stuModal').classList.remove('open');}
+document.getElementById('stuModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+async function autoRecordWinners(quizId,weekNumber){
+  try{const r=await POST('recordWeekWinners',{quizId,weekNumber});alert(`✅ ${r.message}`);}
+  catch(e){alert('Error: '+e.message);}
+}
+
+// ================================================================
+//  BADGES
+// ================================================================
+async function loadBadges(){
+  try {
+    const students=await GET('getAllStudents');
+    if(!students.length){document.getElementById('badgeList').innerHTML='<p style="color:var(--dim);font-size:.83rem">No students registered yet.</p>';return;}
+    document.getElementById('badgeList').innerHTML=`
+      <table class="badge-table">
+        <tr><th>Name</th><th>Department</th><th>Roll</th><th>Current Badge</th><th>Award</th><th></th></tr>
+        ${students.map(s=>`<tr>
+          <td style="font-weight:600;font-family:'Cinzel',serif;font-size:.8rem">${esc(s.name)}</td>
+          <td style="color:var(--mu)">${esc(s.department)}</td>
+          <td style="font-family:'Space Mono',monospace;font-size:.72rem;color:var(--mu)">${esc(s.rollNumber)||'—'}</td>
+          <td>${s.badge?badgePill(s.badge):'<span class="badge-pill bp-none">None</span>'}</td>
+          <td><select class="badge-sel" id="bsel_${esc(s.id)}">
+            <option value="">Select…</option>
+            <option value="bronze">🥉 Bronze</option>
+            <option value="silver">🥈 Silver</option>
+            <option value="gold">🥇 Gold</option>
+          </select></td>
+          <td><button class="btn btn-gold" style="padding:6px 14px;font-size:.68rem" onclick="awardBadge('${esc(s.email)}','${esc(s.id)}','${esc(s.name)}')">Award</button></td>
+        </tr>`).join('')}
+      </table>`;
+  } catch(e){document.getElementById('badgeList').innerHTML=`<div class="alert alert-err">Failed: ${esc(e.message)}</div>`;}
+}
+
+function badgePill(badge){
+  const map={gold:'🥇 Gold',silver:'🥈 Silver',bronze:'🥉 Bronze'};
+  return`<span class="badge-pill bp-${badge}">${map[badge]||badge}</span>`;
+}
+
+async function awardBadge(email,id,name){
+  const sel=document.getElementById('bsel_'+id);
+  const badge=sel.value;
+  if(!badge){alert('Please select a badge type.');return}
+  if(!confirm(`Award a ${badge.toUpperCase()} badge to ${name}?`))return;
+  try{
+    await POST('awardBadge',{studentEmail:email,badge});
+    alert(`✅ ${badge.charAt(0).toUpperCase()+badge.slice(1)} badge awarded to ${name}!`);
+    loadBadges();
+  } catch(e){alert('Error: '+e.message);}
+}
+
+// ================================================================
+//  ALL QUIZZES
+// ================================================================
+async function loadAllQuizzes(){
+  try {
+    const quizzes=await GET('getAllClassroomQuizzes');
+    document.getElementById('allQuizList').innerHTML=quizzes.length
+      ?`<table class="nice-table">
+          <tr><th>Title</th><th>Department</th><th>Code</th><th>Timer</th><th>Status</th><th>Created By</th></tr>
+          ${quizzes.map(q=>`<tr>
+            <td style="font-weight:600">${esc(q.title)}</td>
+            <td style="color:var(--mu)">${esc(q.department)}</td>
+            <td style="font-family:'Space Mono',monospace;color:var(--c)">${esc(q.code)}</td>
+            <td>${q.timer} min</td>
+            <td><span class="sp sp-${q.status}">${q.status}</span></td>
+            <td style="color:var(--mu);font-size:.72rem">${esc(q.createdBy)}</td>
+          </tr>`).join('')}
+        </table>`
+      :'<p style="color:var(--dim);font-size:.83rem">No classroom quizzes created yet.</p>';
+  } catch(e){document.getElementById('allQuizList').innerHTML=`<div class="alert alert-err">Failed: ${esc(e.message)}</div>`;}
+}
+
+// ================================================================
+//  FACULTY MANAGEMENT
+// ================================================================
+async function loadFaculty(){
+  try {
+    const teachers=await GET('getApprovedTeachers');
+    document.getElementById('teacherList').innerHTML=teachers.length
+      ?`<div>${teachers.map(t=>`<div class="approved-row">
+          <div><div class="ar-email">📧 ${esc(t.email)}</div>
+          <div class="ar-info">${t.name?esc(t.name)+'  ·  ':''} ${t.department?esc(t.department)+'  ·  ':''} Added: ${esc(t.addedAt)}</div></div>
+          <button class="btn btn-danger" style="padding:6px 12px;font-size:.68rem;flex-shrink:0" onclick="removeTeacher('${esc(t.email)}')">Remove</button>
+        </div>`).join('')}</div>`
+      :'<p style="color:var(--dim);font-size:.83rem;padding:12px 0">No teachers approved yet. Add faculty emails above.</p>';
+  } catch(e){document.getElementById('teacherList').innerHTML=`<div class="alert alert-err">Failed: ${esc(e.message)}</div>`;}
+}
+
+async function addTeacher(){
+  const email=document.getElementById('newTeacherEmail').value.trim().toLowerCase();
+  const name=document.getElementById('newTeacherName').value.trim();
+  const msg=document.getElementById('addTeacherMsg');
+  if(!email){showMsg(msg,'Please enter an email address.','err');return}
+  showMsg(msg,'Adding…','info');
+  try{
+    const r=await POST('addApprovedTeacher',{email,name,addedBy:admin.email});
+    if(r.success){showMsg(msg,'✅ '+r.message,'suc');document.getElementById('newTeacherEmail').value='';document.getElementById('newTeacherName').value='';loadFaculty();}
+    else showMsg(msg,'⚠ '+r.message,'warn');
+  } catch(e){showMsg(msg,'❌ Error: '+e.message,'err');}
+}
+
+async function removeTeacher(email){
+  if(!confirm('Remove '+email+' from approved teachers?'))return;
+  try{
+    const r=await POST('removeApprovedTeacher',{email});
+    alert(r.message);loadFaculty();
+  } catch(e){alert('Error: '+e.message);}
+}
+
+// ================================================================
+//  UTILITIES
+// ================================================================
+function showMsg(el,msg,type){
+  const cols={info:'rgba(0,229,255,.07)|rgba(0,229,255,.2)|#67e8f9',
+    warn:'rgba(255,215,0,.07)|rgba(255,215,0,.2)|#fcd34d',
+    err:'rgba(255,51,85,.08)|rgba(255,51,85,.25)|#ff8099',
+    suc:'rgba(0,255,136,.07)|rgba(0,255,136,.22)|#6ee7b7'};
+  const [bg,bd,c]=(cols[type]||cols.info).split('|');
+  el.style.cssText=`display:block;background:${bg};border:1px solid ${bd};color:${c};border-radius:8px;padding:10px 14px;font-size:.78rem;margin-top:10px;font-family:'Cinzel',serif;letter-spacing:.3px`;
+  el.textContent=msg;
+  setTimeout(()=>el.style.display='none',5000);
+}
+function esc(s){return(s==null?'':String(s)).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginWrap').style.display!=='none')doLogin();});
+
+// ================================================================
+//  AUTO LOGIN check
+// ================================================================
+if(loadSession())initDashboard();
 </script>
-<script src="api.js"></script>
 </body>
-
 </html>
