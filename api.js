@@ -4,8 +4,8 @@
 // ================================================================
 
 // ── CONFIGURATION — paste your values after deploying Code.gs ──
-const API_URL   = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
-const API_TOKEN = 'QUIZIFY_SECRET_CHANGE_ME';   // must match Code.gs SECRET_TOKEN
+const API_URL   = 'https://script.google.com/macros/s/AKfycbw0yYvF_vXTWl5ukxtRqcnhCeFCAvrTSM8LFEAvAzj9OtvwevZ8M2gZb-mhd6BnEPnc4A/exec';
+const API_TOKEN = 'Quizify2026@PGCS#Secure';   // must match Code.gs SECRET_TOKEN
 
 // ================================================================
 //  CORE FETCH HELPERS
