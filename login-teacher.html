@@ -2,126 +2,1064 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Quizify — Teacher Login</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<title>Quizify — Teacher Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
+:root{
+--bg:#0c0716;--lav:#c084fc;--lav2:#a855f7;--lavl:#f3e8ff;
+--pink:#f472b6;--pink2:#ec4899;--pinkl:#fce7f3;
+--peach:#fb923c;--peachl:#fff7ed;
+--mint:#34d399;--rose:#f43f5e;--sky:#38bdf8;
+--mist:#f8f4ff;--fog:rgba(248,244,255,.62);--dim:rgba(248,244,255,.32);
+--glass:rgba(255,255,255,.07);--gb:rgba(255,255,255,.13);--nav-h:64px;
+}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#04040d;font-family:'Inter',sans-serif;color:#edf2ff;
-  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:hidden}
-#cv{position:fixed;inset:0;z-index:0;pointer-events:none}
-.z{position:relative;z-index:10}
-.back{position:fixed;top:20px;left:24px;z-index:100;font-family:'Cinzel',serif;font-size:.72rem;
-  font-weight:600;letter-spacing:1px;color:rgba(237,242,255,.5);border:1px solid rgba(255,255,255,.08);
-  border-radius:8px;padding:8px 14px;cursor:pointer;transition:all .2s;text-decoration:none;
-  background:rgba(4,4,13,.7);backdrop-filter:blur(10px)}
-.back:hover{color:#10b981;border-color:rgba(16,185,129,.4)}
-.wrap{width:100%;max-width:420px}
-.role-badge{display:flex;flex-direction:column;align-items:center;margin-bottom:32px;text-align:center}
-.role-icon-wrap{width:80px;height:80px;border-radius:24px;
-  background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(6,182,212,.15));
-  border:2px solid rgba(16,185,129,.4);box-shadow:0 0 40px rgba(16,185,129,.2);
-  display:flex;align-items:center;justify-content:center;font-size:2.6rem;margin-bottom:16px}
-.role-title{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;letter-spacing:3px;
-  background:linear-gradient(135deg,#10b981,#06b6d4);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.role-sub{font-size:.8rem;color:rgba(237,242,255,.45);margin-top:6px;letter-spacing:.5px}
-.card{background:rgba(255,255,255,.05);backdrop-filter:blur(24px);
-  border:1px solid rgba(16,185,129,.2);border-radius:24px;padding:36px}
-.fg{margin-bottom:18px}
-.fg label{display:block;font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;
-  letter-spacing:1.5px;color:rgba(237,242,255,.45);text-transform:uppercase;margin-bottom:8px}
-.fg input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
-  border-radius:11px;padding:13px 16px;color:#edf2ff;font-family:'Inter',sans-serif;
-  font-size:.9rem;outline:none;transition:all .2s}
-.fg input:focus{border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.12)}
-.btn{width:100%;padding:14px;border:none;border-radius:12px;cursor:pointer;
-  font-family:'Cinzel',serif;font-weight:700;font-size:.88rem;letter-spacing:2px;
-  background:linear-gradient(135deg,#10b981,#059669);color:#fff;
-  box-shadow:0 4px 24px rgba(16,185,129,.3);transition:all .2s;margin-top:6px}
-.btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(16,185,129,.4);filter:brightness(1.08)}
-.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:9px;
-  padding:10px 14px;font-size:.82rem;color:#fca5a5;margin-bottom:14px;display:none}
-.demo{margin-top:20px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.18);
-  border-radius:14px;padding:16px}
-.demo-title{font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:2px;
-  color:#10b981;text-transform:uppercase;margin-bottom:10px}
-.demo-row{display:flex;justify-content:space-between;align-items:center;
-  padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s;
-  border-bottom:1px solid rgba(255,255,255,.05)}
-.demo-row:last-child{border-bottom:none}
-.demo-row:hover{background:rgba(255,255,255,.05)}
-.demo-lbl{font-family:'Cinzel',serif;font-size:.7rem;color:#10b981;font-weight:600}
-.demo-cred{font-family:monospace;font-size:.72rem;color:rgba(237,242,255,.4)}
-.ft{text-align:center;margin-top:28px;font-size:.7rem;color:rgba(237,242,255,.22);line-height:1.7}
-.ft strong{color:rgba(237,242,255,.35);font-family:'Cinzel',serif}
+html,body{height:100%;background:var(--bg);font-family:"Inter",sans-serif;
+color:var(--mist);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+#aur{position:fixed;inset:0;z-index:0;pointer-events:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+background:rgba(255,255,255,.09);backdrop-filter:blur(16px);
+border:1px solid rgba(255,255,255,.2);border-radius:10px;color:var(--mist);
+font-family:"Cinzel",serif;font-weight:700;font-size:.72rem;letter-spacing:1px;
+padding:10px 20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;white-space:nowrap;
+box-shadow:0 0 10px rgba(255,255,255,.05),inset 0 1px 0 rgba(255,255,255,.14)}
+.btn::before{content:"";position:absolute;inset:0;
+background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 55%);pointer-events:none;border-radius:inherit}
+.btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.32);
+transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.btn:active{transform:translateY(0)}
+.btn-lav{background:rgba(192,132,252,.18);border-color:rgba(192,132,252,.42);color:var(--lavl);
+box-shadow:0 0 18px rgba(192,132,252,.28)}
+.btn-lav:hover{background:rgba(192,132,252,.28);box-shadow:0 0 36px rgba(192,132,252,.5)}
+.btn-pink{background:rgba(244,114,182,.16);border-color:rgba(244,114,182,.38);color:var(--pinkl);box-shadow:0 0 16px rgba(244,114,182,.22)}
+.btn-pink:hover{background:rgba(244,114,182,.26);box-shadow:0 0 32px rgba(244,114,182,.45)}
+.btn-peach{background:rgba(251,146,60,.16);border-color:rgba(251,146,60,.38);color:var(--peachl);box-shadow:0 0 16px rgba(251,146,60,.22)}
+.btn-peach:hover{background:rgba(251,146,60,.26);box-shadow:0 0 32px rgba(251,146,60,.45)}
+.btn-mint{background:rgba(52,211,153,.16);border-color:rgba(52,211,153,.35);color:#d1fae5;box-shadow:0 0 16px rgba(52,211,153,.2)}
+.btn-mint:hover{background:rgba(52,211,153,.26);box-shadow:0 0 32px rgba(52,211,153,.4)}
+.btn-rose{background:rgba(244,63,94,.13);border-color:rgba(244,63,94,.3);color:#ffe4e6}
+.btn-rose:hover{background:rgba(244,63,94,.22);box-shadow:0 0 28px rgba(244,63,94,.38)}
+.btn-sm{padding:7px 14px;font-size:.66rem;border-radius:8px}
+.btn-lg{padding:13px 28px;font-size:.78rem;border-radius:12px}
+.btn-block{width:100%;justify-content:center}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.fl{font-family:"Cinzel",serif;font-size:.62rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase;display:block;margin-bottom:8px}
+.fi{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+border-radius:10px;padding:13px 16px;color:var(--mist);font-family:"Inter",sans-serif;
+font-size:.9rem;outline:none;transition:all .2s}
+.fi:focus{border-color:var(--lav);box-shadow:0 0 0 3px rgba(192,132,252,.15)}
+.fi::placeholder{color:var(--dim)}
+select.fi{background:rgba(12,7,22,.8);cursor:pointer}
+select.fi option{background:#180c2e;color:var(--mist)}
+textarea.fi{resize:vertical;min-height:70px}
+.fg{margin-bottom:16px}
+.alert{padding:12px 16px;border-radius:10px;font-size:.83rem;line-height:1.6}
+.spinner{width:17px;height:17px;border:2px solid rgba(192,132,252,.18);
+border-top-color:var(--lav);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* LOGIN */
+#loginScreen{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.login-brand{text-align:center;margin-bottom:36px}
+.login-logo{font-family:"Cinzel",serif;font-weight:900;font-size:2.6rem;letter-spacing:8px;
+background:linear-gradient(135deg,var(--lav),var(--pink),var(--peach));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+filter:drop-shadow(0 0 18px rgba(192,132,252,.45));margin-bottom:6px}
+.login-brand-sub{font-family:"Cinzel",serif;font-size:.68rem;color:var(--dim);letter-spacing:3px;text-transform:uppercase}
+.login-card{width:100%;max-width:460px;border-radius:22px;
+background:rgba(255,255,255,.065);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+border:1px solid rgba(192,132,252,.2);padding:38px;
+box-shadow:0 0 80px rgba(192,132,252,.08),0 24px 64px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1)}
+.step-track{display:flex;align-items:center;gap:0;margin-bottom:28px}
+.step-node{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+font-family:"Space Mono",monospace;font-size:.68rem;font-weight:700;flex-shrink:0;
+transition:all .3s;border:1.5px solid rgba(255,255,255,.15);color:var(--dim);background:rgba(255,255,255,.04)}
+.step-node.done{background:rgba(52,211,153,.18);border-color:rgba(52,211,153,.4);color:#a7f3d0}
+.step-node.active{background:rgba(192,132,252,.2);border-color:rgba(192,132,252,.5);color:var(--lavl);box-shadow:0 0 14px rgba(192,132,252,.3)}
+.step-line{flex:1;height:1px;background:rgba(255,255,255,.08)}
+.step-line.done{background:rgba(52,211,153,.3)}
+.step-labels{display:flex;justify-content:space-between;margin-bottom:28px}
+.step-lbl{font-family:"Cinzel",serif;font-size:.55rem;font-weight:700;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;text-align:center;flex:1}
+.step-lbl.active{color:var(--lav)}
+.lcard-eye{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:3px;color:var(--lav);text-transform:uppercase;margin-bottom:6px}
+.lcard-title{font-family:"Cinzel",serif;font-size:1.2rem;font-weight:700;margin-bottom:4px;letter-spacing:.5px}
+.lcard-sub{font-size:.8rem;color:var(--fog);line-height:1.6;margin-bottom:22px}
+.linfo{padding:14px 16px;border-radius:12px;margin-bottom:18px}
+.linfo-lav{background:rgba(192,132,252,.09);border:1px solid rgba(192,132,252,.22)}
+.linfo-mint{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2)}
+.linfo-peach{background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2)}
+.linfo-rose{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2)}
+.lerr{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.22);border-radius:9px;
+padding:10px 14px;font-size:.82rem;color:#fda4af;display:none;margin-bottom:14px;line-height:1.55}
+.back-link{font-family:"Cinzel",serif;font-size:.68rem;color:var(--dim);cursor:pointer;
+display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;transition:color .18s}
+.back-link:hover{color:var(--fog)}
+
+/* DASHBOARD */
+#dashboard{display:none;position:relative;z-index:10;min-height:100vh}
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);
+display:flex;align-items:center;padding:0 32px;
+background:rgba(12,7,22,.82);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+border-bottom:1px solid rgba(192,132,252,.18);box-shadow:0 2px 32px rgba(0,0,0,.4)}
+.nav-logo{font-family:"Cinzel",serif;font-weight:900;font-size:1.2rem;letter-spacing:5px;
+background:linear-gradient(135deg,var(--lav),var(--pink),var(--peach));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+filter:drop-shadow(0 0 12px rgba(192,132,252,.4));margin-right:32px;
+white-space:nowrap;cursor:pointer;user-select:none;line-height:1}
+.nav-logo small{font-size:.48rem;letter-spacing:2.5px;display:block;margin-top:3px;
+-webkit-text-fill-color:rgba(248,244,255,.4);background:none;filter:none}
+.nav-menu{display:flex;align-items:center;gap:2px;flex:1}
+.nav-direct{display:flex;align-items:center;gap:8px;font-family:"Cinzel",serif;font-size:.7rem;
+font-weight:700;letter-spacing:.8px;color:var(--fog);padding:8px 14px;border-radius:9px;
+cursor:pointer;transition:all .18s;border:none;background:none;white-space:nowrap}
+.nav-direct:hover,.nav-direct.active{background:rgba(192,132,252,.14);color:var(--lavl)}
+.nav-group{position:relative}
+.nav-drop-btn{display:flex;align-items:center;gap:8px;font-family:"Cinzel",serif;font-size:.7rem;
+font-weight:700;letter-spacing:.8px;color:var(--fog);padding:8px 14px;border-radius:9px;
+cursor:pointer;transition:all .18s;border:none;background:none;white-space:nowrap}
+.nav-drop-btn:hover,.nav-group.open .nav-drop-btn,.nav-drop-btn.active{background:rgba(192,132,252,.14);color:var(--lavl)}
+.drop-chev{transition:transform .2s;display:flex}
+.nav-group.open .drop-chev{transform:rotate(180deg)}
+.dropdown{position:absolute;top:calc(100% + 10px);left:0;min-width:215px;z-index:300;
+background:rgba(16,8,28,.96);backdrop-filter:blur(28px);
+border:1px solid rgba(192,132,252,.22);border-radius:14px;padding:8px;
+box-shadow:0 16px 48px rgba(0,0,0,.55);
+opacity:0;visibility:hidden;transform:translateY(-8px);
+transition:all .2s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.nav-group.open .dropdown{opacity:1;visibility:visible;transform:translateY(0);pointer-events:all}
+.drop-slbl{font-family:"Cinzel",serif;font-size:.54rem;font-weight:700;letter-spacing:2.5px;
+color:rgba(192,132,252,.55);text-transform:uppercase;padding:8px 12px 4px}
+.drop-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;
+cursor:pointer;transition:all .15s;color:var(--fog);font-size:.82rem}
+.drop-item:hover{background:rgba(192,132,252,.12);color:var(--mist)}
+.drop-item.danger{color:rgba(244,63,94,.7)}
+.drop-item.danger:hover{background:rgba(244,63,94,.1);color:#fda4af}
+.drop-sep{height:1px;background:rgba(255,255,255,.07);margin:6px 0}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.nav-home-btn{display:flex;align-items:center;gap:8px;font-family:"Cinzel",serif;font-size:.67rem;
+font-weight:700;letter-spacing:1px;padding:8px 16px;border-radius:9px;cursor:pointer;border:none;
+background:rgba(251,146,60,.14);border:1px solid rgba(251,146,60,.32);color:var(--peachl);
+box-shadow:0 0 14px rgba(251,146,60,.18);transition:all .2s}
+.nav-home-btn:hover{background:rgba(251,146,60,.24);box-shadow:0 0 28px rgba(251,146,60,.35);transform:translateY(-1px)}
+.nav-pg{position:relative}
+.nav-pb{display:flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;border-radius:10px;
+cursor:pointer;transition:background .18s;border:none;background:none}
+.nav-pb:hover,.nav-pg.open .nav-pb{background:rgba(255,255,255,.07)}
+.nav-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+font-family:"Cinzel",serif;font-size:.9rem;font-weight:700;color:#fff;
+background:linear-gradient(135deg,var(--lav),var(--pink));border:2px solid rgba(192,132,252,.4);
+box-shadow:0 0 12px rgba(192,132,252,.3);overflow:hidden;flex-shrink:0}
+.nav-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.nav-uname{font-family:"Cinzel",serif;font-size:.7rem;font-weight:700;color:var(--mist);white-space:nowrap}
+.nav-udept{font-size:.62rem;color:var(--dim);white-space:nowrap}
+.nav-pg .dropdown{left:auto;right:0;min-width:200px}
+main{position:relative;z-index:10;padding:calc(var(--nav-h) + 32px) 40px 48px;min-height:100vh}
+.sec{display:none;animation:fadeUp .28s ease}
+.sec.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page-head{margin-bottom:30px}
+.page-eye{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:3.5px;
+text-transform:uppercase;display:inline-block;margin-bottom:8px;
+background:linear-gradient(90deg,var(--lav),var(--pink));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-title{font-family:"Cinzel",serif;font-size:1.9rem;font-weight:700;letter-spacing:.5px;
+color:var(--mist);line-height:1.15;text-shadow:0 0 40px rgba(192,132,252,.2)}
+.page-sub{font-size:.87rem;color:var(--fog);line-height:1.75;margin-top:6px}
+.card{background:rgba(255,255,255,.07);backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.11);border-radius:18px;padding:26px;margin-bottom:20px;
+box-shadow:0 4px 28px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.08)}
+.card-lav{border-color:rgba(192,132,252,.24);background:rgba(192,132,252,.06)}
+.card-label{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:3px;
+text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;
+background:linear-gradient(90deg,var(--lav),var(--pink));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.card-label::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.07)}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-panel{display:flex;overflow:hidden;background:rgba(255,255,255,.07);
+border:1px solid rgba(255,255,255,.11);border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.18);transition:all .22s}
+.stat-panel:hover{transform:translateY(-2px);border-color:rgba(192,132,252,.22)}
+.stat-accent{width:4px;flex-shrink:0}
+.sa-lav{background:linear-gradient(to bottom,var(--lav),var(--lav2))}
+.sa-pink{background:linear-gradient(to bottom,var(--pink),var(--pink2))}
+.sa-peach{background:linear-gradient(to bottom,var(--peach),#ea580c)}
+.sa-mint{background:linear-gradient(to bottom,var(--mint),#059669)}
+.stat-body{padding:20px 18px;flex:1}
+.stat-number{font-family:"Space Mono",monospace;font-size:2.6rem;font-weight:700;
+line-height:1;letter-spacing:-2px;display:block}
+.sn-lav{background:linear-gradient(135deg,var(--lav),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(192,132,252,.3))}
+.sn-pink{background:linear-gradient(135deg,var(--pink),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(244,114,182,.3))}
+.sn-peach{background:linear-gradient(135deg,var(--peach),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(251,146,60,.3))}
+.sn-mint{background:linear-gradient(135deg,var(--mint),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(52,211,153,.3))}
+.stat-label{font-family:"Cinzel",serif;font-size:.58rem;font-weight:700;letter-spacing:2.5px;color:var(--dim);text-transform:uppercase;margin-top:8px;display:block}
+.stat-sub{font-size:.72rem;color:rgba(248,244,255,.2);margin-top:3px}
+.quiz-table{width:100%;border-collapse:collapse}
+.quiz-table thead tr{border-bottom:1px solid rgba(255,255,255,.1)}
+.quiz-table th{padding:12px 16px;text-align:left;font-family:"Cinzel",serif;font-size:.57rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase;background:rgba(255,255,255,.025)}
+.quiz-table td{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.05);font-size:.84rem;color:var(--mist);vertical-align:middle}
+.quiz-table tr:last-child td{border-bottom:none}
+.quiz-table tbody tr:hover td{background:rgba(255,255,255,.04)}
+.quiz-code{font-family:"Space Mono",monospace;font-size:.8rem;font-weight:700;
+background:rgba(192,132,252,.12);border:1px solid rgba(192,132,252,.25);
+border-radius:7px;padding:4px 10px;color:var(--lavl);cursor:pointer;
+transition:all .15s;box-shadow:0 0 8px rgba(192,132,252,.15);display:inline-block;letter-spacing:2px}
+.quiz-code:hover{background:rgba(192,132,252,.22);box-shadow:0 0 18px rgba(192,132,252,.35)}
+.t-dept{color:var(--fog);font-size:.78rem}
+.t-actions{display:flex;align-items:center;gap:7px}
+.filter-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.fchip{font-family:"Cinzel",serif;font-size:.65rem;font-weight:700;letter-spacing:.8px;
+padding:7px 16px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.12);
+background:rgba(255,255,255,.04);color:var(--fog);transition:all .18s}
+.fchip:hover{color:var(--mist)}
+.fchip.on{background:rgba(192,132,252,.16);border-color:rgba(192,132,252,.35);color:var(--lavl);box-shadow:0 0 14px rgba(192,132,252,.2)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;
+font-family:"Cinzel",serif;font-size:.57rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.badge-wait{background:rgba(251,146,60,.12);color:#fdba74;border:1px solid rgba(251,146,60,.25)}
+.badge-active{background:rgba(244,63,94,.12);color:#fda4af;border:1px solid rgba(244,63,94,.25)}
+.badge-done{background:rgba(52,211,153,.09);color:#6ee7b7;border:1px solid rgba(52,211,153,.2)}
+.badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:bdot 1.2s ease infinite}
+@keyframes bdot{0%,100%{opacity:1}50%{opacity:.3}}
+.create-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start}
+.q-builder{background:rgba(192,132,252,.05);border:1px solid rgba(192,132,252,.16);border-radius:14px;padding:22px;margin-bottom:16px}
+.qb-lbl{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:2px;color:rgba(192,132,252,.8);text-transform:uppercase;display:block;margin-bottom:10px}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.opt-row{display:flex;align-items:center;gap:8px}
+.opt-ltr{font-family:"Cinzel",serif;font-size:.7rem;font-weight:700;color:var(--dim);width:18px;flex-shrink:0}
+.opt-in{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;color:var(--mist);font-family:"Inter",sans-serif;font-size:.85rem;outline:none;transition:all .2s}
+.opt-in::placeholder{color:var(--dim)}
+.opt-in:focus{border-color:var(--lav);box-shadow:0 0 0 2px rgba(192,132,252,.12)}
+.ans-row{display:flex;gap:18px;margin-top:12px;flex-wrap:wrap}
+.ans-row label{display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--fog);cursor:pointer}
+.ans-row label:hover{color:var(--mist)}
+.ans-row input[type=radio]{accent-color:var(--mint);width:15px;height:15px}
+.q-item{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+border-radius:10px;padding:14px;margin-bottom:8px;transition:border-color .2s}
+.q-item:hover{border-color:rgba(192,132,252,.2)}
+.q-n{font-family:"Cinzel",serif;font-size:.57rem;color:var(--mint);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+.q-t{font-size:.85rem;color:var(--mist);margin-bottom:4px}
+.q-a{font-size:.73rem;color:var(--mint);font-weight:500}
+.q-cnt{font-family:"Cinzel",serif;font-size:.68rem;color:var(--dim);margin-bottom:16px}
+.preview-panel{position:sticky;top:calc(var(--nav-h) + 32px)}
+.preview-card{background:rgba(192,132,252,.07);border:1px solid rgba(192,132,252,.2);border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:0 0 28px rgba(192,132,252,.07)}
+.preview-t{font-family:"Cinzel",serif;font-size:.95rem;font-weight:700;color:var(--mist);margin-bottom:4px}
+.preview-m{font-size:.76rem;color:var(--fog);margin-bottom:14px}
+.preview-nums{display:flex;align-items:flex-end;gap:20px}
+.preview-big{font-family:"Space Mono",monospace;font-size:2.2rem;font-weight:700;
+background:linear-gradient(135deg,var(--lav),var(--pink));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+filter:drop-shadow(0 0 14px rgba(192,132,252,.4));line-height:1}
+.preview-big2{background:linear-gradient(135deg,var(--pink),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 14px rgba(244,114,182,.4))}
+.preview-lbl{font-family:"Cinzel",serif;font-size:.55rem;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+.divider{height:1px;background:rgba(255,255,255,.07);margin:14px 0}
+/* CODE BOX — glow only, NO spinning ring */
+.code-reveal{display:none;border-radius:16px;padding:28px;text-align:center;
+background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1)}
+.code-reveal.show{display:block;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.code-box{display:inline-block;border-radius:16px;padding:22px 36px;margin-bottom:14px;
+background:rgba(12,7,22,.92);
+border:1px solid rgba(192,132,252,.38);
+box-shadow:0 0 40px rgba(192,132,252,.3),0 0 80px rgba(192,132,252,.12),0 0 120px rgba(244,114,182,.06),inset 0 0 28px rgba(192,132,252,.07)}
+.code-lbl{font-family:"Cinzel",serif;font-size:.58rem;font-weight:700;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+.code-digits{font-family:"Space Mono",monospace;font-size:3.2rem;font-weight:700;letter-spacing:10px;
+background:linear-gradient(135deg,var(--lav),var(--pink),var(--peach));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+filter:drop-shadow(0 0 22px rgba(192,132,252,.65));display:block;line-height:1}
+.code-note{font-size:.76rem;color:var(--dim);line-height:1.65;margin-bottom:18px}
+.monitor-top{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.mon-box{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:18px;text-align:center}
+.mon-n{font-family:"Space Mono",monospace;font-size:2.4rem;font-weight:700;line-height:1;display:block}
+.mon-l{font-family:"Cinzel",serif;font-size:.57rem;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;margin-top:5px}
+.live-tag{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:8px;
+margin-bottom:18px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.22)}
+.live-dot{width:9px;height:9px;background:#f43f5e;border-radius:50%;box-shadow:0 0 10px #f43f5e;animation:ld 1s infinite}
+@keyframes ld{0%,100%{opacity:1}50%{opacity:.3}}
+.live-txt{font-family:"Cinzel",serif;font-size:.7rem;font-weight:700;letter-spacing:2px;color:#fda4af;text-transform:uppercase}
+.monitor-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+.p-table{width:100%;border-collapse:collapse}
+.p-table th{padding:10px 14px;text-align:left;font-family:"Cinzel",serif;font-size:.57rem;font-weight:700;letter-spacing:2px;color:var(--dim);border-bottom:1px solid rgba(255,255,255,.07);text-transform:uppercase;background:rgba(255,255,255,.025)}
+.p-table td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:.83rem;color:var(--mist)}
+.p-table tr:last-child td{border-bottom:none}
+.p-table tbody tr:hover td{background:rgba(255,255,255,.03)}
+.profile-layout{display:grid;grid-template-columns:340px 1fr;gap:24px;align-items:start}
+.photo-area{text-align:center;padding:30px 22px;background:rgba(192,132,252,.06);border:1px solid rgba(192,132,252,.2);border-radius:18px;margin-bottom:18px}
+.photo-wrap{position:relative;width:140px;height:140px;margin:0 auto 14px;cursor:pointer}
+.photo-ring{position:absolute;inset:-3px;border-radius:50%;z-index:0;
+background:conic-gradient(var(--lav),var(--pink),var(--peach),var(--lav));
+animation:cring 5s linear infinite;
+-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+mask-composite:exclude;-webkit-mask-composite:xor;padding:3px}
+@keyframes cring{to{transform:rotate(360deg)}}
+.photo-el{width:140px;height:140px;border-radius:50%;position:relative;z-index:1;
+display:flex;align-items:center;justify-content:center;overflow:hidden;
+background:linear-gradient(135deg,var(--lav),var(--pink));border:3px solid var(--bg);
+font-family:"Cinzel",serif;font-size:3.2rem;font-weight:700;color:#fff;box-shadow:0 0 28px rgba(192,132,252,.35)}
+.photo-el img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.photo-overlay{position:absolute;inset:3px;border-radius:50%;z-index:2;
+background:rgba(0,0,0,.65);display:flex;flex-direction:column;align-items:center;
+justify-content:center;opacity:0;transition:opacity .2s;gap:4px}
+.photo-wrap:hover .photo-overlay{opacity:1}
+.po-text{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:1.5px;color:#fff;text-transform:uppercase}
+.prof-name{font-family:"Cinzel",serif;font-size:1.12rem;font-weight:700;color:var(--mist);margin-bottom:4px}
+.prof-tag{display:inline-block;font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:1.5px;color:var(--lavl);text-transform:uppercase;background:rgba(192,132,252,.12);border:1px solid rgba(192,132,252,.25);border-radius:20px;padding:4px 14px;margin-bottom:6px}
+.prof-email{font-size:.74rem;color:var(--dim);font-family:"Space Mono",monospace}
+.photo-hint{font-size:.72rem;color:var(--dim);margin-top:10px;line-height:1.6}
+.pmini-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.pmini{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 10px;text-align:center}
+.pmini-n{font-family:"Space Mono",monospace;font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--lav),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(192,132,252,.3))}
+.pmini-l{font-family:"Cinzel",serif;font-size:.56rem;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px}
+.prs-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.prs{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:18px;display:flex;gap:14px;align-items:flex-start;transition:all .2s}
+.prs:hover{border-color:rgba(192,132,252,.22)}
+.prs-ico{width:38px;height:38px;border-radius:10px;background:rgba(192,132,252,.12);border:1px solid rgba(192,132,252,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prs-n{font-family:"Space Mono",monospace;font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--lav),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(192,132,252,.3));margin-bottom:3px}
+.prs-l{font-family:"Cinzel",serif;font-size:.58rem;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase}
+.ra-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.ra-item:last-child{border-bottom:none}
+.ra-ico{width:36px;height:36px;border-radius:10px;background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ra-title{font-size:.84rem;color:var(--mist);font-weight:500;margin-bottom:2px}
+.ra-meta{font-size:.7rem;color:var(--dim)}
+.empty-state{text-align:center;padding:52px 24px}
+.empty-title{font-family:"Cinzel",serif;font-size:.92rem;color:var(--fog);margin-bottom:8px;margin-top:12px}
+.empty-desc{font-size:.8rem;color:var(--dim);line-height:1.7}
+.loading-row{display:flex;align-items:center;gap:10px;font-size:.84rem;color:var(--fog);padding:16px 0}
+.dash-grid{display:grid;grid-template-columns:1.65fr 1fr;gap:20px}
+@media(max-width:1100px){.stat-row{grid-template-columns:1fr 1fr}.create-grid,.profile-layout,.dash-grid,.monitor-grid{grid-template-columns:1fr}.monitor-top{grid-template-columns:1fr 1fr}.preview-panel{position:static}}
+@media(max-width:700px){.stat-row,.prs-grid,.pmini-row{grid-template-columns:1fr 1fr}.nav-menu{display:none}main{padding-top:calc(var(--nav-h) + 20px);padding-left:18px;padding-right:18px}}
 </style>
 </head>
 <body>
-<canvas id="cv"></canvas>
-<a href="quizify-login.html" class="back z">← Change Role</a>
-<div class="wrap z">
-  <div class="role-badge">
-    <div class="role-icon-wrap">🖥️</div>
-    <div class="role-title">Teacher Portal</div>
-    <div class="role-sub">Faculty & Lecturers — Nilgiri College</div>
-  </div>
-  <div class="card">
-    <div class="err" id="err"></div>
-    <div class="fg"><label>Email Address</label><input id="em" type="email" placeholder="teacher@quizify.edu" autocomplete="email"/></div>
-    <div class="fg"><label>Password</label><input id="pw" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
-    <button class="btn" onclick="doLogin()">🖥️ &nbsp;Enter Teacher Portal</button>
-    <div class="demo">
-      <div class="demo-title">⚡ Demo Credentials</div>
-      <div class="demo-row" onclick="fill('teacher@quizify.edu','teach123')">
-        <span class="demo-lbl">Teacher Account</span>
-        <span class="demo-cred">teacher@quizify.edu / teach123</span>
-      </div>
-    </div>
-  </div>
-  <div class="ft"><strong>Quizify Teacher Portal</strong><br>Organised by PG & Research Dept of CS &nbsp;·&nbsp; Nilgiri College &nbsp;·&nbsp; NAAC A++</div>
+<canvas id="aur"></canvas>
+<input type="file" id="photoIn" accept="image/*" style="display:none" onchange="handlePhoto(event)"/>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+<div class="login-brand">
+<div class="login-logo">QUIZIFY</div>
+<div class="login-brand-sub">Teacher Portal &middot; Nilgiri College of Arts &amp; Science</div>
 </div>
+<div class="login-card">
+<div class="step-track" id="stepTrack">
+<div class="step-node active" id="sn1">1</div>
+<div class="step-line" id="sl1"></div>
+<div class="step-node" id="sn2">2</div>
+</div>
+<div class="step-labels">
+<span class="step-lbl active" id="sl-1">Email</span>
+<span class="step-lbl" id="sl-2">Access</span>
+</div>
+
+<!-- STEP 1: EMAIL -->
+<div id="s-email">
+<div class="lcard-eye">Step 1 of 2</div>
+<div class="lcard-title">Enter Your Email</div>
+<div class="lcard-sub">Use your department email. Only approved faculty can access the Teacher Portal.</div>
+<div class="lerr" id="emailErr"></div>
+<div class="fg"><label class="fl">Department Email</label><input class="fi" id="emailIn" type="email" placeholder="yourname@nilgiri.edu" autocomplete="email"/></div>
+<button class="btn btn-lav btn-block btn-lg" id="emailBtn" onclick="checkEmail()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+Continue
+</button>
+</div>
+
+<!-- STEP 2A: PASSWORD -->
+<div id="s-password" style="display:none">
+<div class="back-link" onclick="backToEmail()">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+Change email
+</div>
+<div class="lcard-eye">Step 2 of 2</div>
+<div class="lcard-title">Welcome Back</div>
+<div class="lcard-sub">Enter your password to sign in.</div>
+<div class="lerr" id="passErr"></div>
+<div class="fg"><label class="fl">Password</label><input class="fi" id="passIn" type="password" placeholder="Your password" autocomplete="current-password"/></div>
+<button class="btn btn-lav btn-block btn-lg" id="passBtn" onclick="doLogin()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+Sign In
+</button>
+</div>
+
+<!-- STEP 2B: REGISTER (approved, first time) -->
+<div id="s-register" style="display:none">
+<div class="back-link" onclick="backToEmail()">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+Change email
+</div>
+<div class="lcard-eye">Step 2 of 2</div>
+<div class="lcard-title">Create Your Account</div>
+<div class="lcard-sub">Your email is approved. Set up your teacher account to get started.</div>
+<div class="linfo linfo-mint" style="margin-bottom:18px">
+<div style="font-size:.8rem;color:#a7f3d0;line-height:1.6">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle;margin-right:5px"><polyline points="20 6 9 17 4 12"/></svg>
+Your email is on the approved faculty list.
+</div>
+</div>
+<div class="lerr" id="regErr"></div>
+<div class="fg"><label class="fl">Full Name</label><input class="fi" id="regName" placeholder="Dr. / Prof. Your Name"/></div>
+<div class="fg"><label class="fl">Department</label>
+<select class="fi" id="regDept" style="background:rgba(12,7,22,.8)">
+<option value="">Select your department</option>
+<option>Computer Science</option><option>Mathematics</option><option>Physics</option>
+<option>Chemistry</option><option>Electronics</option><option>Commerce</option>
+<option>English</option><option>Tamil</option><option>Biotechnology</option>
+</select>
+</div>
+<div class="fg"><label class="fl">Password</label><input class="fi" id="regPass" type="password" placeholder="Minimum 6 characters"/></div>
+<div class="fg"><label class="fl">Confirm Password</label><input class="fi" id="regPass2" type="password" placeholder="Repeat password"/></div>
+<button class="btn btn-mint btn-block btn-lg" id="regBtn" onclick="doRegister()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+Create Teacher Account
+</button>
+</div>
+
+<!-- STEP 2C: REQUEST ACCESS -->
+<div id="s-request" style="display:none">
+<div class="back-link" onclick="backToEmail()">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+Change email
+</div>
+<div class="lcard-eye">Step 2 of 2</div>
+<div class="lcard-title">Request Faculty Access</div>
+<div class="lcard-sub">Your email is not yet approved. Submit a request and the department admin will review it.</div>
+<div class="linfo linfo-peach" style="margin-bottom:18px">
+<div style="font-size:.8rem;color:#fed7aa;line-height:1.6">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+This email is not on the approved faculty list yet.
+</div>
+</div>
+<div class="lerr" id="reqErr"></div>
+<div class="fg"><label class="fl">Full Name</label><input class="fi" id="reqName" placeholder="Dr. / Prof. Your Name"/></div>
+<div class="fg"><label class="fl">Department</label>
+<select class="fi" id="reqDept" style="background:rgba(12,7,22,.8)">
+<option value="">Select your department</option>
+<option>Computer Science</option><option>Mathematics</option><option>Physics</option>
+<option>Chemistry</option><option>Electronics</option><option>Commerce</option>
+<option>English</option><option>Tamil</option><option>Biotechnology</option>
+</select>
+</div>
+<div class="fg"><label class="fl">Message to Admin (optional)</label>
+<textarea class="fi" id="reqMsg" placeholder="e.g. I teach Data Structures in II year CS..." rows="2"></textarea>
+</div>
+<button class="btn btn-peach btn-block btn-lg" id="reqBtn" onclick="doRequest()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg>
+Submit Access Request
+</button>
+</div>
+
+<!-- STEP 2D: PENDING -->
+<div id="s-pending" style="display:none">
+<div class="back-link" onclick="backToEmail()">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+Change email
+</div>
+<div class="linfo linfo-peach" style="margin-top:8px">
+<div style="text-align:center;padding:10px 0">
+<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="1.5" stroke-linecap="round" style="margin:0 auto 12px;display:block"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+<div style="font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--peach);margin-bottom:8px">Request Pending</div>
+<div style="font-size:.82rem;color:#fed7aa;line-height:1.7">Your access request is awaiting admin review.<br>You will be able to sign in once approved.</div>
+</div>
+</div>
+</div>
+
+<!-- STEP 2E: REJECTED -->
+<div id="s-rejected" style="display:none">
+<div class="back-link" onclick="backToEmail()">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+Change email
+</div>
+<div class="linfo linfo-rose" style="margin-top:8px">
+<div style="text-align:center;padding:10px 0">
+<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="1.5" stroke-linecap="round" style="margin:0 auto 12px;display:block"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+<div style="font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--rose);margin-bottom:8px">Access Not Approved</div>
+<div style="font-size:.82rem;color:#fda4af;line-height:1.7">Your request was not approved. Contact the department admin for assistance.<br><br><span style="font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:1px;opacity:.65">cs.admin@nilgiri.edu</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+<nav class="top-nav">
+<div class="nav-logo" onclick="show('dashboard')">QUIZIFY<small>Teacher Portal</small></div>
+<div class="nav-menu">
+<button class="nav-direct active" id="nd-dashboard" onclick="show('dashboard',this)">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+Dashboard
+</button>
+<div class="nav-group" id="ng-quizzes">
+<button class="nav-drop-btn" id="nd-quizzes" onclick="toggleDrop('ng-quizzes')">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6" stroke-width="2.5"/><line x1="3" y1="12" x2="3.01" y2="12" stroke-width="2.5"/><line x1="3" y1="18" x2="3.01" y2="18" stroke-width="2.5"/></svg>
+Quizzes
+<span class="drop-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+</button>
+<div class="dropdown">
+<div class="drop-slbl">Manage</div>
+<div class="drop-item" onclick="show('create','nd-quizzes');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create New Quiz</div>
+<div class="drop-item" onclick="show('quizzes','nd-quizzes');filterQ('all');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>All My Quizzes</div>
+<div class="drop-sep"></div>
+<div class="drop-slbl">Filter by Status</div>
+<div class="drop-item" onclick="show('quizzes','nd-quizzes');filterQ('active');closeDrop()"><svg width="9" height="9" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#f43f5e"/></svg>Active Sessions</div>
+<div class="drop-item" onclick="show('quizzes','nd-quizzes');filterQ('waiting');closeDrop()"><svg width="9" height="9" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#fb923c"/></svg>Waiting</div>
+<div class="drop-item" onclick="show('quizzes','nd-quizzes');filterQ('completed');closeDrop()"><svg width="9" height="9" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#34d399"/></svg>Completed</div>
+</div>
+</div>
+<div class="nav-group" id="ng-monitor">
+<button class="nav-drop-btn" id="nd-monitor" onclick="toggleDrop('ng-monitor')">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+Monitor
+<span class="drop-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+</button>
+<div class="dropdown">
+<div class="drop-slbl">Live Sessions</div>
+<div class="drop-item" onclick="show('monitor','nd-monitor');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Open Monitor</div>
+<div id="activeLinks"></div>
+</div>
+</div>
+</div>
+<div class="nav-right">
+<button class="nav-home-btn" onclick="location.href='quizify-home.html'">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+Back to Home
+</button>
+<div class="nav-pg" id="ng-profile">
+<button class="nav-pb" onclick="toggleDrop('ng-profile')">
+<div class="nav-av" id="navAv">T</div>
+<div style="text-align:left"><div class="nav-uname" id="navName">Teacher</div><div class="nav-udept" id="navDept">Department</div></div>
+<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="color:var(--dim)"><polyline points="6 9 12 15 18 9"/></svg>
+</button>
+<div class="dropdown">
+<div class="drop-item" onclick="show('profile');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile</div>
+<div class="drop-item" onclick="document.getElementById('photoIn').click();closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Change Photo</div>
+<div class="drop-sep"></div>
+<div class="drop-item danger" onclick="doLogout()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</div>
+</div>
+</div>
+</div>
+</nav>
+
+<main>
+<!-- DASHBOARD HOME -->
+<section class="sec on" id="sec-dashboard">
+<div class="page-head"><div class="page-eye">Overview</div><h1 class="page-title" id="greetTitle">Good day</h1><p class="page-sub">Your teaching workspace. Create quizzes, share codes, and monitor students in real time.</p></div>
+<div class="stat-row">
+<div class="stat-panel"><div class="stat-accent sa-lav"></div><div class="stat-body"><span class="stat-number sn-lav" id="stTotal">0</span><span class="stat-label">Total Quizzes</span><div class="stat-sub">All time</div></div></div>
+<div class="stat-panel"><div class="stat-accent sa-pink"></div><div class="stat-body"><span class="stat-number sn-pink" id="stActive">0</span><span class="stat-label">Active Now</span><div class="stat-sub">Live sessions</div></div></div>
+<div class="stat-panel"><div class="stat-accent sa-peach"></div><div class="stat-body"><span class="stat-number sn-peach" id="stStudents">0</span><span class="stat-label">Students Reached</span><div class="stat-sub">Total participants</div></div></div>
+<div class="stat-panel"><div class="stat-accent sa-mint"></div><div class="stat-body"><span class="stat-number sn-mint" id="stDone">0</span><span class="stat-label">Completed</span><div class="stat-sub">Finished sessions</div></div></div>
+</div>
+<div class="dash-grid">
+<div class="card">
+<div class="card-label">Recent Quizzes</div>
+<div id="recentList"><div class="loading-row"><div class="spinner"></div> Loading quizzes from Google Sheets...</div></div>
+<button class="btn btn-sm" style="margin-top:14px" onclick="show('quizzes','nd-quizzes')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6" stroke-width="2.5"/></svg> View All</button>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div class="card card-lav">
+<div class="card-label">Quick Actions</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<button class="btn btn-lav btn-block" onclick="show('create','nd-quizzes')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create New Quiz</button>
+<button class="btn btn-block" onclick="show('monitor','nd-monitor')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Live Monitor</button>
+<button class="btn btn-block" onclick="show('profile')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile</button>
+</div>
+</div>
+<div class="card" style="background:rgba(251,146,60,.05);border-color:rgba(251,146,60,.18)">
+<div class="card-label" style="background:linear-gradient(90deg,var(--peach),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">How It Works</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--peach);font-weight:700;width:22px;flex-shrink:0">01</span><div><div style="font-family:'Cinzel',serif;font-size:.74rem;font-weight:700;margin-bottom:2px;color:var(--mist)">Create a Quiz</div><div style="font-size:.73rem;color:var(--fog);line-height:1.5">Add questions, set timer, get a 6-digit code.</div></div></div>
+<div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--peach);font-weight:700;width:22px;flex-shrink:0">02</span><div><div style="font-family:'Cinzel',serif;font-size:.74rem;font-weight:700;margin-bottom:2px;color:var(--mist)">Share the Code</div><div style="font-size:.73rem;color:var(--fog);line-height:1.5">Students enter the code to join live.</div></div></div>
+<div style="display:flex;gap:10px;padding:7px 0"><span style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--peach);font-weight:700;width:22px;flex-shrink:0">03</span><div><div style="font-family:'Cinzel',serif;font-size:.74rem;font-weight:700;margin-bottom:2px;color:var(--mist)">Monitor Live</div><div style="font-size:.73rem;color:var(--fog);line-height:1.5">Watch scores come in real time.</div></div></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- CREATE QUIZ -->
+<section class="sec" id="sec-create">
+<div class="page-head"><div class="page-eye">Build</div><h1 class="page-title">Create Classroom Quiz</h1><p class="page-sub">Build your quiz and receive a glowing 6-digit code students use to join live.</p></div>
+<div class="create-grid">
+<div>
+<div class="card">
+<div class="card-label">Quiz Details</div>
+<div class="fg"><label class="fl">Quiz Title</label><input class="fi" id="qTitle" placeholder="e.g. Unit Test 3 — Data Structures" oninput="updatePreview()"/></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div class="fg"><label class="fl">Department</label><select class="fi" id="qDept" onchange="updatePreview()" style="background:rgba(12,7,22,.8)"><option value="">Select</option><option>Computer Science</option><option>Mathematics</option><option>Physics</option><option>Chemistry</option><option>Electronics</option><option>Commerce</option><option>English</option><option>Tamil</option><option>Biotechnology</option></select></div>
+<div class="fg"><label class="fl">Time Limit (min)</label><input class="fi" id="qTimer" type="number" value="10" min="1" max="120" oninput="updatePreview()"/></div>
+</div>
+</div>
+<div class="card">
+<div class="card-label">Add Questions</div>
+<div class="q-builder">
+<span class="qb-lbl">Question</span>
+<textarea class="fi" id="newQ" placeholder="Type the question here..." rows="2"></textarea>
+<div class="opts-grid">
+<div class="opt-row"><span class="opt-ltr">A</span><input class="opt-in" id="oA" placeholder="Option A"/></div>
+<div class="opt-row"><span class="opt-ltr">B</span><input class="opt-in" id="oB" placeholder="Option B"/></div>
+<div class="opt-row"><span class="opt-ltr">C</span><input class="opt-in" id="oC" placeholder="Option C"/></div>
+<div class="opt-row"><span class="opt-ltr">D</span><input class="opt-in" id="oD" placeholder="Option D"/></div>
+</div>
+<div style="margin-top:12px"><span class="qb-lbl">Correct Answer</span>
+<div class="ans-row">
+<label><input type="radio" name="ans" value="0" checked> A</label>
+<label><input type="radio" name="ans" value="1"> B</label>
+<label><input type="radio" name="ans" value="2"> C</label>
+<label><input type="radio" name="ans" value="3"> D</label>
+</div>
+</div>
+<div style="display:flex;gap:10px;margin-top:16px">
+<button class="btn btn-lav" onclick="addQ()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Question</button>
+<button class="btn btn-sm btn-rose" onclick="clearQ()">Clear</button>
+</div>
+</div>
+<div id="qList"></div>
+<div class="q-cnt" id="qCnt">No questions added yet</div>
+<div id="createMsg"></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<button class="btn btn-lav btn-lg" onclick="saveQuiz()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Save &amp; Generate Code</button>
+<button class="btn btn-sm" onclick="clearAll()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Clear All</button>
+</div>
+</div>
+</div>
+<div class="preview-panel">
+<div class="preview-card" style="margin-bottom:16px">
+<div class="card-label">Live Preview</div>
+<div class="preview-t" id="prevT">Quiz title will appear here</div>
+<div class="preview-m" id="prevM">Fill in the details above</div>
+<div class="preview-nums">
+<div><div class="preview-big" id="prevQN">0</div><div class="preview-lbl">Questions</div></div>
+<div style="opacity:.35;font-size:1.5rem;margin-bottom:4px">&#x2014;</div>
+<div><div class="preview-big preview-big2" id="prevTM">&#x2014;</div><div class="preview-lbl">Minutes</div></div>
+</div>
+<div class="divider"></div>
+<div id="prevQL" style="max-height:200px;overflow-y:auto"></div>
+</div>
+<div class="code-reveal" id="codeReveal">
+<div class="card-label" style="justify-content:center;margin-bottom:18px">Quiz Ready</div>
+<div class="code-box"><div class="code-lbl">Classroom Code</div><span class="code-digits" id="codeDigits">&#x2014;&#x2014;</span></div>
+<div class="code-note">Share this 6-digit code with your students to join the live session.</div>
+<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+<button class="btn btn-lav" onclick="copyCode()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy Code</button>
+<button class="btn btn-mint" onclick="activateLatest()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Start Live</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- MY QUIZZES -->
+<section class="sec" id="sec-quizzes">
+<div class="page-head"><div class="page-eye">Manage</div><h1 class="page-title">My Quizzes</h1><p class="page-sub">All classroom quizzes you have created. Click any code to copy it.</p></div>
+<div class="filter-row">
+<span style="font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase">Filter</span>
+<div class="fchip on" onclick="filterQ('all',this)">All</div>
+<div class="fchip" onclick="filterQ('active',this)">Active</div>
+<div class="fchip" onclick="filterQ('waiting',this)">Waiting</div>
+<div class="fchip" onclick="filterQ('completed',this)">Completed</div>
+<button class="btn btn-lav btn-sm" style="margin-left:auto" onclick="show('create','nd-quizzes')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Quiz</button>
+</div>
+<div class="card" style="padding:0;overflow:hidden"><div id="quizTableWrap"><div class="loading-row" style="padding:24px 20px"><div class="spinner"></div> Loading...</div></div></div>
+</section>
+
+<!-- MONITOR -->
+<section class="sec" id="sec-monitor">
+<div class="page-head"><div class="page-eye">Real-Time</div><h1 class="page-title">Live Monitor</h1><p class="page-sub">Select a quiz to watch participants join and submit in real time.</p></div>
+<div style="max-width:480px;margin-bottom:24px"><label class="fl">Select Quiz</label><select class="fi" id="monSel" onchange="loadMonitor()" style="background:rgba(12,7,22,.8)"><option value="">&#x2014; Select one of your quizzes &#x2014;</option></select></div>
+<div id="monitorArea"><div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(248,244,255,.15)" stroke-width="1.2" stroke-linecap="round" style="margin:0 auto"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><div class="empty-title">No quiz selected</div><div class="empty-desc">Choose a quiz from the dropdown above.</div></div></div>
+</section>
+
+<!-- PROFILE -->
+<section class="sec" id="sec-profile">
+<div class="page-head"><div class="page-eye">Account</div><h1 class="page-title">My Profile</h1><p class="page-sub">Update your photo and details. Your photo is visible to all students during sessions.</p></div>
+<div class="profile-layout">
+<div>
+<div class="photo-area">
+<div class="photo-wrap" onclick="document.getElementById('photoIn').click()">
+<div class="photo-ring"></div>
+<div class="photo-overlay"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><div class="po-text">Change Photo</div></div>
+<div class="photo-el" id="photoEl">T</div>
+</div>
+<div class="prof-name" id="profName">Teacher</div>
+<div class="prof-tag" id="profTag">Department</div>
+<div class="prof-email" id="profEmail">&#x2014;</div>
+<div class="photo-hint">Click the photo to upload. Your image is visible to all students.</div>
+<div class="pmini-row">
+<div class="pmini"><div class="pmini-n" id="pm1">0</div><div class="pmini-l">Quizzes</div></div>
+<div class="pmini"><div class="pmini-n" id="pm2">0</div><div class="pmini-l">Students</div></div>
+<div class="pmini"><div class="pmini-n" id="pm3">0</div><div class="pmini-l">Active</div></div>
+</div>
+</div>
+<div class="card">
+<div class="card-label">Edit Profile</div>
+<div class="fg"><label class="fl">Display Name</label><input class="fi" id="editName" placeholder="Your full name"/></div>
+<div class="fg"><label class="fl">Department</label><select class="fi" id="editDept" style="background:rgba(12,7,22,.8)"><option value="">Select</option><option>Computer Science</option><option>Mathematics</option><option>Physics</option><option>Chemistry</option><option>Electronics</option><option>Commerce</option><option>English</option><option>Tamil</option><option>Biotechnology</option></select></div>
+<div class="fg"><label class="fl">Bio (optional)</label><textarea class="fi" id="editBio" placeholder="Brief introduction about yourself..." rows="3"></textarea></div>
+<div id="profileMsg"></div>
+<button class="btn btn-lav btn-block" onclick="saveProfile()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Save Profile</button>
+</div>
+</div>
+<div>
+<div class="card" style="margin-bottom:18px">
+<div class="card-label">Teaching Overview</div>
+<div class="prs-grid">
+<div class="prs"><div class="prs-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(192,132,252,.8)" stroke-width="1.8" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6" stroke-width="2.5"/><line x1="3" y1="12" x2="3.01" y2="12" stroke-width="2.5"/><line x1="3" y1="18" x2="3.01" y2="18" stroke-width="2.5"/></svg></div><div><div class="prs-n" id="prsQ">0</div><div class="prs-l">Quizzes Created</div></div></div>
+<div class="prs"><div class="prs-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(192,132,252,.8)" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><div class="prs-n" id="prsS">0</div><div class="prs-l">Students Reached</div></div></div>
+<div class="prs"><div class="prs-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(52,211,153,.8)" stroke-width="1.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="prs-n" id="prsD">0</div><div class="prs-l">Completed</div></div></div>
+<div class="prs"><div class="prs-ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(251,146,60,.8)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="prs-n" id="prsW">0</div><div class="prs-l">Waiting/Active</div></div></div>
+</div>
+</div>
+<div class="card"><div class="card-label">Recent Activity</div><div id="profActivity"><div class="empty-state" style="padding:28px"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="rgba(248,244,255,.15)" stroke-width="1.2" stroke-linecap="round" style="margin:0 auto"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6" stroke-width="2.5"/></svg><div class="empty-title" style="font-size:.85rem">No activity yet</div></div></div></div>
+<div class="card card-lav" style="margin-top:0">
+<div class="card-label" style="margin-bottom:10px">Account</div>
+<div style="font-size:.82rem;line-height:2.2">
+<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase">Email</span><span style="font-family:'Space Mono',monospace;font-size:.74rem;color:var(--lavl)" id="profEmailAcc">&#x2014;</span></div>
+<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase">Role</span><span style="color:var(--mint);font-size:.76rem">Approved Faculty</span></div>
+<div style="display:flex;justify-content:space-between;padding:6px 0"><span style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase">Status</span><span style="color:var(--mint);font-size:.76rem">Active</span></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+
 <script>
-const cv=document.getElementById('cv'),cx=cv.getContext('2d');
+const API_URL='https://script.google.com/macros/s/AKfycbw0yYvF_vXTWl5ukxtRqcnhCeFCAvrTSM8LFEAvAzj9OtvwevZ8M2gZb-mhd6BnEPnc4A/exec';
+const API_TOKEN='quizify-pgcs';
+
+// AURORA
+const cv=document.getElementById('aur'),cx=cv.getContext('2d');
 const rsz=()=>{cv.width=innerWidth;cv.height=innerHeight};rsz();window.addEventListener('resize',rsz);
-const B=[{x:.1,y:.3,r:.5,c:'#10b981',vx:.00018,vy:.00015},{x:.9,y:.6,r:.48,c:'#06b6d4',vx:-.00015,vy:.00020},{x:.5,y:.85,r:.38,c:'#10b981',vx:.00022,vy:-.00018}];
-(function a(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#04040d';cx.fillRect(0,0,cv.width,cv.height);
-B.forEach(b=>{b.x+=b.vx;b.y+=b.vy;if(b.x<0||b.x>1)b.vx*=-1;if(b.y<0||b.y>1)b.vy*=-1;
+const B=[{x:.04,y:.1,r:.56,c:'#c084fc',vx:.00013,vy:.00011},{x:.94,y:.72,r:.62,c:'#f472b6',vx:-.00011,vy:.00015},{x:.5,y:.94,r:.5,c:'#fb923c',vx:.00016,vy:-.00012},{x:.78,y:.05,r:.4,c:'#c084fc',vx:-.00014,vy:.00018},{x:.2,y:.6,r:.44,c:'#f472b6',vx:.00012,vy:-.00016}];
+(function anim(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#0c0716';cx.fillRect(0,0,cv.width,cv.height);
+B.forEach(b=>{b.x+=b.vx;b.y+=b.vy;if(b.x<-.2||b.x>1.2)b.vx*=-1;if(b.y<-.2||b.y>1.2)b.vy*=-1;
 const g=cx.createRadialGradient(b.x*cv.width,b.y*cv.height,0,b.x*cv.width,b.y*cv.height,b.r*Math.max(cv.width,cv.height));
-g.addColorStop(0,b.c+'2e');g.addColorStop(1,'transparent');cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});
-requestAnimationFrame(a);})();
-function ensureDB(){
-  let db=JSON.parse(localStorage.getItem('quizify_db')||'null');
-  if(!db||!db._seeded){
-    if(!db)db={};
-    if(!db.users)db.users=[
-      {id:'admin1',name:'Dr. Darlon',email:'admin@quizify.edu',pass:'admin123',role:'admin',dept:'Computer Science',badge:'gold'},
-      {id:'teach1',name:'Prof. Anita',email:'teacher@quizify.edu',pass:'teach123',role:'teacher',dept:'Physics'},
-      {id:'stu1',name:'Jasmin',email:'jasmin@quizify.edu',pass:'stu12345',role:'student',dept:'Computer Science',badge:'silver'},
-    ];
-    if(!db.quizzes)db.quizzes=[];if(!db.attempts)db.attempts=[];
-    if(!db.registrations)db.registrations=[];if(!db.notifications)db.notifications=[];
-    if(!db.weeklyResults)db.weeklyResults={};if(!db.deptUsage)db.deptUsage={};
-    if(!db.winners)db.winners=[];db._seeded=true;
-    localStorage.setItem('quizify_db',JSON.stringify(db));
-  }
-  return db;
+g.addColorStop(0,b.c+'5a');g.addColorStop(.45,b.c+'1e');g.addColorStop(1,'transparent');
+cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});requestAnimationFrame(anim);})();
+
+// API
+async function GET(action,p={}){
+const url=new URL(API_URL);url.searchParams.set('action',action);url.searchParams.set('token',API_TOKEN);
+Object.entries(p).forEach(([k,v])=>url.searchParams.set(k,v));
+const r=await fetch(url.toString());const j=await r.json();
+if(j.status==='error')throw new Error(j.message);return j.data;
 }
-function doLogin(){
-  const em=document.getElementById('em').value.trim().toLowerCase();
-  const pw=document.getElementById('pw').value;
-  if(!em||!pw){showErr('Please enter your email and password.');return}
-  const db=ensureDB();
-  const u=(db.users||[]).find(x=>x.email.toLowerCase()===em&&x.pass===pw);
-  if(!u){showErr('Incorrect email or password.');return}
-  if(u.role!=='teacher'){showErr('This is the Teacher portal. Please use the '+u.role+' login page.');return}
-  sessionStorage.setItem('quizify_session',JSON.stringify(u));
-  location.href='quizify.html#/teacher';
+async function POST(action,data={}){
+const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({action,token:API_TOKEN,data})});
+const j=await r.json();if(j.status==='error')throw new Error(j.message);return j.data;
 }
-function showErr(m){const e=document.getElementById('err');e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',4000)}
-function fill(e,p){document.getElementById('em').value=e;document.getElementById('pw').value=p}
-document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
-const ses=JSON.parse(sessionStorage.getItem('quizify_session')||'null');
-if(ses&&ses.role==='teacher')location.href='quizify.html#/teacher';
+
+// STATE
+let teacher=null,quizzes=[],draftQs=[],lastQuizId=null,monTimer=null;
+function esc(s){return(s==null?'':String(s)).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
+function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v}
+function showMsg(id,html,type){
+const e=document.getElementById(id);if(!e)return;
+const m={lav:'rgba(192,132,252,.09)|rgba(192,132,252,.22)|#d8b4fe',mint:'rgba(52,211,153,.07)|rgba(52,211,153,.2)|#a7f3d0',rose:'rgba(244,63,94,.08)|rgba(244,63,94,.22)|#fda4af',peach:'rgba(251,146,60,.08)|rgba(251,146,60,.2)|#fed7aa'}[type||'lav'].split('|');
+e.innerHTML=`<div style="background:${m[0]};border:1px solid ${m[1]};color:${m[2]};border-radius:9px;padding:10px 14px;font-size:.82rem;line-height:1.55;margin:10px 0">${html}</div>`;
+setTimeout(()=>{if(e)e.innerHTML=''},6000);
+}
+function btnLoad(id,txt){const b=document.getElementById(id);if(!b)return;b.disabled=true;b.innerHTML='<div class="spinner"></div> '+txt;}
+function btnReset(id,html){const b=document.getElementById(id);if(!b)return;b.disabled=false;b.innerHTML=html;}
+
+// LOGIN FLOW
+let loginEmail='';
+function showErr(id,msg){const e=document.getElementById(id);if(!e)return;e.textContent=msg;e.style.display='block';setTimeout(()=>e.style.display='none',5000);}
+function stepDone(n){
+const sn=document.getElementById('sn'+n);sn.className='step-node done';
+sn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+const sl=document.getElementById('sl'+n);if(sl)sl.className='step-line done';
+}
+function stepActive(n){const sn=document.getElementById('sn'+n);sn.className='step-node active';const sl=document.getElementById('sl-'+n);if(sl)sl.className='step-lbl active';}
+function showPanel(id){['s-email','s-password','s-register','s-request','s-pending','s-rejected'].forEach(p=>{document.getElementById(p).style.display='none';});document.getElementById(id).style.display='block';}
+function backToEmail(){showPanel('s-email');document.getElementById('sn1').className='step-node active';document.getElementById('sn2').className='step-node';document.getElementById('sl-1').className='step-lbl active';document.getElementById('sl-2').className='step-lbl';}
+
+async function checkEmail(){
+const email=document.getElementById('emailIn').value.trim().toLowerCase();
+if(!email){showErr('emailErr','Please enter your email address.');return}
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showErr('emailErr','Please enter a valid email address.');return}
+loginEmail=email;
+btnLoad('emailBtn','Checking...');
+try{
+const r=await GET('checkTeacherStatus',{email});
+stepDone(1);stepActive(2);
+if(r.approved&&r.registered)showPanel('s-password');
+else if(r.approved&&!r.registered)showPanel('s-register');
+else if(r.requestStatus==='pending')showPanel('s-pending');
+else if(r.requestStatus==='rejected')showPanel('s-rejected');
+else showPanel('s-request');
+}catch(e){showErr('emailErr','Connection error: '+e.message+'. Check your API_URL in the config.');}
+finally{btnReset('emailBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> Continue');}
+}
+
+async function doLogin(){
+const pass=document.getElementById('passIn').value;
+if(!pass){showErr('passErr','Please enter your password.');return}
+btnLoad('passBtn','Signing in...');
+try{
+const r=await GET('loginCheck',{email:loginEmail,password:pass,role:'teacher'});
+if(r.success){teacher=r.user;sessionStorage.setItem('qf_teacher',JSON.stringify(teacher));initDash();}
+else showErr('passErr',r.message||'Incorrect password.');
+}catch(e){showErr('passErr','Error: '+e.message);}
+finally{btnReset('passBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Sign In');}
+}
+
+async function doRegister(){
+const name=document.getElementById('regName').value.trim();
+const dept=document.getElementById('regDept').value;
+const pass=document.getElementById('regPass').value;
+const pass2=document.getElementById('regPass2').value;
+if(!name||!dept||!pass){showErr('regErr','Please fill in all fields.');return}
+if(pass.length<6){showErr('regErr','Password must be at least 6 characters.');return}
+if(pass!==pass2){showErr('regErr','Passwords do not match.');return}
+btnLoad('regBtn','Creating account...');
+try{
+const r=await POST('registerTeacher',{name,email:loginEmail,password:pass,department:dept});
+if(r.success){teacher=r.user;sessionStorage.setItem('qf_teacher',JSON.stringify(teacher));initDash();}
+else showErr('regErr',r.message||'Registration failed.');
+}catch(e){showErr('regErr','Error: '+e.message);}
+finally{btnReset('regBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Create Teacher Account');}
+}
+
+async function doRequest(){
+const name=document.getElementById('reqName').value.trim();
+const dept=document.getElementById('reqDept').value;
+const msg=document.getElementById('reqMsg').value.trim();
+if(!name){showErr('reqErr','Please enter your name.');return}
+btnLoad('reqBtn','Submitting...');
+try{
+const r=await POST('requestTeacherAccess',{name,email:loginEmail,department:dept,message:msg});
+if(r.success)showPanel('s-pending');
+else showErr('reqErr',r.message||'Submission failed.');
+}catch(e){showErr('reqErr','Error: '+e.message);}
+finally{btnReset('reqBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg> Submit Access Request');}
+}
+
+document.addEventListener('keydown',e=>{
+if(e.key!=='Enter'||!document.getElementById('loginScreen')||document.getElementById('loginScreen').style.display==='none')return;
+if(document.getElementById('s-email').style.display!=='none')checkEmail();
+else if(document.getElementById('s-password').style.display!=='none')doLogin();
+else if(document.getElementById('s-register').style.display!=='none')doRegister();
+});
+
+// DROPDOWNS
+function toggleDrop(id){const g=document.getElementById(id);const was=g.classList.contains('open');document.querySelectorAll('.nav-group,.nav-pg').forEach(x=>x.classList.remove('open'));if(!was)g.classList.add('open');}
+function closeDrop(){document.querySelectorAll('.nav-group,.nav-pg').forEach(x=>x.classList.remove('open'));}
+document.addEventListener('click',e=>{if(!e.target.closest('.nav-group')&&!e.target.closest('.nav-pg'))closeDrop();});
+
+// INIT DASHBOARD
+function initDash(){
+document.getElementById('loginScreen').style.display='none';
+document.getElementById('dashboard').style.display='block';
+set('navName',teacher.name||'Teacher');set('navDept',teacher.department||'Department');
+set('greetTitle','Good day, '+(teacher.name||'Teacher').split(' ').slice(-1)[0]);
+set('profName',teacher.name||'Teacher');set('profTag',teacher.department||'');
+set('profEmail',teacher.email||'');set('profEmailAcc',teacher.email||'');
+document.getElementById('navAv').textContent=(teacher.name||'T')[0].toUpperCase();
+document.getElementById('editName').value=teacher.name||'';
+document.getElementById('editBio').value=localStorage.getItem('qf_t_bio')||'';
+const ds=document.getElementById('editDept');
+for(let i=0;i<ds.options.length;i++)if(ds.options[i].text===teacher.department){ds.selectedIndex=i;break;}
+const photo=localStorage.getItem('qf_t_photo');if(photo)applyPhoto(photo);
+loadDash();
+}
+
+function doLogout(){
+sessionStorage.removeItem('qf_teacher');teacher=null;quizzes=[];
+document.getElementById('dashboard').style.display='none';
+document.getElementById('loginScreen').style.display='flex';
+backToEmail();document.getElementById('emailIn').value='';
+}
+
+// NAVIGATION
+function show(sec,activeBtnId){
+document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+document.getElementById('sec-'+sec).classList.add('on');
+document.querySelectorAll('.nav-direct,.nav-drop-btn').forEach(b=>b.classList.remove('active'));
+if(activeBtnId)document.getElementById(activeBtnId)?.classList.add('active');
+clearInterval(monTimer);
+if(sec==='dashboard')loadDash();
+if(sec==='quizzes')loadQuizTable();
+if(sec==='monitor')loadMonitorSel();
+if(sec==='profile')loadProfile();
+}
+
+// DASHBOARD DATA
+async function loadDash(){
+try{quizzes=await GET('getClassroomQuizzesByTeacher',{teacherId:teacher.id||teacher.email});}catch(e){quizzes=[];}
+const tot=quizzes.length,act=quizzes.filter(q=>q.status==='active').length;
+const stu=quizzes.reduce((a,q)=>a+(Number(q.participantCount)||0),0);
+const done=quizzes.filter(q=>q.status==='completed').length;
+['stTotal','pm1','prsQ'].forEach(id=>set(id,tot));
+['stActive','pm3'].forEach(id=>set(id,act));
+['stStudents','pm2','prsS'].forEach(id=>set(id,stu));
+['stDone','prsD'].forEach(id=>set(id,done));
+set('prsW',tot-done);
+const recent=quizzes.slice(-5).reverse();
+document.getElementById('recentList').innerHTML=recent.length
+?`<table class="quiz-table"><thead><tr><th>Title</th><th>Code</th><th>Status</th><th>Students</th></tr></thead><tbody>${recent.map(q=>`<tr>
+<td style="font-weight:500">${esc(q.title)}<div class="t-dept">${esc(q.department)}</div></td>
+<td><span class="quiz-code" onclick="navigator.clipboard.writeText('${esc(q.code)}')" title="Click to copy">${esc(q.code)}</span></td>
+<td><span class="badge badge-${q.status==='active'?'active':q.status==='completed'?'done':'wait'}">${q.status==='active'?'<span class="badge-dot"></span>Live':q.status}</span></td>
+<td style="font-family:'Space Mono',monospace;color:var(--lav)">${q.participantCount||0}</td>
+</tr>`).join('')}</tbody></table>`
+:'<div style="color:var(--dim);font-size:.84rem;padding:10px 0">No quizzes yet. Create your first quiz to see it here.</div>';
+const activeQ=quizzes.filter(q=>q.status==='active');
+document.getElementById('activeLinks').innerHTML=activeQ.length
+?activeQ.map(q=>`<div class="drop-item" onclick="show('monitor','nd-monitor');document.getElementById('monSel').value='${q.id}';loadMonitor();closeDrop()"><svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#f43f5e"/></svg>${esc(q.title)}</div>`).join('')
+:'<div style="padding:8px 12px;font-size:.76rem;color:var(--dim)">No active sessions</div>';
+}
+
+// CREATE QUIZ
+function addQ(){
+const q=document.getElementById('newQ').value.trim();
+const opts=[document.getElementById('oA').value.trim(),document.getElementById('oB').value.trim(),document.getElementById('oC').value.trim(),document.getElementById('oD').value.trim()];
+const ans=+document.querySelector('input[name="ans"]:checked').value;
+if(!q){alert('Please enter a question.');return}
+if(opts.some(o=>!o)){alert('Please fill all 4 options.');return}
+draftQs.push({question:q,options:opts,answer:ans});renderQList();updatePreview();
+document.getElementById('newQ').value='';['oA','oB','oC','oD'].forEach(id=>document.getElementById(id).value='');
+document.querySelector('input[name="ans"][value="0"]').checked=true;
+}
+function removeQ(i){draftQs.splice(i,1);renderQList();updatePreview();}
+function clearQ(){draftQs=[];renderQList();updatePreview();}
+function clearAll(){clearQ();['qTitle','newQ','oA','oB','oC','oD'].forEach(id=>document.getElementById(id).value='');
+const cr=document.getElementById('codeReveal');cr.classList.remove('show');cr.style.display='none';}
+function renderQList(){
+set('qCnt',draftQs.length+' question'+(draftQs.length!==1?'s':'')+' added');
+document.getElementById('qList').innerHTML=draftQs.map((q,i)=>`<div class="q-item"><div style="flex:1"><div class="q-n">Question ${i+1}</div><div class="q-t">${esc(q.question)}</div><div class="q-a">Correct: ${['A','B','C','D'][q.answer]}) ${esc(q.options[q.answer])}</div></div><button onclick="removeQ(${i})" class="btn btn-rose btn-sm">Remove</button></div>`).join('');
+}
+function updatePreview(){
+set('prevT',document.getElementById('qTitle').value||'Quiz title');
+set('prevM',(document.getElementById('qDept').value||'Department')+' · '+(document.getElementById('qTimer').value||'—')+' min');
+set('prevQN',draftQs.length);set('prevTM',document.getElementById('qTimer').value||'—');
+document.getElementById('prevQL').innerHTML=draftQs.slice(0,4).map((q,i)=>`<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)"><div style="font-family:'Cinzel',serif;font-size:.54rem;color:var(--lav);font-weight:700;letter-spacing:1px;margin-bottom:2px">Q${i+1}</div><div style="font-size:.78rem;color:var(--fog)">${esc(q.question.substring(0,52))}${q.question.length>52?'...':''}</div></div>`).join('')+(draftQs.length>4?`<div style="font-size:.7rem;color:var(--dim);padding:5px 0">+ ${draftQs.length-4} more</div>`:'');
+}
+async function saveQuiz(){
+const title=document.getElementById('qTitle').value.trim();
+const dept=document.getElementById('qDept').value||teacher.department;
+const timer=+document.getElementById('qTimer').value||10;
+if(!title){showMsg('createMsg','Please enter a quiz title.','rose');return}
+if(!draftQs.length){showMsg('createMsg','Please add at least one question.','rose');return}
+showMsg('createMsg','<div style="display:flex;align-items:center;gap:8px"><div class="spinner"></div> Saving to Google Sheets...</div>','lav');
+try{
+const r=await POST('createClassroomQuiz',{title,department:dept,timer,questions:draftQs,createdBy:teacher.email});
+lastQuizId=r.quizId;set('codeDigits',r.code);
+const cr=document.getElementById('codeReveal');cr.style.display='block';requestAnimationFrame(()=>cr.classList.add('show'));
+showMsg('createMsg','Quiz saved. Share the code with your students.','mint');loadDash();
+}catch(e){showMsg('createMsg','Error: '+e.message,'rose');}
+}
+function copyCode(){const c=document.getElementById('codeDigits').textContent;navigator.clipboard.writeText(c).then(()=>alert('Code copied: '+c));}
+async function activateLatest(){
+if(!lastQuizId){alert('Save the quiz first.');return}
+try{await POST('updateClassroomQuizStatus',{id:lastQuizId,status:'active'});alert('Quiz is now live!');loadDash();}
+catch(e){alert(e.message);}
+}
+
+// MY QUIZZES
+let curFilter='all';
+async function loadQuizTable(){try{quizzes=await GET('getClassroomQuizzesByTeacher',{teacherId:teacher.id||teacher.email});}catch(e){}renderTable();}
+function filterQ(f,el){curFilter=f;document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));if(el)el.classList.add('on');renderTable();}
+function renderTable(){
+const filtered=curFilter==='all'?quizzes:quizzes.filter(q=>q.status===curFilter);
+const wrap=document.getElementById('quizTableWrap');
+if(!filtered.length){wrap.innerHTML=`<div class="empty-state" style="padding:40px"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="rgba(248,244,255,.15)" stroke-width="1.2" stroke-linecap="round" style="margin:0 auto"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><div class="empty-title">No quizzes found</div><div class="empty-desc">${curFilter!=='all'?'No quizzes with this status.':'Create your first quiz using the Quizzes menu above.'}</div><button class="btn btn-lav btn-sm" style="margin-top:14px" onclick="show('create','nd-quizzes')">Create a Quiz</button></div>`;return;}
+wrap.innerHTML=`<table class="quiz-table"><thead><tr><th>Title</th><th>Code</th><th>Department</th><th>Questions</th><th>Timer</th><th>Status</th><th>Students</th><th>Actions</th></tr></thead><tbody>${filtered.map(q=>`<tr>
+<td style="font-weight:500">${esc(q.title)}</td>
+<td><span class="quiz-code" onclick="navigator.clipboard.writeText('${esc(q.code)}')" title="Copy">${esc(q.code)}</span></td>
+<td class="t-dept">${esc(q.department)}</td>
+<td style="font-family:'Space Mono',monospace;color:var(--dim);text-align:center">${q.questions||'—'}</td>
+<td style="font-family:'Space Mono',monospace;color:var(--dim)">${q.timer} min</td>
+<td><span class="badge badge-${q.status==='active'?'active':q.status==='completed'?'done':'wait'}">${q.status==='active'?'<span class="badge-dot"></span>Live':q.status.charAt(0).toUpperCase()+q.status.slice(1)}</span></td>
+<td style="font-family:'Space Mono',monospace;color:var(--lav);text-align:center">${q.participantCount||0}</td>
+<td class="t-actions">
+${q.status==='waiting'?`<button class="btn btn-mint btn-sm" onclick="setStatus('${q.id}','active')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Start</button>`:''}
+${q.status==='active'?`<button class="btn btn-rose btn-sm" onclick="setStatus('${q.id}','completed')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Stop</button>`:''}
+<button class="btn btn-sm" onclick="show('monitor','nd-monitor');setTimeout(()=>{document.getElementById('monSel').value='${q.id}';loadMonitor();},100)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+</td></tr>`).join('')}</tbody></table>`;
+}
+async function setStatus(id,s){try{await POST('updateClassroomQuizStatus',{id,status:s});loadQuizTable();loadDash();}catch(e){alert(e.message);}}
+
+// LIVE MONITOR
+async function loadMonitorSel(){
+if(!quizzes.length){try{quizzes=await GET('getClassroomQuizzesByTeacher',{teacherId:teacher.id||teacher.email});}catch(e){}}
+const sel=document.getElementById('monSel'),cur=sel.value;
+sel.innerHTML='<option value="">— Select one of your quizzes —</option>'+quizzes.map(q=>`<option value="${esc(q.id)}">${esc(q.title)} [${esc(q.code)}] — ${q.status}</option>`).join('');
+if(cur)sel.value=cur;
+}
+async function loadMonitor(){
+clearInterval(monTimer);
+const id=document.getElementById('monSel').value;
+if(!id){document.getElementById('monitorArea').innerHTML=`<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(248,244,255,.15)" stroke-width="1.2" stroke-linecap="round" style="margin:0 auto"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><div class="empty-title">No quiz selected</div><div class="empty-desc">Choose a quiz from the dropdown above.</div></div>`;return;}
+const render=async()=>{
+const q=quizzes.find(x=>x.id===id);
+let responses=[];try{responses=await GET('getResponsesByQuiz',{quizId:id})||[];}catch(e){}
+const joined=Number(q?.participantCount||0),done=responses.length,left=responses.filter(r=>r.leftEarly==='true').length;
+const isActive=q?.status==='active';
+document.getElementById('monitorArea').innerHTML=`
+${isActive?'<div class="live-tag"><div class="live-dot"></div><span class="live-txt">Live — refreshing every 5 seconds</span></div>':''}
+<div class="monitor-top">
+<div class="mon-box"><span class="mon-n" style="color:var(--lav);text-shadow:0 0 20px rgba(192,132,252,.4)">${joined}</span><div class="mon-l">Joined</div></div>
+<div class="mon-box"><span class="mon-n" style="color:var(--rose);text-shadow:0 0 20px rgba(244,63,94,.4)">${left}</span><div class="mon-l">Left Early</div></div>
+<div class="mon-box"><span class="mon-n" style="color:var(--peach);text-shadow:0 0 20px rgba(251,146,60,.4)">${Math.max(0,joined-done)}</span><div class="mon-l">In Progress</div></div>
+<div class="mon-box"><span class="mon-n" style="color:var(--mint);text-shadow:0 0 20px rgba(52,211,153,.4)">${done}</span><div class="mon-l">Completed</div></div>
+</div>
+<div class="monitor-grid">
+<div class="card" style="padding:0;overflow:hidden">${responses.length
+?`<table class="p-table"><tr><th>Student</th><th>Department</th><th>Status</th><th>Score</th></tr>${responses.sort((a,b)=>Number(b.score)-Number(a.score)).map(r=>`<tr><td style="font-weight:500">${esc(r.studentName)}</td><td style="color:var(--fog)">${esc(r.department)}</td><td><span class="badge badge-${r.leftEarly==='true'?'active':r.score!==undefined?'done':'wait'}">${r.leftEarly==='true'?'Left':r.score!==undefined?'Done':'Active'}</span></td><td style="font-family:'Space Mono',monospace;color:var(--lav)">${r.score!==undefined?r.score+'/'+r.total:'—'}</td></tr>`).join('')}</table>`
+:`<div class="empty-state" style="padding:28px"><div class="empty-title" style="font-size:.85rem">Waiting for students</div></div>`}
+</div>
+<div class="card"><div class="card-label">Session Controls</div>
+<div style="font-size:.9rem;font-weight:500;margin-bottom:8px">${esc(q?.title||'')}</div>
+<span class="badge badge-${q?.status==='active'?'active':q?.status==='completed'?'done':'wait'}" style="margin-bottom:14px;display:inline-flex">${q?.status==='active'?'<span class="badge-dot"></span>Live':q?.status||''}</span>
+<div style="display:flex;flex-direction:column;gap:10px;margin:10px 0">
+${isActive?`<button class="btn btn-rose btn-block" onclick="setStatus('${id}','completed');loadMonitor()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>End Session</button>`:''}
+${q?.status==='waiting'?`<button class="btn btn-mint btn-block" onclick="setStatus('${id}','active');loadMonitor()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Start Session</button>`:''}
+</div>
+<div style="font-size:.76rem;color:var(--dim);line-height:2;margin-top:8px">
+<div>Code <span style="font-family:'Space Mono',monospace;color:var(--lav)">${esc(q?.code||'—')}</span></div>
+<div>Timer ${q?.timer||'—'} minutes</div>
+<div>Department ${esc(q?.department||'—')}</div>
+</div>
+</div>
+</div>`;
+};
+render();if(quizzes.find(x=>x.id===id)?.status==='active')monTimer=setInterval(render,5000);
+}
+
+// PROFILE
+function applyPhoto(data){
+const nav=document.getElementById('navAv');nav.innerHTML=`<img src="${data}" style="width:36px;height:36px;border-radius:50%;object-fit:cover">`;
+const pel=document.getElementById('photoEl');pel.style.background='none';pel.style.padding='0';
+pel.innerHTML=`<img src="${data}" style="width:140px;height:140px;border-radius:50%;object-fit:cover">`;
+}
+function handlePhoto(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const d=ev.target.result;localStorage.setItem('qf_t_photo',d);applyPhoto(d);};r.readAsDataURL(f);}
+async function loadProfile(){
+if(!quizzes.length){try{quizzes=await GET('getClassroomQuizzesByTeacher',{teacherId:teacher.id||teacher.email});}catch(e){}}
+const tot=quizzes.length,act=quizzes.filter(q=>q.status==='active').length;
+const stu=quizzes.reduce((a,q)=>a+(Number(q.participantCount)||0),0),done=quizzes.filter(q=>q.status==='completed').length;
+set('pm1',tot);set('pm2',stu);set('pm3',act);set('prsQ',tot);set('prsS',stu);set('prsD',done);set('prsW',tot-done);
+document.getElementById('profActivity').innerHTML=quizzes.slice(-5).reverse().map(q=>`<div class="ra-item"><div class="ra-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(192,132,252,.8)" stroke-width="1.8" stroke-linecap="round">${q.status==='active'?'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>':q.status==='completed'?'<polyline points="20 6 9 17 4 12"/>':'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'}</svg></div><div style="flex:1;min-width:0"><div class="ra-title">${esc(q.title)}</div><div class="ra-meta">Code <span style="font-family:'Space Mono',monospace;color:var(--lav);font-size:.7rem">${esc(q.code)}</span> · ${q.status} · ${q.participantCount||0} students</div></div></div>`).join('')||'<div style="color:var(--dim);font-size:.82rem;padding:8px 0">No activity yet.</div>';
+}
+function saveProfile(){
+const name=document.getElementById('editName').value.trim();
+const dept=document.getElementById('editDept').value;
+const bio=document.getElementById('editBio').value.trim();
+if(!name){showMsg('profileMsg','Please enter your name.','rose');return}
+teacher.name=name;if(dept)teacher.department=dept;
+localStorage.setItem('qf_t_bio',bio);
+sessionStorage.setItem('qf_teacher',JSON.stringify(teacher));
+set('navName',name);if(dept)set('navDept',dept);
+set('profName',name);if(dept)set('profTag',dept);
+set('greetTitle','Good day, '+name.split(' ').slice(-1)[0]);
+if(!document.getElementById('navAv').querySelector('img'))document.getElementById('navAv').textContent=name[0].toUpperCase();
+showMsg('profileMsg','Profile saved successfully.','mint');
+}
+
+// AUTO SESSION RESTORE
+const saved=sessionStorage.getItem('qf_teacher');
+if(saved){teacher=JSON.parse(saved);initDash();}
 </script>
 </body>
 </html>
