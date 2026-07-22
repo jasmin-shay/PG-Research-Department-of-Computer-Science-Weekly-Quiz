@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Quizify — Admin Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+--bg:#0c0716;--lav:#c084fc;--lav2:#a855f7;--lavl:#f3e8ff;
+--pink:#f472b6;--pink2:#ec4899;--pinkl:#fce7f3;
+--peach:#fb923c;--peachl:#fff7ed;
+--gold:#fbbf24;--goldl:#fffbeb;
+--mint:#34d399;--rose:#f43f5e;--sky:#38bdf8;
+--mist:#f8f4ff;--fog:rgba(248,244,255,.62);--dim:rgba(248,244,255,.32);
+--glass:rgba(255,255,255,.07);--gb:rgba(255,255,255,.13);--nav-h:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);font-family:"Inter",sans-serif;
+color:var(--mist);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+#aur{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+background:rgba(255,255,255,.09);backdrop-filter:blur(16px);
+border:1px solid rgba(255,255,255,.2);border-radius:10px;color:var(--mist);
+font-family:"Cinzel",serif;font-weight:700;font-size:.72rem;letter-spacing:1px;
+padding:10px 20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;white-space:nowrap;
+box-shadow:0 0 10px rgba(255,255,255,.05),inset 0 1px 0 rgba(255,255,255,.14)}
+.btn::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 55%);pointer-events:none;border-radius:inherit}
+.btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.32);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn-lav{background:rgba(192,132,252,.18);border-color:rgba(192,132,252,.42);color:var(--lavl);box-shadow:0 0 18px rgba(192,132,252,.28)}
+.btn-lav:hover{background:rgba(192,132,252,.28);box-shadow:0 0 36px rgba(192,132,252,.5)}
+.btn-gold{background:rgba(251,191,36,.15);border-color:rgba(251,191,36,.38);color:var(--goldl);box-shadow:0 0 16px rgba(251,191,36,.22)}
+.btn-gold:hover{background:rgba(251,191,36,.26);box-shadow:0 0 32px rgba(251,191,36,.45)}
+.btn-mint{background:rgba(52,211,153,.16);border-color:rgba(52,211,153,.35);color:#d1fae5;box-shadow:0 0 16px rgba(52,211,153,.2)}
+.btn-mint:hover{background:rgba(52,211,153,.26);box-shadow:0 0 32px rgba(52,211,153,.4)}
+.btn-rose{background:rgba(244,63,94,.13);border-color:rgba(244,63,94,.3);color:#ffe4e6}
+.btn-rose:hover{background:rgba(244,63,94,.22);box-shadow:0 0 28px rgba(244,63,94,.38)}
+.btn-peach{background:rgba(251,146,60,.16);border-color:rgba(251,146,60,.38);color:var(--peachl);box-shadow:0 0 16px rgba(251,146,60,.22)}
+.btn-peach:hover{background:rgba(251,146,60,.26);box-shadow:0 0 32px rgba(251,146,60,.45)}
+.btn-sm{padding:7px 14px;font-size:.66rem;border-radius:8px}
+.btn-lg{padding:14px 28px;font-size:.8rem;border-radius:12px}
+.btn-block{width:100%;justify-content:center}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* FORM */
+.fl{font-family:"Cinzel",serif;font-size:.62rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase;display:block;margin-bottom:8px}
+.fi{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:11px;padding:14px 17px;color:var(--mist);font-family:"Inter",sans-serif;font-size:.92rem;outline:none;transition:all .2s}
+.fi:focus{border-color:var(--lav);box-shadow:0 0 0 3px rgba(192,132,252,.15)}
+.fi::placeholder{color:var(--dim)}
+select.fi{background:rgba(12,7,22,.8);cursor:pointer}
+select.fi option{background:#180c2e;color:var(--mist)}
+textarea.fi{resize:vertical;min-height:70px}
+.fg{margin-bottom:16px}
+.spinner{width:17px;height:17px;border:2px solid rgba(192,132,252,.18);border-top-color:var(--lav);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ── LOGIN — matches screenshot exactly ── */
+#loginScreen{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.login-brand{text-align:center;margin-bottom:34px}
+.login-logo{font-family:"Cinzel",serif;font-weight:900;font-size:3rem;letter-spacing:8px;
+background:linear-gradient(135deg,var(--lav),var(--pink),var(--peach));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+filter:drop-shadow(0 0 20px rgba(192,132,252,.45));margin-bottom:8px}
+.login-brand-sub{font-family:"Cinzel",serif;font-size:.68rem;color:rgba(248,244,255,.38);letter-spacing:3px;text-transform:uppercase;line-height:1.8}
+.login-card{width:100%;max-width:440px;border-radius:22px;
+background:rgba(255,255,255,.065);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+border:1px solid rgba(192,132,252,.2);padding:36px;
+box-shadow:0 0 80px rgba(192,132,252,.08),0 24px 64px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1)}
+/* step tracker — exactly like screenshot */
+.step-row{display:flex;align-items:center;margin-bottom:10px}
+.step-node{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+font-family:"Space Mono",monospace;font-size:.72rem;font-weight:700;flex-shrink:0;
+transition:all .3s;border:1.5px solid rgba(248,244,255,.2);color:var(--dim);background:rgba(255,255,255,.04)}
+.step-node.active{background:rgba(192,132,252,.22);border-color:rgba(192,132,252,.55);
+color:var(--lavl);box-shadow:0 0 14px rgba(192,132,252,.35)}
+.step-node.done{background:rgba(52,211,153,.2);border-color:rgba(52,211,153,.45);color:#a7f3d0}
+.step-line{flex:1;height:1px;background:rgba(248,244,255,.12);margin:0 6px}
+.step-line.done{background:rgba(52,211,153,.35)}
+.step-labels{display:flex;justify-content:space-between;margin-bottom:26px}
+.step-lbl{font-family:"Cinzel",serif;font-size:.58rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase;text-align:center;flex:1;padding:0 4px}
+.step-lbl.active{color:var(--lav)}
+.lcard-eye{font-family:"Cinzel",serif;font-size:.62rem;font-weight:700;letter-spacing:3px;color:var(--lav);text-transform:uppercase;margin-bottom:8px}
+.lcard-title{font-family:"Cinzel",serif;font-size:1.5rem;font-weight:700;margin-bottom:6px;letter-spacing:.3px;color:var(--mist)}
+.lcard-sub{font-size:.84rem;color:var(--fog);line-height:1.65;margin-bottom:22px;font-weight:400}
+.lerr{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.22);border-radius:9px;padding:10px 14px;font-size:.82rem;color:#fda4af;display:none;margin-bottom:14px;line-height:1.55}
+.back-link{font-family:"Cinzel",serif;font-size:.68rem;color:var(--dim);cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;transition:color .18s}
+.back-link:hover{color:var(--fog)}
+.linfo{padding:13px 15px;border-radius:11px;margin-bottom:16px;font-size:.8rem;line-height:1.6}
+.linfo-mint{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);color:#a7f3d0}
+.linfo-peach{background:rgba(251,146,60,.07);border:1px solid rgba(251,146,60,.2);color:#fed7aa}
+.linfo-rose{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.2);color:#fda4af}
+
+/* DASHBOARD */
+#dashboard{display:none;position:relative;z-index:10;min-height:100vh}
+.top-nav{position:fixed;top:0;inset-x:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;padding:0 32px;background:rgba(12,7,22,.82);backdrop-filter:blur(28px);border-bottom:1px solid rgba(192,132,252,.15);box-shadow:0 2px 32px rgba(0,0,0,.4)}
+.nav-logo{font-family:"Cinzel",serif;font-weight:900;font-size:1.2rem;letter-spacing:5px;background:linear-gradient(135deg,var(--lav),var(--pink),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(192,132,252,.4));margin-right:32px;white-space:nowrap;cursor:pointer;line-height:1}
+.nav-logo small{font-size:.48rem;letter-spacing:2.5px;display:block;margin-top:3px;-webkit-text-fill-color:rgba(248,244,255,.4);background:none;filter:none}
+.nav-menu{display:flex;align-items:center;gap:2px;flex:1}
+.nav-direct{display:flex;align-items:center;gap:8px;font-family:"Cinzel",serif;font-size:.7rem;font-weight:700;letter-spacing:.8px;color:var(--fog);padding:8px 14px;border-radius:9px;cursor:pointer;transition:all .18s;border:none;background:none;white-space:nowrap}
+.nav-direct:hover,.nav-direct.active{background:rgba(192,132,252,.14);color:var(--lavl)}
+.nav-group{position:relative}
+.nav-drop-btn{display:flex;align-items:center;gap:8px;font-family:"Cinzel",serif;font-size:.7rem;font-weight:700;letter-spacing:.8px;color:var(--fog);padding:8px 14px;border-radius:9px;cursor:pointer;transition:all .18s;border:none;background:none;white-space:nowrap}
+.nav-drop-btn:hover,.nav-group.open .nav-drop-btn,.nav-drop-btn.active{background:rgba(192,132,252,.14);color:var(--lavl)}
+.drop-chev{transition:transform .2s;display:flex}
+.nav-group.open .drop-chev{transform:rotate(180deg)}
+.dropdown{position:absolute;top:calc(100% + 10px);left:0;min-width:215px;z-index:300;background:rgba(16,8,28,.96);backdrop-filter:blur(28px);border:1px solid rgba(192,132,252,.2);border-radius:14px;padding:8px;box-shadow:0 16px 48px rgba(0,0,0,.55);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .2s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.nav-group.open .dropdown{opacity:1;visibility:visible;transform:translateY(0);pointer-events:all}
+.drop-slbl{font-family:"Cinzel",serif;font-size:.54rem;font-weight:700;letter-spacing:2.5px;color:rgba(192,132,252,.55);text-transform:uppercase;padding:8px 12px 4px}
+.drop-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;cursor:pointer;transition:all .15s;color:var(--fog);font-size:.82rem}
+.drop-item:hover{background:rgba(192,132,252,.12);color:var(--mist)}
+.drop-item.danger{color:rgba(244,63,94,.7)}
+.drop-item.danger:hover{background:rgba(244,63,94,.1);color:#fda4af}
+.drop-sep{height:1px;background:rgba(255,255,255,.07);margin:6px 0}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.nav-pg{position:relative}
+.nav-pb{display:flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;border-radius:10px;cursor:pointer;transition:background .18s;border:none;background:none}
+.nav-pb:hover,.nav-pg.open .nav-pb{background:rgba(255,255,255,.07)}
+.nav-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Cinzel",serif;font-size:.9rem;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--lav),var(--pink));border:2px solid rgba(192,132,252,.4);box-shadow:0 0 12px rgba(192,132,252,.3);overflow:hidden;flex-shrink:0}
+.nav-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.nav-uname{font-family:"Cinzel",serif;font-size:.7rem;font-weight:700;color:var(--mist);white-space:nowrap}
+.nav-udept{font-size:.6rem;color:var(--dim);white-space:nowrap;font-family:"Cinzel",serif;letter-spacing:1px}
+.nav-pg .dropdown{left:auto;right:0;min-width:180px}
+.req-badge{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--rose);color:#fff;font-family:"Space Mono",monospace;font-size:.58rem;font-weight:700;margin-left:3px;box-shadow:0 0 8px rgba(244,63,94,.5);animation:rpulse 2s infinite}
+@keyframes rpulse{0%,100%{box-shadow:0 0 8px rgba(244,63,94,.5)}50%{box-shadow:0 0 18px rgba(244,63,94,.8)}}
+main{position:relative;z-index:10;padding:calc(var(--nav-h) + 32px) 40px 48px;min-height:100vh}
+.sec{display:none;animation:fadeUp .28s ease}
+.sec.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page-head{margin-bottom:30px}
+.page-eye{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;display:inline-block;margin-bottom:8px;background:linear-gradient(90deg,var(--lav),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-title{font-family:"Cinzel",serif;font-size:1.9rem;font-weight:700;letter-spacing:.5px;color:var(--mist);line-height:1.15;text-shadow:0 0 40px rgba(192,132,252,.2)}
+.page-sub{font-size:.87rem;color:var(--fog);line-height:1.75;margin-top:6px}
+.card{background:rgba(255,255,255,.07);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.11);border-radius:18px;padding:26px;margin-bottom:20px;box-shadow:0 4px 28px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.08)}
+.card-lav{border-color:rgba(192,132,252,.22);background:rgba(192,132,252,.05)}
+.card-label{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,var(--lav),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.card-label::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.07)}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-panel{display:flex;overflow:hidden;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.18);transition:all .22s}
+.stat-panel:hover{transform:translateY(-2px);border-color:rgba(192,132,252,.2)}
+.stat-accent{width:4px;flex-shrink:0}
+.sa-lav{background:linear-gradient(to bottom,var(--lav),var(--lav2))}.sa-pink{background:linear-gradient(to bottom,var(--pink),var(--pink2))}.sa-peach{background:linear-gradient(to bottom,var(--peach),#ea580c)}.sa-mint{background:linear-gradient(to bottom,var(--mint),#059669)}.sa-rose{background:linear-gradient(to bottom,var(--rose),#be123c)}.sa-sky{background:linear-gradient(to bottom,var(--sky),#0284c7)}
+.stat-body{padding:20px 18px;flex:1}
+.stat-number{font-family:"Space Mono",monospace;font-size:2.6rem;font-weight:700;line-height:1;letter-spacing:-2px;display:block}
+.sn-lav{background:linear-gradient(135deg,var(--lav),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(192,132,252,.3))}
+.sn-pink{background:linear-gradient(135deg,var(--pink),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(244,114,182,.3))}
+.sn-peach{background:linear-gradient(135deg,var(--peach),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(251,146,60,.3))}
+.sn-mint{background:linear-gradient(135deg,var(--mint),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(52,211,153,.3))}
+.stat-label{font-family:"Cinzel",serif;font-size:.58rem;font-weight:700;letter-spacing:2.5px;color:var(--dim);text-transform:uppercase;margin-top:8px;display:block}
+.stat-sub{font-size:.72rem;color:rgba(248,244,255,.2);margin-top:3px}
+.data-table{width:100%;border-collapse:collapse}
+.data-table thead tr{border-bottom:1px solid rgba(255,255,255,.1)}
+.data-table th{padding:12px 16px;text-align:left;font-family:"Cinzel",serif;font-size:.57rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase;background:rgba(255,255,255,.025)}
+.data-table td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.05);font-size:.84rem;color:var(--mist);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tbody tr:hover td{background:rgba(255,255,255,.04)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-family:"Cinzel",serif;font-size:.57rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.badge-wait{background:rgba(251,146,60,.12);color:#fdba74;border:1px solid rgba(251,146,60,.25)}
+.badge-active{background:rgba(244,63,94,.12);color:#fda4af;border:1px solid rgba(244,63,94,.25)}
+.badge-done{background:rgba(52,211,153,.09);color:#6ee7b7;border:1px solid rgba(52,211,153,.2)}
+.badge-pending{background:rgba(192,132,252,.12);color:var(--lavl);border:1px solid rgba(192,132,252,.28)}
+.badge-approved{background:rgba(52,211,153,.09);color:#6ee7b7;border:1px solid rgba(52,211,153,.2)}
+.badge-rejected{background:rgba(244,63,94,.1);color:#fda4af;border:1px solid rgba(244,63,94,.22)}
+.badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:bdot 1.2s ease infinite}
+@keyframes bdot{0%,100%{opacity:1}50%{opacity:.3}}
+.filter-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.fchip{font-family:"Cinzel",serif;font-size:.65rem;font-weight:700;letter-spacing:.8px;padding:7px 16px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--fog);transition:all .18s}
+.fchip:hover{color:var(--mist)}
+.fchip.on{background:rgba(192,132,252,.16);border-color:rgba(192,132,252,.35);color:var(--lavl);box-shadow:0 0 12px rgba(192,132,252,.18)}
+.q-builder{background:rgba(192,132,252,.05);border:1px solid rgba(192,132,252,.16);border-radius:14px;padding:22px;margin-bottom:16px}
+.qb-lbl{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:2px;color:rgba(192,132,252,.8);text-transform:uppercase;display:block;margin-bottom:10px}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.opt-row{display:flex;align-items:center;gap:8px}
+.opt-ltr{font-family:"Cinzel",serif;font-size:.7rem;font-weight:700;color:var(--dim);width:18px;flex-shrink:0}
+.opt-in{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;color:var(--mist);font-family:"Inter",sans-serif;font-size:.85rem;outline:none;transition:all .2s}
+.opt-in::placeholder{color:var(--dim)}
+.opt-in:focus{border-color:var(--lav);box-shadow:0 0 0 2px rgba(192,132,252,.12)}
+.ans-row{display:flex;gap:18px;margin-top:12px;flex-wrap:wrap}
+.ans-row label{display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--fog);cursor:pointer}
+.ans-row label:hover{color:var(--mist)}
+.ans-row input[type=radio]{accent-color:var(--mint);width:15px;height:15px}
+.q-item{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;margin-bottom:8px}
+.q-item:hover{border-color:rgba(192,132,252,.2)}
+.q-n{font-family:"Cinzel",serif;font-size:.57rem;color:var(--mint);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+.q-t{font-size:.85rem;color:var(--mist);margin-bottom:4px}
+.q-a{font-size:.73rem;color:var(--mint);font-weight:500}
+.q-cnt{font-family:"Cinzel",serif;font-size:.68rem;color:var(--dim);margin-bottom:16px}
+.create-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start}
+.preview-panel{position:sticky;top:calc(var(--nav-h) + 32px)}
+.preview-card{background:rgba(192,132,252,.07);border:1px solid rgba(192,132,252,.2);border-radius:16px;padding:24px;margin-bottom:16px}
+.preview-t{font-family:"Cinzel",serif;font-size:.95rem;font-weight:700;color:var(--mist);margin-bottom:4px}
+.preview-m{font-size:.76rem;color:var(--fog);margin-bottom:14px}
+.preview-nums{display:flex;align-items:flex-end;gap:20px}
+.preview-big{font-family:"Space Mono",monospace;font-size:2.2rem;font-weight:700;background:linear-gradient(135deg,var(--lav),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 14px rgba(192,132,252,.4));line-height:1}
+.preview-big2{background:linear-gradient(135deg,var(--pink),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 14px rgba(244,114,182,.4))}
+.preview-lbl{font-family:"Cinzel",serif;font-size:.55rem;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+.divider{height:1px;background:rgba(255,255,255,.07);margin:14px 0}
+.code-reveal{display:none;border-radius:16px;padding:26px;text-align:center;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1)}
+.code-reveal.show{display:block;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.code-box{display:inline-block;border-radius:16px;padding:20px 32px;margin-bottom:14px;background:rgba(12,7,22,.92);border:1px solid rgba(192,132,252,.38);box-shadow:0 0 40px rgba(192,132,252,.3),0 0 80px rgba(192,132,252,.12),inset 0 0 28px rgba(192,132,252,.07)}
+.code-lbl{font-family:"Cinzel",serif;font-size:.58rem;font-weight:700;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+.code-digits{font-family:"Space Mono",monospace;font-size:2.8rem;font-weight:700;letter-spacing:8px;background:linear-gradient(135deg,var(--lav),var(--pink),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 22px rgba(192,132,252,.65));display:block;line-height:1}
+.week-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.wtab{font-family:"Cinzel",serif;font-size:.68rem;font-weight:700;letter-spacing:.8px;padding:8px 16px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--fog);transition:all .2s}
+.wtab:hover{color:var(--mist)}
+.wtab.on{background:rgba(192,132,252,.16);border-color:rgba(192,132,252,.32);color:var(--lavl)}
+.result-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px}
+.result-card{background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:18px;text-align:center;cursor:pointer;transition:all .2s}
+.result-card:hover{border-color:rgba(192,132,252,.3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.res-av{width:48px;height:48px;border-radius:50%;margin:0 auto 10px;background:linear-gradient(135deg,var(--lav),var(--pink));display:flex;align-items:center;justify-content:center;font-family:"Cinzel",serif;font-size:1.1rem;font-weight:700;color:#fff;overflow:hidden}
+.res-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.res-name{font-family:"Cinzel",serif;font-size:.8rem;font-weight:700;margin-bottom:3px}
+.res-score{font-family:"Space Mono",monospace;font-size:1.15rem;color:var(--lav);font-weight:700;filter:drop-shadow(0 0 6px rgba(192,132,252,.3))}
+.req-card{background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.1);border-left:4px solid rgba(192,132,252,.4);border-radius:16px;padding:20px;margin-bottom:12px;transition:all .2s}
+.req-card:hover{border-color:rgba(192,132,252,.25)}
+.req-card.approved{border-left-color:rgba(52,211,153,.45)}
+.req-card.rejected{border-left-color:rgba(244,63,94,.35);opacity:.72}
+.req-name{font-family:"Cinzel",serif;font-size:.9rem;font-weight:700;color:var(--mist);margin-bottom:3px}
+.req-email{font-family:"Space Mono",monospace;font-size:.75rem;color:var(--lav);margin-bottom:4px}
+.req-dept{font-size:.76rem;color:var(--fog)}
+.req-msg{font-size:.8rem;color:var(--fog);font-style:italic;margin-top:8px;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:8px;border-left:2px solid rgba(192,132,252,.25);line-height:1.55}
+.req-date{font-size:.68rem;color:var(--dim);margin-top:6px}
+.req-actions{display:flex;gap:8px;margin-top:14px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex;animation:fadeUp .2s ease}
+.modal-box{background:rgba(18,10,30,.97);border:1px solid rgba(255,255,255,.12);border-radius:20px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.modal-head{padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center}
+.modal-head h3{font-family:"Cinzel",serif;font-size:.9rem;font-weight:700;color:var(--lav)}
+.modal-close{background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer;padding:2px 6px;border-radius:5px;transition:color .2s}
+.modal-close:hover{color:var(--mist)}
+.modal-body{padding:22px 24px}
+.detail-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.84rem;align-items:center}
+.detail-row:last-child{border-bottom:none}
+.dk{font-family:"Cinzel",serif;font-size:.6rem;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase}
+.dv{color:var(--mist);font-weight:600}
+.award-sel{background:rgba(12,7,22,.8);border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:7px 10px;color:var(--mist);font-family:"Cinzel",serif;font-size:.7rem;outline:none;cursor:pointer}
+.empty-state{text-align:center;padding:52px 24px}
+.empty-title{font-family:"Cinzel",serif;font-size:.92rem;color:var(--fog);margin-bottom:8px;margin-top:12px}
+.empty-desc{font-size:.8rem;color:var(--dim);line-height:1.7}
+.loading-row{display:flex;align-items:center;gap:10px;font-size:.84rem;color:var(--fog);padding:16px 0}
+.dash-grid{display:grid;grid-template-columns:1.65fr 1fr;gap:20px}
+@media(max-width:1100px){.stat-row{grid-template-columns:1fr 1fr}.create-grid,.dash-grid{grid-template-columns:1fr}.preview-panel{position:static}}
+@media(max-width:700px){.stat-row{grid-template-columns:1fr 1fr}.nav-menu{display:none}main{padding-top:calc(var(--nav-h) + 20px);padding-left:18px;padding-right:18px}}
+
+.job-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:14px;padding:18px;margin-bottom:10px}
+.job-type-chip{display:inline-flex;padding:2px 10px;border-radius:20px;font-family:"Cinzel",serif;font-size:.56rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;background:rgba(251,146,60,.12);color:#fdba74;border:1px solid rgba(251,146,60,.25);margin-bottom:8px}
+.job-budget{font-family:"Space Mono",monospace;font-size:.9rem;font-weight:700;color:var(--mint)}
+.status-open{background:rgba(52,211,153,.09);color:#6ee7b7;border:1px solid rgba(52,211,153,.2)}
+.status-progress{background:rgba(251,146,60,.1);color:#fdba74;border:1px solid rgba(251,146,60,.22)}
+.status-done{background:rgba(192,132,252,.09);color:var(--lavl);border:1px solid rgba(192,132,252,.2)}
+.j-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-family:"Cinzel",serif;font-size:.56rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+
+</style></head><body>
+<canvas id="aur"></canvas>
+
+<!-- LOGIN — identical template to teacher portal screenshot -->
+<div id="loginScreen">
+<div class="login-brand">
+<div class="login-logo">QUIZIFY</div>
+<div class="login-brand-sub">Admin Portal &middot; Nilgiri College of<br>Arts &amp; Science</div>
+</div>
+<div class="login-card">
+<div class="step-row" id="stepRow">
+<div class="step-node active" id="sn1">1</div>
+<div class="step-line" id="sl1"></div>
+<div class="step-node" id="sn2">2</div>
+</div>
+<div class="step-labels">
+<span class="step-lbl active" id="slbl1">Email</span>
+<span class="step-lbl" id="slbl2">Password</span>
+</div>
+
+<!-- STEP 1: EMAIL -->
+<div id="s-email">
+<div class="lcard-eye">Step 1 of 2</div>
+<div class="lcard-title">Enter Your Email</div>
+<div class="lcard-sub">Use your admin email address. Only the registered administrator can access this portal.</div>
+<div class="lerr" id="emailErr"></div>
+<div class="fg"><label class="fl">Admin Email</label>
+<input class="fi" id="emailIn" type="email" placeholder="admin@nilgiri.edu" autocomplete="email"/>
+</div>
+<button class="btn btn-lav btn-block btn-lg" id="emailBtn" onclick="checkEmail()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+Continue
+</button>
+</div>
+
+<!-- STEP 2A: PASSWORD -->
+<div id="s-password" style="display:none">
+<div class="back-link" onclick="backToEmail()">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+Change email
+</div>
+<div class="lcard-eye">Step 2 of 2</div>
+<div class="lcard-title">Welcome, Admin</div>
+<div class="lcard-sub">Enter your password to access the Admin Portal.</div>
+<div class="lerr" id="passErr"></div>
+<div class="fg"><label class="fl">Password</label>
+<input class="fi" id="passIn" type="password" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" autocomplete="current-password"/>
+</div>
+<button class="btn btn-lav btn-block btn-lg" id="passBtn" onclick="doLogin()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+Sign In
+</button>
+</div>
+
+<!-- STEP 2B: FIRST TIME SETUP (only if Admins sheet is empty) -->
+<div id="s-setup" style="display:none">
+<div class="lcard-eye">First Time Setup</div>
+<div class="lcard-title">Create Admin Account</div>
+<div class="lcard-sub">No admin account found in the database. Create the first admin account. This option is permanently locked after setup.</div>
+<div class="linfo linfo-peach" style="margin-bottom:18px">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:middle;margin-right:6px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+This setup runs only once. The Admins sheet in Google Sheets is currently empty.
+</div>
+<div class="lerr" id="setupErr"></div>
+<div class="fg"><label class="fl">Your Full Name</label><input class="fi" id="setupName" placeholder="Admin Name"/></div>
+<div class="fg"><label class="fl">Admin Email</label><input class="fi" id="setupEmail" type="email" placeholder="admin@nilgiri.edu"/></div>
+<div class="fg"><label class="fl">Set Password</label><input class="fi" id="setupPass" type="password" placeholder="Minimum 6 characters"/></div>
+<button class="btn btn-mint btn-block btn-lg" id="setupBtn" onclick="doSetup()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+Create Admin Account
+</button>
+</div>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+<nav class="top-nav">
+<div class="nav-logo" onclick="show('dashboard')">QUIZIFY<small>Admin Portal</small></div>
+<div class="nav-menu">
+<button class="nav-direct active" id="nd-dashboard" onclick="show('dashboard',this)">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+Overview
+</button>
+<div class="nav-group" id="ng-weekly">
+<button class="nav-drop-btn" id="nd-weekly" onclick="toggleDrop('ng-weekly')">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+Weekly Quiz
+<span class="drop-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+</button>
+<div class="dropdown">
+<div class="drop-slbl">Weekly Quiz</div>
+<div class="drop-item" onclick="show('create-weekly','nd-weekly');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create New Quiz</div>
+<div class="drop-item" onclick="show('all-weekly','nd-weekly');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6" stroke-width="2.5"/></svg>All Weekly Quizzes</div>
+<div class="drop-item" onclick="show('results','nd-weekly');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>View Results</div>
+</div>
+</div>
+<div class="nav-group" id="ng-students">
+<button class="nav-drop-btn" id="nd-students" onclick="toggleDrop('ng-students')">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+Students
+<span class="drop-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+</button>
+<div class="dropdown">
+<div class="drop-slbl">Students</div>
+<div class="drop-item" onclick="show('all-students','nd-students');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>All Students</div>
+<div class="drop-item" onclick="show('badges','nd-students');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>Award Badges</div>
+</div>
+</div>
+<div class="nav-group" id="ng-faculty">
+<button class="nav-drop-btn" id="nd-faculty" onclick="toggleDrop('ng-faculty')">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+Faculty
+<span id="reqBadgeNav" class="req-badge" style="display:none">0</span>
+<span class="drop-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+</button>
+<div class="dropdown">
+<div class="drop-slbl">Faculty</div>
+<div class="drop-item" onclick="show('faculty','nd-faculty');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Approved Teachers</div>
+<div class="drop-item" onclick="show('requests','nd-faculty');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg>Access Requests <span id="reqBadgeDrop" class="req-badge" style="display:none">0</span></div>
+<div class="drop-sep"></div>
+<div class="drop-slbl">Freelance</div>
+<div class="drop-item" onclick="show('freelance','nd-faculty');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>Freelance Board</div>
+<div class="drop-item" onclick="show('all-quizzes','nd-faculty');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>All Classroom Quizzes</div>
+</div>
+</div>
+</div>
+<div class="nav-right">
+<div class="nav-pg" id="ng-profile">
+<button class="nav-pb" onclick="toggleDrop('ng-profile')">
+<div class="nav-av" id="navAv">A</div>
+<div style="text-align:left"><div class="nav-uname" id="navName">Admin</div><div class="nav-udept">Administrator</div></div>
+<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="color:var(--dim)"><polyline points="6 9 12 15 18 9"/></svg>
+</button>
+<div class="dropdown">
+<div class="drop-item danger" onclick="doLogout()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</div>
+</div>
+</div>
+</div>
+</nav>
+<main>
+<section class="sec on" id="sec-dashboard">
+<div class="page-head"><div class="page-eye">Admin Overview</div><h1 class="page-title">Dashboard</h1><p class="page-sub">Live platform statistics fetched from Google Sheets.</p></div>
+<div id="statsRow"><div class="loading-row"><div class="spinner"></div> Loading from database...</div></div>
+<div class="dash-grid" id="dashGrid" style="display:none">
+<div class="card"><div class="card-label">Top Students</div><div id="topStudentsEl"></div></div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div class="card card-lav"><div class="card-label">Active Weekly Quiz</div><div id="activeQuizEl"></div></div>
+<div class="card"><div class="card-label">Quick Actions</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<button class="btn btn-lav btn-block" onclick="show('create-weekly','nd-weekly')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create Weekly Quiz</button>
+<button class="btn btn-block" onclick="show('requests','nd-faculty')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg>Faculty Requests <span id="reqBadgeBtn" class="req-badge" style="display:none">0</span></button>
+<button class="btn btn-block" onclick="show('badges','nd-students')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>Award Badges</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="sec-create-weekly">
+<div class="page-head"><div class="page-eye">Weekly Quiz</div><h1 class="page-title">Create Weekly Quiz</h1><p class="page-sub">Build this week's campus-wide quiz. Goes live immediately and deactivates the previous one.</p></div>
+<div class="create-grid">
+<div>
+<div class="card">
+<div class="card-label">Quiz Details</div>
+<div class="fg"><label class="fl">Quiz Title</label><input class="fi" id="wqTitle" placeholder="e.g. Week 5 — Operating Systems" oninput="updateWP()"/></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div class="fg"><label class="fl">Week Number</label><input class="fi" id="wqNum" type="number" placeholder="5" min="1" oninput="updateWP()"/></div>
+<div class="fg"><label class="fl">Time Limit (min)</label><input class="fi" id="wqTimer" type="number" value="15" min="1" oninput="updateWP()"/></div>
+</div>
+</div>
+<div class="card">
+<div class="card-label">Add Questions</div>
+<div class="q-builder">
+<span class="qb-lbl">Question</span>
+<textarea class="fi" id="wqQ" placeholder="Type the question here..." rows="2"></textarea>
+<div class="opts-grid">
+<div class="opt-row"><span class="opt-ltr">A</span><input class="opt-in" id="wqA" placeholder="Option A"/></div>
+<div class="opt-row"><span class="opt-ltr">B</span><input class="opt-in" id="wqB" placeholder="Option B"/></div>
+<div class="opt-row"><span class="opt-ltr">C</span><input class="opt-in" id="wqC" placeholder="Option C"/></div>
+<div class="opt-row"><span class="opt-ltr">D</span><input class="opt-in" id="wqD" placeholder="Option D"/></div>
+</div>
+<div style="margin-top:12px"><span class="qb-lbl">Correct Answer</span>
+<div class="ans-row"><label><input type="radio" name="wans" value="0" checked> A</label><label><input type="radio" name="wans" value="1"> B</label><label><input type="radio" name="wans" value="2"> C</label><label><input type="radio" name="wans" value="3"> D</label></div>
+</div>
+<div style="display:flex;gap:10px;margin-top:16px">
+<button class="btn btn-lav" onclick="addWQ()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Question</button>
+<button class="btn btn-sm btn-rose" onclick="clearWQ()">Clear</button>
+</div>
+</div>
+<div id="wqList"></div>
+<div class="q-cnt" id="wqCnt">No questions added yet</div>
+<div id="wqMsg"></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<button class="btn btn-lav btn-lg" onclick="publishWQ()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>Publish Weekly Quiz</button>
+<button class="btn btn-sm" onclick="clearAllWQ()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>Clear All</button>
+</div>
+</div>
+</div>
+<div class="preview-panel">
+<div class="preview-card" style="margin-bottom:16px">
+<div class="card-label">Live Preview</div>
+<div class="preview-t" id="wprevT">Quiz title</div>
+<div class="preview-m" id="wprevM">Fill details above</div>
+<div class="preview-nums"><div><div class="preview-big" id="wprevQN">0</div><div class="preview-lbl">Questions</div></div><div style="opacity:.35;font-size:1.5rem;margin-bottom:4px">&#x2014;</div><div><div class="preview-big preview-big2" id="wprevTM">&#x2014;</div><div class="preview-lbl">Minutes</div></div></div>
+<div class="divider"></div>
+<div id="wprevQL" style="max-height:200px;overflow-y:auto"></div>
+</div>
+<div class="code-reveal" id="wqReveal">
+<div class="card-label" style="justify-content:center;margin-bottom:14px">Published</div>
+<div class="code-box"><div class="code-lbl">Weekly Quiz Status</div><span class="code-digits" style="font-size:2rem;letter-spacing:4px">LIVE</span></div>
+<div style="font-size:.76rem;color:var(--dim);line-height:1.6;margin-top:12px">Students can now join the weekly quiz from the Student Portal.</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="sec" id="sec-all-weekly">
+<div class="page-head"><div class="page-eye">Weekly Quiz</div><h1 class="page-title">All Weekly Quizzes</h1><p class="page-sub">Manage status of all campus-wide weekly quizzes.</p></div>
+<div class="card" style="padding:0;overflow:hidden"><div id="allWeeklyEl"><div class="loading-row" style="padding:24px 20px"><div class="spinner"></div> Loading...</div></div></div>
+</section>
+
+<section class="sec" id="sec-results">
+<div class="page-head"><div class="page-eye">Results</div><h1 class="page-title">Weekly Quiz Results</h1><p class="page-sub">Select a week to see student submissions. Click any card for full details.</p></div>
+<div class="week-tabs" id="weekTabsEl"></div>
+<div id="resultAreaEl"></div>
+</section>
+
+<section class="sec" id="sec-all-students">
+<div class="page-head"><div class="page-eye">Students</div><h1 class="page-title">All Students</h1><p class="page-sub">All registered students fetched from Google Sheets.</p></div>
+<div class="card" style="padding:0;overflow:hidden"><div id="allStudentsEl"><div class="loading-row" style="padding:24px 20px"><div class="spinner"></div> Loading...</div></div></div>
+</section>
+
+<section class="sec" id="sec-badges">
+<div class="page-head"><div class="page-eye">Recognition</div><h1 class="page-title">Award Badges</h1><p class="page-sub">Award Bronze, Silver, or Gold badges to top-performing students.</p></div>
+<div class="card" style="padding:0;overflow:hidden"><div id="badgeTableEl"><div class="loading-row" style="padding:24px 20px"><div class="spinner"></div> Loading students from database...</div></div></div>
+</section>
+
+<section class="sec" id="sec-faculty">
+<div class="page-head"><div class="page-eye">Faculty Management</div><h1 class="page-title">Approved Teachers</h1><p class="page-sub">Only emails in this list can register and log in as teachers. All data is from the ApprovedTeachers sheet.</p></div>
+<div class="card card-lav" style="margin-bottom:20px">
+<div class="card-label">Add Teacher Email</div>
+<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end">
+<div class="fg" style="margin-bottom:0"><label class="fl">Email</label><input class="fi" id="newTEmail" type="email" placeholder="faculty@nilgiri.edu"/></div>
+<div class="fg" style="margin-bottom:0"><label class="fl">Name (optional)</label><input class="fi" id="newTName" placeholder="Prof. Name"/></div>
+<button class="btn btn-mint" onclick="addTeacher()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+</div>
+<div id="addTeacherMsg"></div>
+</div>
+<div class="card" style="padding:0;overflow:hidden"><div id="teacherListEl"><div class="loading-row" style="padding:24px 20px"><div class="spinner"></div> Loading...</div></div></div>
+</section>
+
+<section class="sec" id="sec-requests">
+<div class="page-head"><div class="page-eye">Faculty Requests</div><h1 class="page-title">Access Requests</h1><p class="page-sub">Teachers who are not on the approved list can request access. All requests are stored in the TeacherRequests sheet in Google Sheets. Approve or reject directly from here.</p></div>
+<div class="filter-row">
+<span style="font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase">Filter</span>
+<div class="fchip on" onclick="filterReqs('all',this)">All</div>
+<div class="fchip" onclick="filterReqs('pending',this)">Pending</div>
+<div class="fchip" onclick="filterReqs('approved',this)">Approved</div>
+<div class="fchip" onclick="filterReqs('rejected',this)">Rejected</div>
+</div>
+<div id="requestsEl"><div class="loading-row"><div class="spinner"></div> Loading requests from database...</div></div>
+</section>
+
+<section class="sec" id="sec-all-quizzes">
+<div class="page-head"><div class="page-eye">Classroom Quizzes</div><h1 class="page-title">All Quizzes</h1><p class="page-sub">All classroom quizzes created by teachers across all departments.</p></div>
+<div class="card" style="padding:0;overflow:hidden"><div id="allQuizzesEl"><div class="loading-row" style="padding:24px 20px"><div class="spinner"></div> Loading...</div></div></div>
+</section>
+
+<!-- FREELANCE BOARD ADMIN -->
+<section class="sec" id="sec-freelance">
+<div class="page-head"><div class="page-eye">Freelance Management</div><h1 class="page-title">Freelance Board</h1><p class="page-sub">All job requests posted by students and teachers. See who applied and manage status.</p></div>
+
+<div class="filter-row" id="flFilter">
+<span style="font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase">Filter</span>
+<div class="fchip on" onclick="filterJobs('all',this)">All</div>
+<div class="fchip" onclick="filterJobs('open',this)">Open</div>
+<div class="fchip" onclick="filterJobs('in-progress',this)">In Progress</div>
+<div class="fchip" onclick="filterJobs('completed',this)">Completed</div>
+</div>
+
+<div id="adminJobsList"><div class="loading-row"><div class="spinner"></div> Loading jobs from database...</div></div>
+</section>
+
+</main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="stuModal">
+<div class="modal-box">
+<div class="modal-head"><h3>Student Result</h3><button class="modal-close" onclick="closeModal()">&#x2715;</button></div>
+<div class="modal-body" id="stuModalBody"></div>
+</div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════
+// # DATABASE CONNECTION — PASTE YOUR VALUES HERE
+// # 1. API_URL -> Your Google Apps Script Web App deployment URL
+// # 2. API_TOKEN -> Must exactly match SECRET_TOKEN in Code.gs
+// # Everything below this line reads/writes live Google Sheets data.
+// # There is NO demo/hardcoded data anywhere in this file.
+// ════════════════════════════════════════════════════════════
+const API_URL='https://script.google.com/macros/s/AKfycbw0yYvF_vXTWl5ukxtRqcnhCeFCAvrTSM8LFEAvAzj9OtvwevZ8M2gZb-mhd6BnEPnc4A/exec'; // # <-- PASTE DEPLOYMENT URL HERE
+const API_TOKEN='quizify-pgcs'; // # <-- MUST MATCH Code.gs SECRET_TOKEN
+
+// ── AURORA ──────────────────────────────────────────────
+const cv=document.getElementById('aur'),cx=cv.getContext('2d');
+const rsz=()=>{cv.width=innerWidth;cv.height=innerHeight};rsz();window.addEventListener('resize',rsz);
+const B=[{x:.04,y:.1,r:.56,c:'#c084fc',vx:.00013,vy:.00011},{x:.94,y:.72,r:.62,c:'#f472b6',vx:-.00011,vy:.00015},{x:.5,y:.94,r:.5,c:'#fb923c',vx:.00016,vy:-.00012},{x:.78,y:.05,r:.4,c:'#c084fc',vx:-.00014,vy:.00018},{x:.2,y:.6,r:.44,c:'#f472b6',vx:.00012,vy:-.00016}];
+(function anim(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#0c0716';cx.fillRect(0,0,cv.width,cv.height);
+B.forEach(b=>{b.x+=b.vx;b.y+=b.vy;if(b.x<-.2||b.x>1.2)b.vx*=-1;if(b.y<-.2||b.y>1.2)b.vy*=-1;
+const g=cx.createRadialGradient(b.x*cv.width,b.y*cv.height,0,b.x*cv.width,b.y*cv.height,b.r*Math.max(cv.width,cv.height));
+g.addColorStop(0,b.c+'5a');g.addColorStop(.45,b.c+'1e');g.addColorStop(1,'transparent');
+cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});requestAnimationFrame(anim);})();
+
+// ── API ──────────────────────────────────────────────────
+async function GET(action,p={}){
+const url=new URL(API_URL);url.searchParams.set('action',action);url.searchParams.set('token',API_TOKEN);
+Object.entries(p).forEach(([k,v])=>url.searchParams.set(k,v));
+const r=await fetch(url.toString());const j=await r.json();
+if(j.status==='error')throw new Error(j.message);return j.data;
+}
+async function POST(action,data={}){
+const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({action,token:API_TOKEN,data})});
+const j=await r.json();if(j.status==='error')throw new Error(j.message);return j.data;
+}
+
+// ── STATE ────────────────────────────────────────────────
+let admin=null,allStudentsCache=[],allRequestsCache=[],reqFilter='all',wqDraft=[];
+function esc(s){return(s==null?'':String(s)).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
+function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v}
+function showMsg(id,html,type){
+const e=document.getElementById(id);if(!e)return;
+const c={lav:'rgba(192,132,252,.09)|rgba(192,132,252,.22)|#d8b4fe',mint:'rgba(52,211,153,.07)|rgba(52,211,153,.2)|#a7f3d0',rose:'rgba(244,63,94,.08)|rgba(244,63,94,.22)|#fda4af',peach:'rgba(251,146,60,.08)|rgba(251,146,60,.2)|#fed7aa'}[type||'lav'].split('|');
+e.innerHTML=`<div style="background:${c[0]};border:1px solid ${c[1]};color:${c[2]};border-radius:9px;padding:10px 14px;font-size:.82rem;line-height:1.55;margin:10px 0">${html}</div>`;
+setTimeout(()=>{if(e)e.innerHTML=''},6000);
+}
+function btnLoad(id,t){const b=document.getElementById(id);if(!b)return;b.disabled=true;b.innerHTML='<div class="spinner"></div> '+t;}
+function btnReset(id,h){const b=document.getElementById(id);if(!b)return;b.disabled=false;b.innerHTML=h;}
+
+// ── LOGIN ────────────────────────────────────────────────
+let loginEmail='';
+function showErr(id,m){const e=document.getElementById(id);if(!e)return;e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',5500);}
+function stepDone(n){
+const sn=document.getElementById('sn'+n);sn.className='step-node done';
+sn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+const sl=document.getElementById('sl'+n);if(sl)sl.className='step-line done';
+}
+function stepActive(n){document.getElementById('sn'+n).className='step-node active';document.getElementById('slbl'+n).className='step-lbl active';}
+function showPanel(id){['s-email','s-password','s-setup'].forEach(p=>document.getElementById(p).style.display='none');document.getElementById(id).style.display='block';}
+function backToEmail(){showPanel('s-email');document.getElementById('sn1').className='step-node active';document.getElementById('sn2').className='step-node';document.getElementById('slbl1').className='step-lbl active';document.getElementById('slbl2').className='step-lbl';}
+
+async function checkEmail(){
+const email=document.getElementById('emailIn').value.trim().toLowerCase();
+if(!email){showErr('emailErr','Please enter your email address.');return}
+if(!email.endsWith('@nilgiri.edu')){showErr('emailErr','Please use your college email ending with @nilgiri.edu');return}
+loginEmail=email;
+btnLoad('emailBtn','Checking...');
+try{
+// 1. Check if any admin exists in the Admins sheet
+const exists=await GET('checkAdminExists');
+if(!exists.exists){
+// No admin in database yet — show first-time setup
+showPanel('s-setup');
+btnReset('emailBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> Continue');
+return;
+}
+// 2. Check if this specific email exists in the Admins sheet
+const adminRec=await GET('getAdmin',{email});
+if(!adminRec){
+showErr('emailErr','No admin account found for this email address.');
+btnReset('emailBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> Continue');
+return;
+}
+// 3. Email found — proceed to password
+stepDone(1);stepActive(2);showPanel('s-password');
+}catch(e){showErr('emailErr','Connection error: '+e.message+'. Check API_URL.');}
+finally{btnReset('emailBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> Continue');}
+}
+
+async function doLogin(){
+const pass=document.getElementById('passIn').value;
+if(!pass){showErr('passErr','Please enter your password.');return}
+btnLoad('passBtn','Signing in...');
+try{
+// Validates email+password against Admins sheet in Google Sheets
+const r=await GET('loginCheck',{email:loginEmail,password:pass,role:'admin'});
+if(r.success){admin=r.user;sessionStorage.setItem('qf_admin',JSON.stringify(admin));initDash();}
+else showErr('passErr',r.message||'Incorrect password.');
+}catch(e){showErr('passErr','Error: '+e.message);}
+finally{btnReset('passBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Sign In');}
+}
+
+async function doSetup(){
+const name=document.getElementById('setupName').value.trim();
+const email=document.getElementById('setupEmail').value.trim().toLowerCase();
+const pass=document.getElementById('setupPass').value;
+if(!name||!email||!pass){showErr('setupErr','Please fill in all fields.');return}
+if(pass.length<6){showErr('setupErr','Password must be at least 6 characters.');return}
+btnLoad('setupBtn','Creating...');
+try{
+// Writes to Admins sheet — only works if sheet is empty
+const r=await POST('setupFirstAdmin',{name,email,password:pass});
+if(r.success){admin={name,email,role:'admin'};sessionStorage.setItem('qf_admin',JSON.stringify(admin));initDash();}
+else showErr('setupErr',r.message||'Setup failed.');
+}catch(e){showErr('setupErr','Error: '+e.message);}
+finally{btnReset('setupBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Create Admin Account');}
+}
+
+document.addEventListener('keydown',e=>{
+if(e.key!=='Enter'||!document.getElementById('loginScreen')||document.getElementById('loginScreen').style.display==='none')return;
+if(document.getElementById('s-email').style.display!=='none')checkEmail();
+else if(document.getElementById('s-password').style.display!=='none')doLogin();
+else if(document.getElementById('s-setup').style.display!=='none')doSetup();
+});
+
+// ── DROPDOWNS ────────────────────────────────────────────
+function toggleDrop(id){const g=document.getElementById(id);const was=g.classList.contains('open');document.querySelectorAll('.nav-group,.nav-pg').forEach(x=>x.classList.remove('open'));if(!was)g.classList.add('open');}
+function closeDrop(){document.querySelectorAll('.nav-group,.nav-pg').forEach(x=>x.classList.remove('open'));}
+document.addEventListener('click',e=>{if(!e.target.closest('.nav-group')&&!e.target.closest('.nav-pg'))closeDrop();});
+
+// ── INIT DASHBOARD ───────────────────────────────────────
+function initDash(){
+document.getElementById('loginScreen').style.display='none';
+document.getElementById('dashboard').style.display='block';
+set('navName',admin.name||'Admin');
+loadOverview();
+loadRequestsBadge();
+}
+function doLogout(){sessionStorage.removeItem('qf_admin');admin=null;document.getElementById('dashboard').style.display='none';document.getElementById('loginScreen').style.display='flex';backToEmail();document.getElementById('emailIn').value='';}
+
+// ── NAVIGATION ───────────────────────────────────────────
+function show(sec,activeBtnId){
+document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+document.getElementById('sec-'+sec).classList.add('on');
+document.querySelectorAll('.nav-direct,.nav-drop-btn').forEach(b=>b.classList.remove('active'));
+if(activeBtnId)document.getElementById(activeBtnId)?.classList.add('active');
+if(sec==='dashboard')loadOverview();
+if(sec==='all-weekly')loadAllWeekly();
+if(sec==='results')loadResults();
+if(sec==='all-students')loadAllStudents();
+if(sec==='badges')loadBadges();
+if(sec==='faculty')loadFaculty();
+if(sec==='requests'){loadRequests();loadRequestsBadge();}
+if(sec==='all-quizzes')loadAllQuizzes();
+if(sec==='freelance')loadFreelance();
+if(sec==='freelance')loadFreelance();
+}
+
+// ── OVERVIEW — all from getDashboardData() ───────────────
+async function loadOverview(){
+try{
+const d=await GET('getDashboardData');
+const c=d.counts||{};
+document.getElementById('statsRow').innerHTML=`<div class="stat-row">
+<div class="stat-panel"><div class="stat-accent sa-lav"></div><div class="stat-body"><span class="stat-number sn-lav">${c.students||0}</span><span class="stat-label">Students</span><div class="stat-sub">Registered</div></div></div>
+<div class="stat-panel"><div class="stat-accent sa-pink"></div><div class="stat-body"><span class="stat-number sn-pink">${c.teachers||0}</span><span class="stat-label">Teachers</span><div class="stat-sub">Registered</div></div></div>
+<div class="stat-panel"><div class="stat-accent sa-peach"></div><div class="stat-body"><span class="stat-number sn-peach">${c.wQuizzes||0}</span><span class="stat-label">Weekly Quizzes</span><div class="stat-sub">All time</div></div></div>
+<div class="stat-panel"><div class="stat-accent sa-mint"></div><div class="stat-body"><span class="stat-number sn-mint">${c.cQuizzes||0}</span><span class="stat-label">Class Quizzes</span><div class="stat-sub">By teachers</div></div></div>
+<div class="stat-panel"><div class="stat-accent sa-peach"></div><div class="stat-body"><span class="stat-number sn-peach" id="flJobCount">&#x2014;</span><span class="stat-label">Freelance Jobs</span><div class="stat-sub">All posted</div></div></div>
+</div>`;
+document.getElementById('dashGrid').style.display='grid';
+document.getElementById('topStudentsEl').innerHTML=(d.topStudents||[]).length
+?`<table class="data-table"><thead><tr><th>#</th><th>Student</th><th>Department</th><th>Score</th></tr></thead><tbody>${d.topStudents.map((s,i)=>`<tr><td style="font-family:'Space Mono',monospace;color:var(--lav)">${i+1}</td><td style="font-weight:500">${esc(s.name)}</td><td style="color:var(--fog)">${esc(s.dept)}</td><td style="font-family:'Space Mono',monospace;color:var(--lav)">${s.score}</td></tr>`).join('')}</tbody></table>`
+:'<div style="color:var(--dim);font-size:.84rem;padding:8px 0">No student data yet.</div>';
+document.getElementById('activeQuizEl').innerHTML=d.activeQuiz
+?`<div style="font-size:.88rem;font-weight:500;color:var(--mist);margin-bottom:6px">${esc(d.activeQuiz.title)}</div><div style="font-size:.76rem;color:var(--fog);margin-bottom:12px">Week ${d.activeQuiz.weekNumber} &middot; ${d.activeQuiz.timer} min</div><span class="badge badge-active"><span class="badge-dot"></span>Live Now</span><div style="margin-top:12px"><button class="btn btn-rose btn-sm" onclick="endWQ('${d.activeQuiz.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>End Quiz</button></div>`
+:'<div style="color:var(--dim);font-size:.84rem;line-height:1.65">No quiz is live now.<br><br><button class="btn btn-lav btn-sm" onclick="show(\'create-weekly\',\'nd-weekly\')">Create Weekly Quiz</button></div>';
+}catch(e){document.getElementById('statsRow').innerHTML=`<div style="color:#fda4af;padding:14px;font-size:.83rem">Failed to load: ${esc(e.message)}</div>`;}
+}
+
+// ── WEEKLY QUIZ BUILDER ──────────────────────────────────
+function addWQ(){
+const q=document.getElementById('wqQ').value.trim();
+const opts=[document.getElementById('wqA').value.trim(),document.getElementById('wqB').value.trim(),document.getElementById('wqC').value.trim(),document.getElementById('wqD').value.trim()];
+const ans=+document.querySelector('input[name="wans"]:checked').value;
+if(!q){alert('Please enter a question.');return}if(opts.some(o=>!o)){alert('Please fill all 4 options.');return}
+wqDraft.push({question:q,options:opts,answer:ans});renderWQL();updateWP();
+document.getElementById('wqQ').value='';['wqA','wqB','wqC','wqD'].forEach(id=>document.getElementById(id).value='');
+document.querySelector('input[name="wans"][value="0"]').checked=true;
+}
+function removeWQ(i){wqDraft.splice(i,1);renderWQL();updateWP();}
+function clearWQ(){wqDraft=[];renderWQL();updateWP();}
+function clearAllWQ(){clearWQ();['wqTitle','wqNum','wqQ','wqA','wqB','wqC','wqD'].forEach(id=>document.getElementById(id).value='');const cr=document.getElementById('wqReveal');cr.classList.remove('show');cr.style.display='none';}
+function renderWQL(){
+set('wqCnt',wqDraft.length+' question'+(wqDraft.length!==1?'s':'')+' added');
+document.getElementById('wqList').innerHTML=wqDraft.map((q,i)=>`<div class="q-item"><div style="flex:1"><div class="q-n">Question ${i+1}</div><div class="q-t">${esc(q.question)}</div><div class="q-a">Correct: ${['A','B','C','D'][q.answer]}) ${esc(q.options[q.answer])}</div></div><button onclick="removeWQ(${i})" class="btn btn-rose btn-sm">Remove</button></div>`).join('');
+}
+function updateWP(){
+set('wprevT',document.getElementById('wqTitle').value||'Quiz title');
+const n=document.getElementById('wqNum').value,t=document.getElementById('wqTimer').value;
+set('wprevM','Week '+(n||'?')+' \u00b7 '+(t||'\u2014')+' min');
+set('wprevQN',wqDraft.length);set('wprevTM',t||'\u2014');
+document.getElementById('wprevQL').innerHTML=wqDraft.slice(0,4).map((q,i)=>`<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)"><div style="font-family:'Cinzel',serif;font-size:.54rem;color:var(--lav);font-weight:700;letter-spacing:1px;margin-bottom:2px">Q${i+1}</div><div style="font-size:.78rem;color:var(--fog)">${esc(q.question.substring(0,52))}${q.question.length>52?'...':''}</div></div>`).join('')+(wqDraft.length>4?`<div style="font-size:.7rem;color:var(--dim);padding:5px 0">+ ${wqDraft.length-4} more</div>`:'');
+}
+async function publishWQ(){
+const title=document.getElementById('wqTitle').value.trim();
+const weekNumber=+document.getElementById('wqNum').value;
+const timer=+document.getElementById('wqTimer').value||15;
+if(!title){showMsg('wqMsg','Please enter a quiz title.','rose');return}
+if(!weekNumber){showMsg('wqMsg','Please enter a week number.','rose');return}
+if(!wqDraft.length){showMsg('wqMsg','Please add at least one question.','rose');return}
+showMsg('wqMsg','<div style="display:flex;align-items:center;gap:8px"><div class="spinner"></div> Saving to Google Sheets...</div>','lav');
+try{
+await POST('createWeeklyQuiz',{title,weekNumber,timer,questions:wqDraft,createdBy:admin.email});
+const cr=document.getElementById('wqReveal');cr.style.display='block';requestAnimationFrame(()=>cr.classList.add('show'));
+showMsg('wqMsg','Weekly quiz published and set live for all students.','mint');
+clearWQ();loadOverview();
+}catch(e){showMsg('wqMsg','Error: '+e.message,'rose');}
+}
+async function endWQ(id){if(!confirm('End this quiz?'))return;try{await POST('updateWeeklyQuizStatus',{id,status:'completed'});loadOverview();}catch(e){alert(e.message);}}
+
+// ── ALL WEEKLY QUIZZES ───────────────────────────────────
+async function loadAllWeekly(){
+try{
+const qs=await GET('getAllWeeklyQuizzes');
+document.getElementById('allWeeklyEl').innerHTML=qs.length
+?`<table class="data-table"><thead><tr><th>Week</th><th>Title</th><th>Timer</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody>${qs.slice().reverse().map(q=>`<tr>
+<td style="font-family:'Space Mono',monospace;color:var(--lav)">Wk ${q.weekNumber}</td>
+<td style="font-weight:500">${esc(q.title)}</td>
+<td style="font-family:'Space Mono',monospace;color:var(--dim)">${q.timer} min</td>
+<td><span class="badge badge-${q.status==='active'?'active':q.status==='completed'?'done':'wait'}">${q.status==='active'?'<span class="badge-dot"></span>Live':q.status}</span></td>
+<td style="color:var(--dim);font-size:.76rem">${esc(q.createdAt)}</td>
+<td style="display:flex;gap:7px">
+${q.status==='active'?`<button class="btn btn-rose btn-sm" onclick="endWQ('${q.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>End</button>`:''}
+${q.status==='completed'?`<button class="btn btn-sm" onclick="reopenWQ('${q.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Reopen</button>`:''}
+</td></tr>`).join('')}</tbody></table>`
+:'<div class="empty-state" style="padding:40px"><div class="empty-title">No weekly quizzes yet</div></div>';
+}catch(e){document.getElementById('allWeeklyEl').innerHTML=`<div style="color:#fda4af;padding:20px;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+async function reopenWQ(id){if(!confirm('Reopen this quiz?'))return;try{await POST('updateWeeklyQuizStatus',{id,status:'active'});loadAllWeekly();}catch(e){alert(e.message);}}
+
+// ── RESULTS ──────────────────────────────────────────────
+async function loadResults(){
+const tabs=document.getElementById('weekTabsEl');tabs.innerHTML='<div class="loading-row"><div class="spinner"></div> Loading...</div>';
+try{
+const qs=await GET('getAllWeeklyQuizzes');
+if(!qs.length){tabs.innerHTML='<div style="color:var(--dim);font-size:.84rem">No weekly quizzes yet.</div>';return;}
+const sorted=qs.slice().reverse();
+tabs.innerHTML=sorted.map((q,i)=>`<div class="wtab${i===0?' on':''}" onclick="selectWeek('${q.id}',this)">${esc((q.title||'').substring(0,18))||'Week '+q.weekNumber}</div>`).join('');
+selectWeek(sorted[0].id,tabs.querySelector('.wtab.on'));
+}catch(e){tabs.innerHTML=`<div style="color:#fda4af;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+async function selectWeek(quizId,el){
+document.querySelectorAll('.wtab').forEach(t=>t.classList.remove('on'));if(el)el.classList.add('on');
+const area=document.getElementById('resultAreaEl');area.innerHTML='<div class="loading-row"><div class="spinner"></div> Loading responses...</div>';
+try{
+const rs=await GET('getResponsesByQuiz',{quizId});
+if(!rs.length){area.innerHTML='<div style="color:var(--dim);font-size:.84rem;padding:12px 0">No responses for this quiz yet.</div>';return;}
+const sorted=rs.sort((a,b)=>Number(b.score)-Number(a.score));
+area.innerHTML=`<div style="margin-bottom:14px;font-size:.78rem;color:var(--dim);font-family:'Cinzel',serif;letter-spacing:.5px">${rs.length} student${rs.length!==1?'s':''} responded</div>
+<div class="result-cards">${sorted.map(r=>`<div class="result-card" onclick="openStuModal(${JSON.stringify(JSON.stringify(r))})">
+<div class="res-av">${r.photo?`<img src="${esc(r.photo)}">`:(r.studentName||'?')[0].toUpperCase()}</div>
+<div class="res-name">${esc(r.studentName)}</div>
+<div style="font-size:.7rem;color:var(--fog);margin-bottom:6px">${esc(r.department)}</div>
+<div class="res-score">${r.score}/${r.total}</div>
+${r.leftEarly==='true'?'<div style="font-size:.6rem;color:#fda4af;font-family:Cinzel,serif;margin-top:4px">Left Early</div>':''}
+</div>`).join('')}</div>
+<div style="margin-top:16px"><button class="btn btn-lav btn-sm" onclick="recordWinners('${quizId}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>Record Week Winners</button></div>`;
+}catch(e){area.innerHTML=`<div style="color:#fda4af;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+async function recordWinners(quizId){try{const r=await POST('recordWeekWinners',{quizId,weekNumber:1});alert(r.message);}catch(e){alert(e.message);}}
+function openStuModal(rStr){
+const r=JSON.parse(rStr);const pct=r.total>0?Math.round(+r.score/+r.total*100):0;
+document.getElementById('stuModalBody').innerHTML=`
+<div style="display:flex;gap:14px;align-items:center;margin-bottom:18px">
+<div class="res-av" style="width:56px;height:56px;font-size:1.4rem;flex-shrink:0">${r.photo?`<img src="${esc(r.photo)}" style="width:56px;height:56px;border-radius:50%;object-fit:cover">`:(r.studentName||'?')[0].toUpperCase()}</div>
+<div><div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;margin-bottom:3px">${esc(r.studentName)}</div><div style="color:var(--lav);font-size:.8rem">${esc(r.department)}</div><div style="color:var(--dim);font-size:.74rem">${esc(r.studentEmail)}</div></div>
+</div>
+<div class="detail-row"><span class="dk">Roll Number</span><span class="dv">${esc(r.rollNumber)||'\u2014'}</span></div>
+<div class="detail-row"><span class="dk">Score</span><span class="dv" style="font-family:'Space Mono',monospace;color:var(--lav);font-size:1rem">${r.score} / ${r.total}</span></div>
+<div class="detail-row"><span class="dk">Percentage</span><span class="dv" style="color:${pct>=60?'var(--mint)':'var(--rose)'}">${pct}%</span></div>
+<div class="detail-row"><span class="dk">Left Early</span><span class="dv" style="color:${r.leftEarly==='true'?'var(--rose)':'var(--mint)'}">${r.leftEarly==='true'?'Yes':'No'}</span></div>
+<div class="detail-row"><span class="dk">Submitted</span><span class="dv">${esc(r.submittedAt)}</span></div>`;
+document.getElementById('stuModal').classList.add('open');
+}
+function closeModal(){document.getElementById('stuModal').classList.remove('open');}
+document.getElementById('stuModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+// ── ALL STUDENTS — from getAllStudents() ─────────────────
+async function loadAllStudents(){
+try{
+allStudentsCache=await GET('getAllStudents');
+document.getElementById('allStudentsEl').innerHTML=allStudentsCache.length
+?`<table class="data-table"><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Roll No</th><th>Quizzes</th><th>Score</th><th>Badge</th></tr></thead><tbody>${allStudentsCache.map(s=>`<tr>
+<td style="font-weight:500">${esc(s.name)}</td>
+<td style="font-family:'Space Mono',monospace;font-size:.74rem;color:var(--fog)">${esc(s.email)}</td>
+<td style="color:var(--fog)">${esc(s.department)}</td>
+<td style="font-family:'Space Mono',monospace;color:var(--dim)">${esc(s.rollNumber)||'\u2014'}</td>
+<td style="font-family:'Space Mono',monospace;color:var(--lav);text-align:center">${s.quizzesAttempted||0}</td>
+<td style="font-family:'Space Mono',monospace;color:var(--lav)">${s.totalScore||0}</td>
+<td>${s.badge?`<span class="badge badge-${s.badge==='gold'?'pending':s.badge==='silver'?'approved':'done'}">${s.badge}</span>`:'<span style="color:var(--dim)">\u2014</span>'}</td>
+</tr>`).join('')}</tbody></table>`
+:'<div class="empty-state" style="padding:40px"><div class="empty-title">No students registered yet</div></div>';
+}catch(e){document.getElementById('allStudentsEl').innerHTML=`<div style="color:#fda4af;padding:20px;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+
+// ── BADGES — from getAllStudents() ───────────────────────
+async function loadBadges(){
+try{
+if(!allStudentsCache.length)allStudentsCache=await GET('getAllStudents');
+document.getElementById('badgeTableEl').innerHTML=allStudentsCache.length
+?`<table class="data-table"><thead><tr><th>Student</th><th>Department</th><th>Score</th><th>Current Badge</th><th>Award</th><th></th></tr></thead><tbody>${allStudentsCache.map(s=>`<tr>
+<td><div style="font-weight:600">${esc(s.name)}</div><div style="font-size:.72rem;color:var(--dim)">${esc(s.email)}</div></td>
+<td style="color:var(--fog)">${esc(s.department)}</td>
+<td style="font-family:'Space Mono',monospace;color:var(--lav)">${s.totalScore||0}</td>
+<td>${s.badge?`<span class="badge badge-${s.badge==='gold'?'pending':s.badge==='silver'?'approved':'done'}">${s.badge}</span>`:'<span style="color:var(--dim)">\u2014</span>'}</td>
+<td><select class="award-sel" id="bsel_${esc(s.id)}"><option value="">Select...</option><option value="bronze">Bronze</option><option value="silver">Silver</option><option value="gold">Gold</option></select></td>
+<td><button class="btn btn-lav btn-sm" onclick="awardBadge('${esc(s.email)}','${esc(s.id)}','${esc(s.name)}')">Award</button></td>
+</tr>`).join('')}</tbody></table>`
+:'<div class="empty-state" style="padding:40px"><div class="empty-title">No students yet</div></div>';
+}catch(e){document.getElementById('badgeTableEl').innerHTML=`<div style="color:#fda4af;padding:20px;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+async function awardBadge(email,id,name){
+const sel=document.getElementById('bsel_'+id);const badge=sel.value;
+if(!badge){alert('Please select a badge type.');return}
+if(!confirm(`Award ${badge.toUpperCase()} badge to ${name}?`))return;
+try{
+// Writes badge to Students sheet via awardBadge()
+await POST('awardBadge',{studentEmail:email,badge});
+alert(`${badge.charAt(0).toUpperCase()+badge.slice(1)} badge awarded to ${name}.`);
+allStudentsCache=[];loadBadges();
+}catch(e){alert(e.message);}
+}
+
+// ── FACULTY — from ApprovedTeachers sheet ────────────────
+async function loadFaculty(){
+try{
+// Fetches from ApprovedTeachers sheet — no hardcoded data
+const ts=await GET('getApprovedTeachers');
+document.getElementById('teacherListEl').innerHTML=ts.length
+?`<table class="data-table"><thead><tr><th>Email</th><th>Name</th><th>Department</th><th>Added</th><th>Action</th></tr></thead><tbody>${ts.map(t=>`<tr>
+<td style="font-family:'Space Mono',monospace;font-size:.78rem;color:var(--lav)">${esc(t.email)}</td>
+<td style="font-weight:500">${esc(t.name)||'\u2014'}</td>
+<td style="color:var(--fog)">${esc(t.department)||'\u2014'}</td>
+<td style="color:var(--dim);font-size:.74rem">${esc(t.addedAt)}</td>
+<td><button class="btn btn-rose btn-sm" onclick="removeTeacher('${esc(t.email)}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>Remove</button></td>
+</tr>`).join('')}</tbody></table>`
+:'<div class="empty-state" style="padding:36px"><div class="empty-title">No approved teachers yet</div><div class="empty-desc">Add teacher emails above to grant access.</div></div>';
+}catch(e){document.getElementById('teacherListEl').innerHTML=`<div style="color:#fda4af;padding:20px;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+async function addTeacher(){
+const email=document.getElementById('newTEmail').value.trim().toLowerCase();
+const name=document.getElementById('newTName').value.trim();
+if(!email){showMsg('addTeacherMsg','Please enter an email address.','rose');return}
+try{
+// Writes to ApprovedTeachers sheet
+const r=await POST('addApprovedTeacher',{email,name,addedBy:admin.email});
+if(r.success){showMsg('addTeacherMsg',r.message,'mint');document.getElementById('newTEmail').value='';document.getElementById('newTName').value='';loadFaculty();}
+else showMsg('addTeacherMsg',r.message,'rose');
+}catch(e){showMsg('addTeacherMsg','Error: '+e.message,'rose');}
+}
+async function removeTeacher(email){
+if(!confirm('Remove '+email+' from approved teachers?'))return;
+try{const r=await POST('removeApprovedTeacher',{email});alert(r.message);loadFaculty();}catch(e){alert(e.message);}
+}
+
+// ── FACULTY REQUESTS — from TeacherRequests sheet ────────
+async function loadRequestsBadge(){
+try{
+const reqs=await GET('getPendingTeacherRequests');
+const n=reqs.length;
+['reqBadgeNav','reqBadgeDrop','reqBadgeBtn'].forEach(id=>{
+const el=document.getElementById(id);if(!el)return;
+if(n>0){el.style.display='inline-flex';el.textContent=n;}else el.style.display='none';
+});
+}catch(e){}
+}
+async function loadRequests(){
+try{
+// Reads from TeacherRequests sheet in Google Sheets
+allRequestsCache=await GET('getAllTeacherRequests');
+renderRequests();
+loadRequestsBadge();
+}catch(e){document.getElementById('requestsEl').innerHTML=`<div style="color:#fda4af;font-size:.84rem;padding:12px 0">Error: ${esc(e.message)}</div>`;}
+}
+function filterReqs(f,el){reqFilter=f;document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));if(el)el.classList.add('on');renderRequests();}
+function renderRequests(){
+const filtered=reqFilter==='all'?allRequestsCache:allRequestsCache.filter(r=>r.status===reqFilter);
+const el=document.getElementById('requestsEl');
+if(!filtered.length){
+el.innerHTML=`<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(248,244,255,.15)" stroke-width="1.2" stroke-linecap="round" style="margin:0 auto"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg><div class="empty-title">No ${reqFilter==='all'?'':reqFilter+' '}requests</div><div class="empty-desc">${reqFilter==='all'?'When teachers request access, they appear here from the TeacherRequests sheet.':'No requests with this status.'}</div></div>`;
+return;
+}
+el.innerHTML=filtered.map(r=>`
+<div class="req-card ${r.status}">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+<div>
+<div class="req-name">${esc(r.name)}</div>
+<div class="req-email">${esc(r.email)}</div>
+<div class="req-dept">${esc(r.department)||'Department not specified'}</div>
+${r.message?`<div class="req-msg">"${esc(r.message)}"</div>`:''}
+<div class="req-date">Requested: ${esc(r.requestedAt)}${r.reviewedAt?' &nbsp;&middot;&nbsp; Reviewed: '+esc(r.reviewedAt):''}</div>
+</div>
+<span class="badge badge-${r.status==='pending'?'pending':r.status==='approved'?'approved':'rejected'}">${r.status==='pending'?'<span class="badge-dot"></span>':''} ${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span>
+</div>
+${r.status==='pending'?`<div class="req-actions">
+<button class="btn btn-mint btn-sm" onclick="approveReq('${esc(r.email)}','${esc(r.name)}')">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+Approve Access
+</button>
+<button class="btn btn-rose btn-sm" onclick="rejectReq('${esc(r.email)}')">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+Reject
+</button>
+</div>`:''}
+</div>`).join('');
+}
+async function approveReq(email,name){
+if(!confirm(`Approve access for ${name} (${email})?\nThey will be added to the ApprovedTeachers sheet immediately.`))return;
+try{
+// Writes to ApprovedTeachers sheet + updates TeacherRequests sheet status
+await POST('approveTeacherRequest',{email,reviewedBy:admin.email});
+alert(`${name} approved. They can now register and log in as a teacher.`);
+allRequestsCache=[];loadRequests();
+}catch(e){alert('Error: '+e.message);}
+}
+async function rejectReq(email){
+if(!confirm(`Reject request from ${email}?`))return;
+try{
+// Updates status in TeacherRequests sheet
+await POST('rejectTeacherRequest',{email,reviewedBy:admin.email});
+allRequestsCache=[];loadRequests();
+}catch(e){alert('Error: '+e.message);}
+}
+
+// ── ALL CLASSROOM QUIZZES — from ClassroomQuiz sheet ─────
+async function loadAllQuizzes(){
+try{
+const qs=await GET('getAllClassroomQuizzes');
+document.getElementById('allQuizzesEl').innerHTML=qs.length
+?`<table class="data-table"><thead><tr><th>Title</th><th>Code</th><th>Department</th><th>Timer</th><th>Status</th><th>Students</th><th>Teacher</th></tr></thead><tbody>${qs.map(q=>`<tr>
+<td style="font-weight:500">${esc(q.title)}</td>
+<td><span style="font-family:'Space Mono',monospace;font-size:.78rem;background:rgba(192,132,252,.12);border:1px solid rgba(192,132,252,.25);border-radius:6px;padding:3px 9px;color:var(--lavl);cursor:pointer;box-shadow:0 0 8px rgba(192,132,252,.15)" onclick="navigator.clipboard.writeText('${esc(q.code)}')" title="Click to copy">${esc(q.code)}</span></td>
+<td style="color:var(--fog)">${esc(q.department)}</td>
+<td style="font-family:'Space Mono',monospace;color:var(--dim)">${q.timer} min</td>
+<td><span class="badge badge-${q.status==='active'?'active':q.status==='completed'?'done':'wait'}">${q.status==='active'?'<span class="badge-dot"></span>Live':q.status}</span></td>
+<td style="font-family:'Space Mono',monospace;color:var(--lav);text-align:center">${q.participantCount||0}</td>
+<td style="color:var(--dim);font-size:.74rem">${esc(q.createdBy)}</td>
+</tr>`).join('')}</tbody></table>`
+:'<div class="empty-state" style="padding:40px"><div class="empty-title">No classroom quizzes yet</div><div class="empty-desc">Teachers create quizzes from the Teacher Portal.</div></div>';
+}catch(e){document.getElementById('allQuizzesEl').innerHTML=`<div style="color:#fda4af;padding:20px;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+
+
+// ── ADMIN FREELANCE BOARD ──────────────────────────────────
+let adminAllJobs=[], adminJobFilter='all';
+
+async function loadFreelance(){
+const el=document.getElementById('adminJobsList');
+if(el)el.innerHTML='<div class="loading-row"><div class="spinner"></div> Loading...</div>';
+try{
+adminAllJobs=await GET('getAllFreelanceJobs')||[];
+const cnt=document.getElementById('flJobCount');if(cnt)cnt.textContent=adminAllJobs.length;
+renderAdminJobs();
+}catch(e){if(el)el.innerHTML=`<div style="color:#fda4af;padding:14px;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+
+function filterJobs(f,el){adminJobFilter=f;document.querySelectorAll('#flFilter .fchip').forEach(c=>c.classList.remove('on'));if(el)el.classList.add('on');renderAdminJobs();}
+function formatBudget(j){const sym=j.currency==='USD'?'$':'₹';if(!j.budgetMin&&!j.budgetMax)return 'Budget open';if(j.budgetMin&&j.budgetMax)return sym+Number(j.budgetMin).toLocaleString()+' \u2013 '+sym+Number(j.budgetMax).toLocaleString();if(j.budgetMin)return 'From '+sym+Number(j.budgetMin).toLocaleString();return 'Up to '+sym+Number(j.budgetMax).toLocaleString();}
+
+function renderAdminJobs(){
+const filtered=adminJobFilter==='all'?adminAllJobs:adminAllJobs.filter(j=>j.status===adminJobFilter);
+const el=document.getElementById('adminJobsList');if(!el)return;
+if(!filtered.length){el.innerHTML=`<div class="empty-state"><div class="empty-title">No jobs found</div></div>`;return;}
+el.innerHTML=`<table class="data-table"><thead><tr><th>Title &amp; Description</th><th>Type</th><th>Budget</th><th>Posted By</th><th>Status</th><th>Accepted By</th><th>Date</th><th>Actions</th></tr></thead><tbody>${filtered.map(j=>`<tr>
+<td style="font-weight:500;max-width:180px"><div style="font-size:.84rem">${esc(j.title)}</div><div style="font-size:.7rem;color:var(--dim);margin-top:2px">${esc((j.description||'').substring(0,55))}${(j.description||'').length>55?'...':''}</div></td>
+<td><span class="job-type-chip" style="font-size:.52rem">${esc(j.type)}</span></td>
+<td><div style="font-family:'Space Mono',monospace;font-size:.8rem;color:var(--mint)">${formatBudget(j)}</div></td>
+<td><div style="font-size:.8rem;font-weight:500">${esc(j.postedBy)}</div><div style="font-size:.68rem;color:var(--lav);font-family:'Space Mono',monospace">${esc(j.postedByEmail)}</div><div style="font-size:.68rem;color:var(--dim)">${esc(j.postedByDept)}</div></td>
+<td><span class="j-badge status-${j.status==='open'?'open':j.status==='in-progress'?'progress':'done'}">${j.status}</span></td>
+<td style="font-size:.78rem">${j.acceptedBy?esc(j.acceptedBy)+'<div style="font-size:.66rem;color:var(--dim)">'+esc(j.acceptedByEmail||'')+'</div>':'<span style="color:var(--dim)">\u2014</span>'}</td>
+<td style="font-size:.72rem;color:var(--dim)">${esc(j.postedAt)}</td>
+<td><div style="display:flex;flex-direction:column;gap:5px">
+<button class="btn btn-sm" style="font-size:.6rem;padding:5px 10px" onclick="viewApplicants('${esc(j.id)}','${esc(j.title).replace(/'/g,"\\'")}')">Applicants</button>
+${j.status==='open'?`<button class="btn btn-sm btn-peach" style="font-size:.6rem;padding:5px 10px" onclick="adminSetStatus('${esc(j.id)}','in-progress')">In Progress</button>`:''}
+${j.status==='in-progress'?`<button class="btn btn-sm btn-mint" style="font-size:.6rem;padding:5px 10px" onclick="adminSetStatus('${esc(j.id)}','completed')">Completed</button>`:''}
+</div></td></tr>`).join('')}</tbody></table>`;
+}
+
+async function viewApplicants(jobId,jobTitle){
+try{
+const interests=await GET('getJobInterests',{jobId})||[];
+const hEl=document.querySelector('#stuModal .modal-head h3');
+if(hEl)hEl.textContent='Applicants \u2014 '+jobTitle;
+const bEl=document.getElementById('stuModalBody');
+bEl.innerHTML=interests.length
+?interests.map(i=>`<div style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+<div style="font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;color:var(--mist);margin-bottom:3px">${esc(i.interestedBy)}</div>
+<div style="font-family:'Space Mono',monospace;font-size:.72rem;color:var(--lav);margin-bottom:3px">${esc(i.interestedByEmail)}</div>
+<div style="font-size:.74rem;color:var(--fog);margin-bottom:6px">${esc(i.interestedByDept)} &middot; ${esc(i.interestedByRole)}</div>
+${i.message?`<div style="font-size:.8rem;color:var(--fog);font-style:italic;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:8px;border-left:2px solid rgba(192,132,252,.25);line-height:1.55;margin-bottom:6px">"${esc(i.message)}"</div>`:''}
+<div style="font-size:.74rem;color:var(--mint)">Contact: <strong style="color:var(--mist)">${esc(i.contactInfo)}</strong></div>
+<div style="font-size:.68rem;color:var(--dim);margin-top:4px">Applied: ${esc(i.submittedAt)}</div>
+</div>`).join('')
+:`<div style="text-align:center;padding:28px;color:var(--dim);font-size:.84rem">No applications yet.</div>`;
+document.getElementById('stuModal').classList.add('open');
+}catch(e){alert(e.message);}
+}
+
+async function adminSetStatus(id,status){
+if(!confirm(`Set this job to "${status}"?`))return;
+try{await POST('updateJobStatus',{id,status});loadFreelance();}catch(e){alert(e.message);}
+}
+
+// ── SESSION RESTORE — DATABASE ORIENTED ──────────────────
+// Every login goes through Code.gs (checkAdminExists, getAdmin,
+// loginCheck, setupFirstAdmin) which reads/writes the Admins
+// sheet in Google Sheets. No local/demo data.
+const saved=sessionStorage.getItem('qf_admin');
+if(saved){admin=JSON.parse(saved);initDash();}
+</script></body></html>

@@ -97,7 +97,7 @@ display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;transition:col
 
 /* DASHBOARD */
 #dashboard{display:none;position:relative;z-index:10;min-height:100vh}
-.top-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);
+.top-nav{position:fixed;top:0;inset-x:0;z-index:200;height:var(--nav-h);
 display:flex;align-items:center;padding:0 32px;
 background:rgba(12,7,22,.82);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
 border-bottom:1px solid rgba(192,132,252,.18);box-shadow:0 2px 32px rgba(0,0,0,.4)}
@@ -288,7 +288,6 @@ margin-bottom:18px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94
 background:conic-gradient(var(--lav),var(--pink),var(--peach),var(--lav));
 animation:cring 5s linear infinite;
 -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
 mask-composite:exclude;-webkit-mask-composite:xor;padding:3px}
 @keyframes cring{to{transform:rotate(360deg)}}
 .photo-el{width:140px;height:140px;border-radius:50%;position:relative;z-index:1;
@@ -327,6 +326,26 @@ justify-content:center;opacity:0;transition:opacity .2s;gap:4px}
 .dash-grid{display:grid;grid-template-columns:1.65fr 1fr;gap:20px}
 @media(max-width:1100px){.stat-row{grid-template-columns:1fr 1fr}.create-grid,.profile-layout,.dash-grid,.monitor-grid{grid-template-columns:1fr}.monitor-top{grid-template-columns:1fr 1fr}.preview-panel{position:static}}
 @media(max-width:700px){.stat-row,.prs-grid,.pmini-row{grid-template-columns:1fr 1fr}.nav-menu{display:none}main{padding-top:calc(var(--nav-h) + 20px);padding-left:18px;padding-right:18px}}
+
+/* ── FREELANCE BOARD ── */
+.job-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:16px;padding:20px;transition:all .22s;cursor:default}
+.job-card:hover{border-color:rgba(251,146,60,.28);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.25)}
+.job-type-chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-family:"Cinzel",serif;font-size:.57rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;background:rgba(251,146,60,.12);color:#fdba74;border:1px solid rgba(251,146,60,.25);margin-bottom:10px}
+.job-title{font-family:"Cinzel",serif;font-size:.96rem;font-weight:700;color:var(--mist);margin-bottom:5px;line-height:1.3}
+.job-desc{font-size:.8rem;color:var(--fog);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.job-budget{font-family:"Space Mono",monospace;font-size:1.05rem;font-weight:700;background:linear-gradient(135deg,var(--mint),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(52,211,153,.3));margin-bottom:4px}
+.job-meta{font-size:.72rem;color:var(--dim);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.job-dot{width:3px;height:3px;border-radius:50%;background:var(--dim);flex-shrink:0}
+.jobs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px}
+.status-open{background:rgba(52,211,153,.09);color:#6ee7b7;border:1px solid rgba(52,211,153,.2)}
+.status-progress{background:rgba(251,146,60,.1);color:#fdba74;border:1px solid rgba(251,146,60,.22)}
+.status-done{background:rgba(192,132,252,.09);color:var(--lavl);border:1px solid rgba(192,132,252,.2)}
+.j-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-family:"Cinzel",serif;font-size:.56rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+/* post form */
+.post-form{background:rgba(251,146,60,.05);border:1px solid rgba(251,146,60,.18);border-radius:16px;padding:24px;margin-bottom:24px}
+.budget-row{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}.modal-overlay.open{display:flex;animation:fadeUp .2s ease}.modal-box{background:rgba(18,10,30,.97);border:1px solid rgba(255,255,255,.12);border-radius:20px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.6)}.modal-head{padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center}.modal-head h3{font-family:"Cinzel",serif;font-size:.9rem;font-weight:700;color:var(--lav)}.modal-close{background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer;padding:2px 6px;border-radius:5px}.modal-close:hover{color:var(--mist)}.modal-body{padding:22px 24px}.detail-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.84rem;align-items:center}.detail-row:last-child{border-bottom:none}.dk{font-family:"Cinzel",serif;font-size:.6rem;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase}.dv{color:var(--mist);font-weight:600}
 </style>
 </head>
 <body>
@@ -400,9 +419,10 @@ Your email is on the approved faculty list.
 <div class="fg"><label class="fl">Department</label>
 <select class="fi" id="regDept" style="background:rgba(12,7,22,.8)">
 <option value="">Select your department</option>
-<option>Computer Science</option><option>Mathematics</option><option>Physics</option>
-<option>Chemistry</option><option>Electronics</option><option>Commerce</option>
-<option>English</option><option>Tamil</option><option>Biotechnology</option>
+<option>BSc CS</option><option>BA English</option><option>BCA</option>
+<option>BCom PA</option><option>BSc Multimedia</option><option>BBA IB</option>
+<option>BCom Finance</option><option>BCom CA</option><option>BSc Food Science</option>
+<option>BSc CS with Cyber Security</option><option>BSc Psychology</option>
 </select>
 </div>
 <div class="fg"><label class="fl">Password</label><input class="fi" id="regPass" type="password" placeholder="Minimum 6 characters"/></div>
@@ -433,9 +453,10 @@ This email is not on the approved faculty list yet.
 <div class="fg"><label class="fl">Department</label>
 <select class="fi" id="reqDept" style="background:rgba(12,7,22,.8)">
 <option value="">Select your department</option>
-<option>Computer Science</option><option>Mathematics</option><option>Physics</option>
-<option>Chemistry</option><option>Electronics</option><option>Commerce</option>
-<option>English</option><option>Tamil</option><option>Biotechnology</option>
+<option>BSc CS</option><option>BA English</option><option>BCA</option>
+<option>BCom PA</option><option>BSc Multimedia</option><option>BBA IB</option>
+<option>BCom Finance</option><option>BCom CA</option><option>BSc Food Science</option>
+<option>BSc CS with Cyber Security</option><option>BSc Psychology</option>
 </select>
 </div>
 <div class="fg"><label class="fl">Message to Admin (optional)</label>
@@ -518,6 +539,10 @@ Monitor
 </div>
 </div>
 </div>
+<button class="nav-direct" id="nd-jobs" onclick="show('jobs',this)">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+Jobs Board
+</button>
 <div class="nav-right">
 <button class="nav-home-btn" onclick="location.href='quizify-home.html'">
 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -721,12 +746,50 @@ Back to Home
 </div>
 </div>
 </section>
+
+<!-- JOBS BOARD -->
+<section class="sec" id="sec-jobs">
+<div class="page-head"><div class="page-eye">Freelance Board</div><h1 class="page-title">Jobs Board</h1><p class="page-sub">Other departments post web and app projects here. Post a job or apply to take one.</p></div>
+<div class="post-form" id="postJobCollapse">
+<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="togglePostForm()">
+<div style="font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;letter-spacing:1.5px;color:var(--peach);text-transform:uppercase">Post a Job Request</div>
+<svg id="postChev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--peach)" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>
+</div>
+<div id="postJobForm" style="display:none;margin-top:18px">
+<div class="fg"><label class="fl">Project Title</label><input class="fi" id="jTitle" placeholder="e.g. Department Website, Research Data Dashboard"/></div>
+<div class="fg"><label class="fl">Project Type</label>
+<select class="fi" id="jType" style="background:rgba(12,7,22,.8)"><option value="">Select type</option><option>Website</option><option>Web Application</option><option>Mobile App Design</option><option>Dashboard / Admin Panel</option><option>E-commerce Site</option><option>Landing Page</option><option>Database Design</option><option>API Integration</option><option>Other</option></select>
+</div>
+<div class="fg"><label class="fl">Description</label><textarea class="fi" id="jDesc" rows="3" placeholder="Describe what you need, features, timeline..."></textarea></div>
+<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end">
+<div class="fg" style="margin-bottom:0"><label class="fl">Budget Min</label><input class="fi" id="jBudgetMin" type="number" placeholder="500"/></div>
+<div class="fg" style="margin-bottom:0"><label class="fl">Budget Max</label><input class="fi" id="jBudgetMax" type="number" placeholder="5000"/></div>
+<div class="fg" style="margin-bottom:0"><label class="fl">Currency</label><select class="fi" id="jCurrency" style="background:rgba(12,7,22,.8)"><option value="INR">INR ₹</option><option value="USD">USD $</option></select></div>
+</div>
+<div class="fg" style="margin-top:14px"><label class="fl">Your Contact Info</label><input class="fi" id="jContact" placeholder="Phone / WhatsApp / Email"/></div>
+<div id="postJobMsg"></div>
+<button class="btn btn-peach btn-block" style="margin-top:8px" onclick="submitJob()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>Post Job Request</button>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+<div style="font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:2.5px;color:var(--dim);text-transform:uppercase">Open Jobs</div>
+<button class="btn btn-sm" onclick="loadJobs()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.4"/></svg>Refresh</button>
+</div>
+<div id="jobsList"></div>
+</section>
 </main>
 </div>
 
 <script>
-const API_URL='https://script.google.com/macros/s/AKfycbw0yYvF_vXTWl5ukxtRqcnhCeFCAvrTSM8LFEAvAzj9OtvwevZ8M2gZb-mhd6BnEPnc4A/exec';
-const API_TOKEN='Quizify2026@PGCS#Secure';
+// ════════════════════════════════════════════════════════════
+// # DATABASE CONNECTION — PASTE YOUR VALUES HERE
+// # 1. API_URL -> Your Google Apps Script Web App deployment URL
+// # 2. API_TOKEN -> Must exactly match SECRET_TOKEN in Code.gs
+// # Everything below this line reads/writes live Google Sheets data.
+// # There is NO demo/hardcoded data anywhere in this file.
+// ════════════════════════════════════════════════════════════
+const API_URL='https://script.google.com/macros/s/AKfycbw0yYvF_vXTWl5ukxtRqcnhCeFCAvrTSM8LFEAvAzj9OtvwevZ8M2gZb-mhd6BnEPnc4A/exec'; // # <-- PASTE DEPLOYMENT URL HERE
+const API_TOKEN='quizify-pgcs'; // # <-- MUST MATCH Code.gs SECRET_TOKEN
 
 // AURORA
 const cv=document.getElementById('aur'),cx=cv.getContext('2d');
@@ -863,6 +926,7 @@ const ds=document.getElementById('editDept');
 for(let i=0;i<ds.options.length;i++)if(ds.options[i].text===teacher.department){ds.selectedIndex=i;break;}
 const photo=localStorage.getItem('qf_t_photo');if(photo)applyPhoto(photo);
 loadDash();
+loadJobs();
 }
 
 function doLogout(){
@@ -883,6 +947,7 @@ if(sec==='dashboard')loadDash();
 if(sec==='quizzes')loadQuizTable();
 if(sec==='monitor')loadMonitorSel();
 if(sec==='profile')loadProfile();
+if(sec==='jobs')loadJobs();
 }
 
 // DASHBOARD DATA
@@ -1057,9 +1122,167 @@ if(!document.getElementById('navAv').querySelector('img'))document.getElementByI
 showMsg('profileMsg','Profile saved successfully.','mint');
 }
 
-// AUTO SESSION RESTORE
+
+// ════════════════════════════════════════
+// FREELANCE BOARD
+// ════════════════════════════════════════
+let allJobs=[], openJobModal_data=null;
+
+async function loadJobs(showForm){
+const listEl=document.getElementById('jobsList');
+const hpEl=document.getElementById('jobsHomePreview');
+if(listEl) listEl.innerHTML='<div class="loading-row"><div class="spinner"></div> Loading jobs...</div>';
+try{
+allJobs=await GET('getOpenFreelanceJobs')||[];
+renderJobs(allJobs);
+// home preview
+if(hpEl){
+if(allJobs.length){
+hpEl.innerHTML=`<div style="font-size:.82rem;color:var(--fog);margin-bottom:12px">${allJobs.length} open job${allJobs.length!==1?'s':''} waiting for CS talent</div>`+
+allJobs.slice(0,2).map(j=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)"><div style="flex:1;min-width:0"><div style="font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;color:var(--mist)">${esc(j.title)}</div><div style="font-size:.71rem;color:var(--dim)">${esc(j.type)} &middot; ${formatBudget(j)}</div></div></div>`).join('')+
+(allJobs.length>2?`<div style="font-size:.72rem;color:var(--dim);padding:6px 0">+${allJobs.length-2} more jobs</div>`:'');
+} else {
+hpEl.innerHTML='<div style="font-size:.82rem;color:var(--dim);padding:4px 0">No open jobs right now. Be the first to post one.</div>';
+}
+}
+if(showForm){const f=document.getElementById('postJobForm');if(f)f.style.display='block';}
+}catch(e){if(listEl)listEl.innerHTML=`<div style="color:#fda4af;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+
+function formatBudget(j){
+const sym=j.currency==='USD'?'$':'₹';
+if(!j.budgetMin&&!j.budgetMax)return 'Budget open';
+if(j.budgetMin&&j.budgetMax)return sym+Number(j.budgetMin).toLocaleString()+' \u2013 '+sym+Number(j.budgetMax).toLocaleString();
+if(j.budgetMin)return 'From '+sym+Number(j.budgetMin).toLocaleString();
+return 'Up to '+sym+Number(j.budgetMax).toLocaleString();
+}
+
+function renderJobs(jobs){
+const el=document.getElementById('jobsList');if(!el)return;
+if(!jobs.length){
+el.innerHTML=`<div class="empty-state"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="rgba(248,244,255,.15)" stroke-width="1.2" stroke-linecap="round" style="margin:0 auto"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><div class="empty-title">No open jobs right now</div><div class="empty-desc">Be the first to post a freelance request.</div></div>`;
+return;
+}
+el.innerHTML=`<div class="jobs-grid">${jobs.map(j=>`
+<div class="job-card">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+<span class="job-type-chip">${esc(j.type)}</span>
+<span class="j-badge status-open"><span class="badge-dot"></span>Open</span>
+</div>
+<div class="job-title">${esc(j.title)}</div>
+<div class="job-desc">${esc(j.description)}</div>
+<div class="job-budget">${formatBudget(j)}</div>
+<div class="job-meta">
+<span>${esc(j.postedByDept||'Department')}</span>
+<span class="job-dot"></span>
+<span>${esc(j.postedAt)}</span>
+</div>
+<button class="btn btn-peach btn-sm btn-block" style="margin-top:14px" onclick='openJob(${JSON.stringify(JSON.stringify(j))})'>
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+View Details &amp; Apply
+</button>
+</div>`).join('')}</div>`;
+}
+
+function openJob(jStr){
+const j=JSON.parse(jStr);openJobModal_data=j;
+const sym=j.currency==='USD'?'$':'₹';
+document.getElementById('jobModalHead').innerHTML=`<h3 style="font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:var(--peach)">${esc(j.title)}</h3><button class="modal-close" onclick="closeJobModal()">&#x2715;</button>`;
+document.getElementById('jobModalBody').innerHTML=`
+<div style="margin-bottom:16px">
+<span class="job-type-chip">${esc(j.type)}</span>
+<div style="font-size:.84rem;color:var(--fog);line-height:1.7;margin-top:8px">${esc(j.description)}</div>
+</div>
+<div class="detail-row"><span class="dk">Budget</span><span class="dv" style="font-family:'Space Mono',monospace;color:var(--mint)">${formatBudget(j)}</span></div>
+<div class="detail-row"><span class="dk">Project Type</span><span class="dv">${esc(j.type)}</span></div>
+<div class="detail-row"><span class="dk">Requested By</span><span class="dv">${esc(j.postedBy)} &mdash; ${esc(j.postedByDept)}</span></div>
+<div class="detail-row"><span class="dk">Contact</span><span class="dv" style="font-family:'Space Mono',monospace;font-size:.76rem;color:var(--lav)">${esc(j.contactInfo)}</span></div>
+<div class="detail-row"><span class="dk">Posted On</span><span class="dv">${esc(j.postedAt)}</span></div>
+<div style="margin-top:20px">
+<div style="font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:10px">Send Application</div>
+<textarea class="fi" id="interestMsg" placeholder="Tell them why you can do this project, your skills, timeline, etc..." rows="3" style="margin-bottom:12px"></textarea>
+<div class="fg"><label class="fl">Your Contact Info</label><input class="fi" id="interestContact" placeholder="Phone / WhatsApp / Email" value="${esc((typeof student!=='undefined'?student?.email:teacher?.email)||'')}"/></div>
+<div id="interestMsg2"></div>
+<button class="btn btn-mint btn-block" onclick="applyForJob()">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+I Can Do This &mdash; Apply Now
+</button>
+</div>`;
+document.getElementById('jobModal').classList.add('open');
+}
+function closeJobModal(){document.getElementById('jobModal').classList.remove('open');openJobModal_data=null;}
+document.getElementById('jobModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeJobModal();});
+
+async function applyForJob(){
+if(!openJobModal_data){return}
+const msg=document.getElementById('interestMsg')?.value.trim();
+const contact=document.getElementById('interestContact')?.value.trim();
+if(!contact){document.getElementById('interestMsg2').innerHTML='<div style="color:#fda4af;font-size:.8rem;margin-bottom:8px">Please enter your contact info so the requester can reach you.</div>';return}
+const user=typeof student!=='undefined'?student:teacher;
+try{
+const r=await POST('expressInterest',{
+jobId:openJobModal_data.id,
+interestedBy:user.name, interestedByEmail:user.email,
+interestedByDept:user.department||'Computer Science',
+interestedByRole:typeof student!=='undefined'?'student':'teacher',
+message:msg, contactInfo:contact
+});
+document.getElementById('jobModalBody').innerHTML=`
+<div style="text-align:center;padding:24px">
+<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="1.5" stroke-linecap="round" style="margin:0 auto 14px;display:block"><circle cx="12" cy="12" r="10"/><polyline points="20 6 9 17 4 12"/></svg>
+<div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--mint);margin-bottom:8px">${r.success?'Application Sent!':'Already Applied'}</div>
+<div style="font-size:.84rem;color:var(--fog);line-height:1.65;margin-bottom:18px">${r.message}</div>
+${r.success?`<div style="background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);border-radius:10px;padding:12px;font-size:.8rem;color:#a7f3d0;line-height:1.6">The requester from <strong>${esc(openJobModal_data.postedByDept)}</strong> can now see your contact details:<br><strong>${esc(contact)}</strong></div>`:''}
+<button class="btn btn-sm" style="margin-top:16px" onclick="closeJobModal()">Close</button>
+</div>`;
+}catch(e){document.getElementById('interestMsg2').innerHTML=`<div style="color:#fda4af;font-size:.8rem;margin-bottom:8px">Error: ${esc(e.message)}</div>`;}
+}
+
+async function submitJob(){
+const user=typeof student!=='undefined'?student:teacher;
+const title=document.getElementById('jTitle')?.value.trim();
+const desc=document.getElementById('jDesc')?.value.trim();
+const type=document.getElementById('jType')?.value;
+const bMin=document.getElementById('jBudgetMin')?.value;
+const bMax=document.getElementById('jBudgetMax')?.value;
+const curr=document.getElementById('jCurrency')?.value||'INR';
+const contact=document.getElementById('jContact')?.value.trim()||user.email;
+if(!title||!desc){showMsg('postJobMsg','Please fill in the title and description.','rose');return}
+try{
+const r=await POST('postFreelanceJob',{
+title, description:desc, type:type||'Other',
+budgetMin:bMin||0, budgetMax:bMax||0, currency:curr,
+postedBy:user.name, postedByEmail:user.email,
+postedByDept:user.department||'',
+postedByRole:typeof student!=='undefined'?'student':'teacher',
+contactInfo:contact
+});
+showMsg('postJobMsg',r.message,'mint');
+['jTitle','jDesc','jBudgetMin','jBudgetMax','jContact'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+loadJobs();
+}catch(e){showMsg('postJobMsg','Error: '+e.message,'rose');}
+}
+
+function togglePostForm(){const f=document.getElementById('postJobForm');const c=document.getElementById('postChev');f.style.display=f.style.display==='none'?'block':'none';c.style.transform=f.style.display==='none'?'':'rotate(180deg)';}
+
+// ══════════════════════════════════════════════
+// SESSION RESTORE — DATABASE ORIENTED
+// Every login goes through Code.gs (checkTeacherStatus,
+// loginCheck, registerTeacher, requestTeacherAccess) which
+// reads/writes the Teachers / ApprovedTeachers / TeacherRequests
+// sheets in Google Sheets. No local/demo data.
+// ══════════════════════════════════════════════
 const saved=sessionStorage.getItem('qf_teacher');
 if(saved){teacher=JSON.parse(saved);initDash();}
 </script>
+
+<!-- JOB DETAIL MODAL -->
+<div class="modal-overlay" id="jobModal" style="z-index:600">
+<div class="modal-box" style="max-width:560px">
+<div class="modal-head" id="jobModalHead"><h3>Job Details</h3><button class="modal-close" onclick="closeJobModal()">&#x2715;</button></div>
+<div class="modal-body" id="jobModalBody"></div>
+</div>
+</div>
+
 </body>
 </html>

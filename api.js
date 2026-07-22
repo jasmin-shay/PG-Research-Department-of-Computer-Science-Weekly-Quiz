@@ -3,9 +3,9 @@
 //  Include this in every HTML page:  <script src="api.js"></script>
 // ================================================================
 
-// ── CONFIGURATION — paste your values after deploying Code.gs ──
+// ── CONFIGURATION — shared Quizify endpoint and secret ──
 const API_URL   = 'https://script.google.com/macros/s/AKfycbw0yYvF_vXTWl5ukxtRqcnhCeFCAvrTSM8LFEAvAzj9OtvwevZ8M2gZb-mhd6BnEPnc4A/exec';
-const API_TOKEN = 'Quizify2026@PGCS#Secure';   // must match Code.gs SECRET_TOKEN
+const API_TOKEN = 'Quizify2026@PGCS#Secure';
 
 // ================================================================
 //  CORE FETCH HELPERS

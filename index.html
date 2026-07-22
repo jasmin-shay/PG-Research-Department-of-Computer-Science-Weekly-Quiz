@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Quizify — Weekly Quiz Portal · PG & Research Dept of CS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+:root{
+--bg:#0b0710;--bg2:#120a1a;--bg3:#180d22;
+--c:#c9a7f7;--v:#a3134f;--g:#e8598a;--gold:#f6ad55;--red:#e11d48;
+--glass:rgba(255,255,255,.05);--gb:rgba(255,255,255,.08);
+--ink:#f6eefc;--mu:rgba(246,238,252,.55);--dim:rgba(246,238,252,.28);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);
+overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+a{text-decoration:none;color:inherit}
+/* aurora */
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none}
+/* layout */
+.z{position:relative;z-index:10}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:66px;
+display:flex;align-items:center;justify-content:space-between;padding:0 32px;
+background:rgba(11,7,16,.75);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+border-bottom:1px solid rgba(255,255,255,.07)}
+.nlogo{font-family:'Cinzel',serif;font-weight:900;font-size:1.45rem;letter-spacing:5px;
+background:linear-gradient(135deg,var(--c),var(--v),var(--g));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nlinks{display:flex;align-items:center;gap:4px}
+.nlinks a{font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;letter-spacing:.8px;
+color:var(--mu);padding:7px 14px;border-radius:8px;transition:all .2s}
+.nlinks a:hover{color:var(--ink);background:rgba(255,255,255,.06)}
+.nbtn{font-family:'Cinzel',serif;font-weight:700;font-size:.78rem;letter-spacing:1.5px;
+background:linear-gradient(135deg,var(--v),var(--c));color:#fff;border:none;
+border-radius:10px;padding:10px 22px;cursor:pointer;transition:all .2s;
+box-shadow:0 4px 20px rgba(163,19,79,.35)}
+.nbtn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,167,247,.4)}
+/* HERO */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+justify-content:center;padding:100px 24px 56px;text-align:center}
+.h-eye{display:inline-flex;align-items:center;gap:8px;font-family:'Cinzel',serif;
+font-size:.68rem;font-weight:700;letter-spacing:3px;color:var(--c);text-transform:uppercase;
+background:rgba(201,167,247,.09);border:1px solid rgba(201,167,247,.22);
+border-radius:20px;padding:6px 18px;margin-bottom:24px}
+.h-title{font-family:'Cinzel',serif;font-weight:900;
+font-size:clamp(3.5rem,11vw,7.5rem);letter-spacing:10px;line-height:.9;margin-bottom:22px;
+background:linear-gradient(160deg,#f3e8ff 0%,#d9b8ff 18%,#c084fc 38%,#c2185b 62%,#ff5c8a 82%,#ffd6e8 100%);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+filter:drop-shadow(0 0 42px rgba(216,124,255,.35))}
+.h-sub{font-size:clamp(.85rem,2vw,1.05rem);color:var(--mu);max-width:540px;
+line-height:1.8;margin:0 auto 52px}
+.h-sub strong{color:var(--ink)}
+/* QUIZ CARD — aurora spinning border */
+.qcard-wrap{width:min(560px,100%);margin:0 auto;border-radius:26px;padding:3px;
+background:conic-gradient(from var(--a),var(--v),var(--c),var(--g),var(--c),var(--v));
+animation:spin-border 3s linear infinite;position:relative}
+@keyframes spin-border{to{--a:360deg}}
+.qcard-wrap::before{content:'';position:absolute;inset:-8px;border-radius:32px;
+background:conic-gradient(from var(--a),var(--v)40,transparent 60%,var(--c) 80%,transparent 100%);
+animation:spin-border 3s linear infinite;filter:blur(18px);opacity:.6;z-index:-1}
+.qcard-inner{background:var(--bg2);border-radius:24px;padding:36px 30px}
+.qlive-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.qlive-dot{width:10px;height:10px;background:var(--red);border-radius:50%;flex-shrink:0;
+animation:ldot 1.2s infinite;box-shadow:0 0 8px var(--red)}
+@keyframes ldot{0%,100%{opacity:1}50%{opacity:.3}}
+.qlive-tag{font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:2px;
+color:var(--red);text-transform:uppercase}
+.qlive-week{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:1.5px;color:var(--mu);
+margin-left:auto}
+.qtitle{font-family:'Cinzel',serif;font-size:1.35rem;font-weight:700;
+line-height:1.3;margin-bottom:8px}
+.qmeta{display:flex;align-items:center;gap:18px;margin-bottom:28px;flex-wrap:wrap}
+.qmeta-item{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--mu)}
+/* JOIN BUTTON */
+.btn-join{display:block;width:100%;padding:18px;border:none;cursor:pointer;
+border-radius:14px;font-family:'Cinzel',serif;font-weight:700;font-size:1.1rem;
+letter-spacing:2px;color:#fff;position:relative;overflow:hidden;
+background:linear-gradient(135deg,#7b1049,#a3134f,#c2185b);
+background-size:200% 200%;animation:btnShift 3s ease infinite,btnGlow 2s ease infinite}
+@keyframes btnShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes btnGlow{0%,100%{box-shadow:0 0 24px rgba(201,167,247,.5),0 0 60px rgba(163,19,79,.3)}
+50%{box-shadow:0 0 48px rgba(201,167,247,.8),0 0 100px rgba(163,19,79,.5)}}
+.btn-join::after{content:'';position:absolute;inset:0;
+background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.15) 50%,transparent 100%);
+transform:translateX(-100%);animation:btnShine 3s ease infinite}
+@keyframes btnShine{0%{transform:translateX(-100%)}40%,100%{transform:translateX(100%)}}
+.btn-join:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.btn-join-note{text-align:center;font-size:.72rem;color:var(--dim);
+margin-top:12px;font-family:'Cinzel',serif;letter-spacing:.5px}
+/* WAITING card */
+.qwait-inner{background:var(--bg2);border-radius:24px;padding:36px 30px;text-align:center}
+.qwait-wrap{width:min(560px,100%);margin:0 auto;border-radius:26px;padding:3px;
+background:linear-gradient(135deg,rgba(163,19,79,.4),rgba(201,167,247,.4))}
+.qwait-title{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;margin-bottom:8px}
+.qwait-sub{font-size:.83rem;color:var(--mu);line-height:1.65;margin-bottom:24px}
+/* shimmer */
+.shim{height:12px;border-radius:6px;margin-bottom:10px;
+background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.1) 50%,rgba(255,255,255,.04) 75%);
+background-size:200%;animation:shim 1.6s infinite}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* countdown */
+.cd{display:flex;justify-content:center;align-items:center;gap:10px;margin:20px 0}
+.cdu{text-align:center}
+.cdu b{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700;
+color:var(--c);display:block;line-height:1;text-shadow:0 0 20px rgba(201,167,247,.5)}
+.cdu span{font-family:'Cinzel',serif;font-size:.58rem;color:var(--dim);
+letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;display:block}
+.cdsp{font-family:'Space Mono',monospace;font-size:1.6rem;color:var(--v);
+margin-top:-6px;text-shadow:0 0 16px rgba(163,19,79,.5)}
+/* scroll hint */
+.scroll-hint{margin-top:48px;display:flex;flex-direction:column;align-items:center;gap:6px;
+opacity:.35;animation:fadeHint 2s ease-in-out infinite}
+@keyframes fadeHint{0%,100%{opacity:.35}50%{opacity:.6}}
+.scroll-hint p{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:3px;color:var(--mu)}
+.scroll-arr{width:22px;height:22px;border-right:2px solid var(--mu);border-bottom:2px solid var(--mu);
+transform:rotate(45deg);animation:bounce .9s ease infinite alternate}
+@keyframes bounce{from{transform:rotate(45deg) translate(-3px,-3px)}to{transform:rotate(45deg) translate(3px,3px)}}
+/* NOTICE BAR */
+.notice{display:none;align-items:center;justify-content:center;gap:10px;
+padding:13px 24px;font-size:.82rem;text-align:center;
+background:linear-gradient(90deg,rgba(225,29,72,.12),rgba(246,173,85,.1),rgba(225,29,72,.12));
+border-bottom:1px solid rgba(225,29,72,.2)}
+.notice strong{font-family:'Cinzel',serif;color:#fca5a5;letter-spacing:.5px}
+/* SECTION WRAPPER */
+.sec{padding:88px 0}
+.sec-eye{display:flex;align-items:center;gap:8px;font-family:'Cinzel',serif;
+font-size:.68rem;font-weight:700;letter-spacing:3px;color:var(--c);
+text-transform:uppercase;margin-bottom:12px}
+.sec-h{font-family:'Cinzel',serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;
+margin-bottom:12px;line-height:1.2}
+.sec-sub{font-size:.88rem;color:var(--mu);max-width:520px;line-height:1.75;margin-bottom:44px}
+/* STEPS */
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.step{background:var(--glass);border:1px solid var(--gb);border-radius:22px;
+padding:32px 24px;transition:transform .25s,box-shadow .25s;position:relative;overflow:hidden}
+.step::before{content:'';position:absolute;inset:0;opacity:0;
+background:radial-gradient(ellipse at 50% 0%,rgba(201,167,247,.08),transparent 70%);
+transition:opacity .3s}
+.step:hover{transform:translateY(-5px);box-shadow:0 20px 48px rgba(0,0,0,.35)}
+.step:hover::before{opacity:1}
+.step-ico{width:72px;height:72px;border-radius:20px;
+display:flex;align-items:center;justify-content:center;font-size:1.5rem;
+margin-bottom:20px;position:relative;font-family:'Cinzel',serif;font-weight:700;color:#fff}
+.step-ico.ic1{background:linear-gradient(135deg,rgba(163,19,79,.35),rgba(201,167,247,.18));
+border:1px solid rgba(163,19,79,.35);box-shadow:0 8px 24px rgba(163,19,79,.18)}
+.step-ico.ic2{background:linear-gradient(135deg,rgba(201,167,247,.3),rgba(232,89,138,.2));
+border:1px solid rgba(201,167,247,.35);box-shadow:0 8px 24px rgba(201,167,247,.18)}
+.step-ico.ic3{background:linear-gradient(135deg,rgba(246,173,85,.25),rgba(225,29,72,.12));
+border:1px solid rgba(246,173,85,.35);box-shadow:0 8px 24px rgba(246,173,85,.14)}
+.step-n{font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:2px;
+color:var(--dim);text-transform:uppercase;margin-bottom:8px}
+.step-title{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;margin-bottom:10px}
+.step-desc{font-size:.82rem;color:var(--mu);line-height:1.7}
+.step-arrow{position:absolute;top:28px;right:-12px;z-index:2;
+width:24px;height:24px;border-right:2px solid rgba(201,167,247,.3);
+border-top:2px solid rgba(201,167,247,.3);transform:rotate(45deg)}
+/* WINNERS */
+.win-sec{background:rgba(255,255,255,.016);border-top:1px solid var(--gb);border-bottom:1px solid var(--gb)}
+.champions-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+.champ-card{background:var(--glass);border:1px solid rgba(246,173,85,.3);
+border-radius:22px;padding:26px 20px;text-align:center;
+background:linear-gradient(160deg,rgba(246,173,85,.08),rgba(11,7,16,.95));
+transition:transform .25s,box-shadow .25s;position:relative;overflow:hidden}
+.champ-card::before{content:'';position:absolute;inset:0;
+background:radial-gradient(ellipse at 50% -20%,rgba(246,173,85,.15),transparent 70%)}
+.champ-card:hover{transform:translateY(-5px);
+box-shadow:0 16px 40px rgba(246,173,85,.2),0 0 60px rgba(246,173,85,.08)}
+.champ-week{font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;
+letter-spacing:2px;color:var(--c);text-transform:uppercase;margin-bottom:14px}
+.champ-rank{font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:2px;
+color:var(--gold);text-transform:uppercase;margin-bottom:10px;display:block}
+.champ-avatar{width:60px;height:60px;border-radius:50%;margin:0 auto 12px;
+background:linear-gradient(135deg,var(--gold),#c2185b);
+display:flex;align-items:center;justify-content:center;
+font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:#fff;
+border:3px solid rgba(246,173,85,.4);box-shadow:0 0 20px rgba(246,173,85,.3)}
+.champ-name{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;margin-bottom:4px}
+.champ-dept{font-size:.75rem;color:var(--mu);margin-bottom:14px}
+.champ-score{display:inline-flex;align-items:center;gap:6px;
+background:rgba(246,173,85,.12);border:1px solid rgba(246,173,85,.25);
+border-radius:20px;padding:5px 14px;
+font-family:'Space Mono',monospace;font-size:.95rem;color:var(--gold);font-weight:700}
+.no-champs{padding:40px;text-align:center;font-size:.85rem;color:var(--dim);
+font-family:'Cinzel',serif;letter-spacing:.5px}
+/* BADGES */
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.badge-tier{border-radius:22px;padding:30px 22px;position:relative;overflow:hidden;
+transition:transform .25s,box-shadow .25s}
+.badge-tier:hover{transform:translateY(-4px)}
+.bt-gold{background:linear-gradient(160deg,rgba(246,173,85,.12),rgba(11,7,16,.95));
+border:1px solid rgba(246,173,85,.35)}
+.bt-gold:hover{box-shadow:0 16px 48px rgba(246,173,85,.18)}
+.bt-silver{background:linear-gradient(160deg,rgba(201,167,247,.09),rgba(11,7,16,.95));
+border:1px solid rgba(201,167,247,.25)}
+.bt-silver:hover{box-shadow:0 16px 48px rgba(201,167,247,.1)}
+.bt-bronze{background:linear-gradient(160deg,rgba(163,19,79,.1),rgba(11,7,16,.95));
+border:1px solid rgba(163,19,79,.3)}
+.bt-bronze:hover{box-shadow:0 16px 48px rgba(163,19,79,.15)}
+.bt-head{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.bt-icon{font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;letter-spacing:1.5px;
+color:var(--mu);border:1px solid var(--gb);border-radius:8px;padding:4px 10px}
+.bt-name{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700}
+.bt-desc{font-size:.78rem;color:var(--mu);line-height:1.6;margin-bottom:18px}
+.bt-divider{height:1px;background:rgba(255,255,255,.06);margin-bottom:16px}
+.holder-row{display:flex;align-items:center;gap:10px;padding:8px 0;
+border-bottom:1px solid rgba(255,255,255,.04)}
+.holder-row:last-child{border-bottom:none}
+.hav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+justify-content:center;font-family:'Cinzel',serif;font-weight:700;font-size:.9rem;flex-shrink:0}
+.hav-gold{background:linear-gradient(135deg,var(--gold),#c2185b);color:#fff}
+.hav-silver{background:linear-gradient(135deg,#c9a7f7,#e9d5ff);color:#3b1e52}
+.hav-bronze{background:linear-gradient(135deg,#a3134f,#7b1049);color:#fff}
+.hname{font-size:.82rem;font-weight:600;font-family:'Cinzel',serif}
+.hdept{font-size:.7rem;color:var(--mu)}
+.no-hold{font-size:.78rem;color:var(--dim);font-style:italic;padding:10px 0}
+/* ABOUT */
+.about-bg{background:var(--bg3);border-top:1px solid var(--gb)}
+.about-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:52px;align-items:start}
+.about-tag{display:inline-flex;align-items:center;gap:6px;font-family:'Cinzel',serif;
+font-size:.65rem;font-weight:700;letter-spacing:2px;color:#e9d5ff;text-transform:uppercase;
+background:rgba(201,167,247,.12);border:1px solid rgba(201,167,247,.25);
+border-radius:20px;padding:5px 14px;margin-bottom:18px}
+.about-h{font-family:'Cinzel',serif;font-size:clamp(1.35rem,3vw,1.9rem);font-weight:700;
+line-height:1.35;margin-bottom:16px}
+.about-h span{background:linear-gradient(135deg,var(--c),var(--v));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.about-p{font-size:.86rem;color:var(--mu);line-height:1.85;margin-bottom:16px}
+.features{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+.feat{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;
+background:rgba(255,255,255,.03);border:1px solid var(--gb);border-radius:14px}
+.feat-mark{width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--v));
+flex-shrink:0;margin-top:7px}
+.feat-title{font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;margin-bottom:3px}
+.feat-desc{font-size:.75rem;color:var(--mu);line-height:1.55}
+/* dept card */
+.dept-card{background:var(--glass);border:1px solid var(--gb);border-radius:24px;
+padding:32px 24px;text-align:center;position:sticky;top:90px}
+.dept-seal{width:88px;height:88px;border-radius:50%;margin:0 auto 18px;
+background:linear-gradient(135deg,var(--v),var(--c));
+display:flex;align-items:center;justify-content:center;
+font-family:'Cinzel',serif;font-size:1.7rem;font-weight:900;color:#fff;
+box-shadow:0 0 32px rgba(163,19,79,.35)}
+.dept-n{font-family:'Cinzel',serif;font-size:.98rem;font-weight:700;margin-bottom:8px;line-height:1.5}
+.dept-sub{font-size:.76rem;color:var(--mu);line-height:1.7}
+.accred{display:inline-flex;align-items:center;gap:5px;margin-top:14px;
+font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:var(--g);
+background:rgba(232,89,138,.1);border:1px solid rgba(232,89,138,.25);
+border-radius:20px;padding:5px 14px}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.stat-box{background:rgba(255,255,255,.04);border:1px solid var(--gb);
+border-radius:14px;padding:16px;text-align:center}
+.stat-n{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:900;color:var(--c)}
+.stat-l{font-size:.68rem;color:var(--mu);margin-top:3px;font-family:'Cinzel',serif;letter-spacing:.5px}
+.portal-btn{display:block;margin-top:20px;width:100%;padding:14px;
+background:linear-gradient(135deg,var(--v),var(--c));border:none;border-radius:12px;
+color:#fff;font-family:'Cinzel',serif;font-weight:700;font-size:.85rem;letter-spacing:1.5px;
+cursor:pointer;transition:all .2s}
+.portal-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,167,247,.3)}
+/* FOOTER */
+footer{background:rgba(11,7,16,.98);border-top:1px solid rgba(255,255,255,.07);padding:56px 0 0;margin-top:auto}
+.ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;padding-bottom:48px}
+.ft-brand h3{font-family:'Cinzel',serif;font-weight:900;font-size:1.3rem;letter-spacing:5px;
+background:linear-gradient(135deg,var(--c),var(--v));-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
+.ft-brand p{font-size:.78rem;color:var(--mu);line-height:1.75;max-width:260px;margin-bottom:18px}
+.ft-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Cinzel',serif;
+font-size:.62rem;font-weight:700;letter-spacing:1.5px;color:var(--g);
+background:rgba(232,89,138,.08);border:1px solid rgba(232,89,138,.2);
+border-radius:20px;padding:4px 12px}
+.ft-col h4{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;letter-spacing:2.5px;
+color:var(--c);text-transform:uppercase;margin-bottom:16px}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.ft-col li{display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--mu);
+transition:color .2s;cursor:default}
+.ft-col li:hover{color:var(--ink)}
+.ft-col li.link{cursor:pointer}
+.ft-col a{color:var(--mu);transition:color .2s}
+.ft-col a:hover{color:var(--ink)}
+.ft-bottom{border-top:1px solid rgba(255,255,255,.06);padding:20px 0;
+display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.ft-copy{font-size:.72rem;color:var(--dim);line-height:1.7}
+.ft-copy strong{color:var(--mu);font-family:'Cinzel',serif}
+.ft-right{font-size:.7rem;color:var(--dim);text-align:right}
+/* REVEAL */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease}
+.rv.vis{opacity:1;transform:none}
+/* RESPONSIVE */
+@media(max-width:900px){
+.steps-grid,.badge-grid,.about-grid,.ft{grid-template-columns:1fr}
+.about-grid{gap:32px}
+.ft{grid-template-columns:1fr 1fr}
+nav{padding:0 16px}
+.nlinks{display:none}
+}
+@media(max-width:600px){
+.champions-row{grid-template-columns:1fr 1fr}
+.ft{grid-template-columns:1fr}
+.ft-bottom{flex-direction:column;text-align:center}
+.ft-right{text-align:center}
+}
+@media(max-width:400px){
+.h-title{letter-spacing:5px;font-size:3rem}
+.champions-row{grid-template-columns:1fr}
+}
+/* LOGIN DROPDOWN — frosted glass */
+.login-dropdown{
+position:relative;
+display:inline-block;
+}
+.dropdown-content{
+position:absolute;
+top:calc(100% + 10px);
+right:0;
+min-width:200px;
+background:rgba(255,255,255,.07);
+backdrop-filter:blur(28px) saturate(180%);
+-webkit-backdrop-filter:blur(28px) saturate(180%);
+border:1px solid rgba(255,255,255,.16);
+border-radius:16px;
+overflow:hidden;
+box-shadow:0 20px 50px rgba(0,0,0,.45),0 0 0 1px rgba(201,167,247,.08) inset,0 1px 0 rgba(255,255,255,.15) inset;
+z-index:9999;
+opacity:0;
+visibility:hidden;
+transform:translateY(-10px) scale(.96);
+transform-origin:top right;
+transition:opacity .32s cubic-bezier(.34,1.56,.64,1),transform .32s cubic-bezier(.34,1.56,.64,1),visibility .32s;
+padding:6px;
+}
+.dropdown-content.show{
+opacity:1;
+visibility:visible;
+transform:translateY(0) scale(1);
+}
+.drop-item{
+display:block;
+width:100%;
+padding:12px 16px;
+color:var(--ink);
+text-decoration:none;
+font-family:'Cinzel',serif;
+font-size:.85rem;
+font-weight:600;
+border-radius:10px;
+cursor:pointer;
+background:none;
+border:none;
+text-align:left;
+}
+
+.drop-item:hover{
+background:linear-gradient(135deg,rgba(201,167,247,.18),rgba(163,19,79,.18));
+color:#fff;
+}
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<!-- NOTICE BAR -->
+<div class="notice z" id="notice">
+<strong id="noticeText">This week's quiz is live — don't miss it.</strong>
+<a href="#" id="noticeJoinLink" style="font-family:'Cinzel',serif;font-size:.72rem;color:var(--c);border:1px solid rgba(201,167,247,.3);border-radius:20px;padding:4px 12px;margin-left:8px;white-space:nowrap">Join Now →</a>
+</div>
+
+<!-- NAV -->
+<nav class="z" id="nav-top-anchor">
+<div class="nlogo">QUIZIFY</div>
+<div class="nlinks">
+<a href="#freelance">Jobs Board</a>
+<a href="#winners">Champions</a>
+<a href="#badges">Badges</a>
+<a href="#steps">How It Works</a>
+<a href="#about">About</a>
+</div>
+<div class="login-dropdown">
+<button class="nbtn" id="loginBtn" type="button">
+Login ▾
+</button>
+
+<div class="dropdown-content" id="dropdownMenu">
+<a class="drop-item" href="https://claude.ai" id="loginStudentLink">Student</a> <!-- ENTER YOUR STUDENT PORTAL LINK HERE -->
+<a class="drop-item" href="https://claude.ai" id="loginTeacherLink">Faculty</a> <!-- ENTER YOUR TEACHER / FACULTY PORTAL LINK HERE -->
+<a class="drop-item" href="https://claude.ai" id="loginAdminLink">Admin</a> <!-- ENTER YOUR ADMIN PORTAL LINK HERE -->
+</div>
+</div>
+</nav>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ HERO ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section id="hero" class="z">
+<div class="h-eye">PG &amp; Research Department of Computer Science</div>
+<h1 class="h-title">QUIZIFY</h1>
+<p class="h-sub">The official weekly quiz portal of <strong>Nilgiri College of Arts &amp; Science</strong>.<br>Test your knowledge every week. Earn badges. Become a champion.</p>
+
+<!-- QUIZ STATUS — filled by JS. Shimmer placeholder shown instantly so there's no blank flash. -->
+<div id="quizCardMount" style="width:min(560px,100%);margin:0 auto">
+<div class="qwait-wrap">
+<div class="qwait-inner">
+<div class="shim" style="width:60%;margin:0 auto 12px"></div>
+<div class="shim" style="width:80%;margin:0 auto 8px"></div>
+<div class="shim" style="width:45%;margin:0 auto"></div>
+</div>
+</div>
+</div>
+
+<div class="scroll-hint">
+<p>Scroll Down</p>
+<div class="scroll-arr"></div>
+</div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ FREELANCE JOBS BOARD ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section id="freelance" class="z sec" style="border-top:1px solid var(--gb)">
+<div class="wrap rv">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:18px;margin-bottom:36px">
+<div>
+<div class="sec-eye">Campus Freelance</div>
+<h2 class="sec-h" style="margin-bottom:8px">Freelance Jobs Board</h2>
+<p class="sec-sub" style="margin-bottom:0">Any student or teacher can post a website or app request here. Browsing is open to everyone — signing in is only required to apply or post a job.</p>
+</div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+<span style="font-size:.74rem;color:var(--dim);display:inline-flex;align-items:center;gap:6px"><span id="flLiveDot" style="width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;display:inline-block;animation:ldot 1.2s infinite"></span>Live from database</span>
+<button type="button" id="flRefreshBtn" style="font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:.8px;padding:8px 16px;border-radius:9px;border:1px solid var(--gb);background:rgba(255,255,255,.04);color:var(--mu);cursor:pointer;transition:all .2s">Refresh</button>
+<button type="button" id="flPostBtn" class="nbtn" style="padding:9px 20px;font-size:.72rem">Post a Job</button>
+</div>
+</div>
+<div class="champions-row" id="flJobsGrid">
+<div class="no-champs">Loading jobs…</div>
+</div>
+</div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ HOW IT WORKS ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section id="steps" class="z sec" style="border-top:1px solid var(--gb)">
+<div class="wrap rv">
+<div class="sec-eye">How It Works</div>
+<h2 class="sec-h">Three steps to quiz glory</h2>
+<p class="sec-sub">Every Monday a new challenge drops. Attempt it before Sunday midnight to stay in the running for the semester championship.</p>
+<div class="steps-grid">
+<div class="step">
+<div class="step-ico ic1">R</div>
+<div class="step-n">Step 01</div>
+<div class="step-title">Register &amp; Enrol</div>
+<div class="step-desc">Create your portal account once. Each week, fill in the quick registration form with your name, department, roll number, and photo before the quiz opens.</div>
+<div class="step-arrow"></div>
+</div>
+<div class="step">
+<div class="step-ico ic2">A</div>
+<div class="step-n">Step 02</div>
+<div class="step-title">Attempt the Quiz</div>
+<div class="step-desc">Answer 10 carefully curated CS questions within the time limit. Questions cover programming, data structures, algorithms, and technology concepts.</div>
+<div class="step-arrow"></div>
+</div>
+<div class="step">
+<div class="step-ico ic3">B</div>
+<div class="step-n">Step 03</div>
+<div class="step-title">Earn Your Badge</div>
+<div class="step-desc">Top scorers receive Bronze, Silver, or Gold badges. Semester Gold champions are honoured at the annual prize ceremony with a cash award.</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ CHAMPIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section id="winners" class="z win-sec sec">
+<div class="wrap rv">
+<div class="sec-eye">Hall of Fame</div>
+<h2 class="sec-h">Weekly Champions</h2>
+<p class="sec-sub">The top scorer from each completed week. Every champion is recognised by the PG &amp; Research Dept of CS.</p>
+<div class="champions-row" id="champRow">
+<!-- filled by JS -->
+</div>
+</div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ BADGE SHOWCASE ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section id="badges" class="z sec" style="border-top:1px solid var(--gb)">
+<div class="wrap rv">
+<div class="sec-eye">Recognition Programme</div>
+<h2 class="sec-h">Badge Holders</h2>
+<p class="sec-sub">Awarded by the department at the end of each semester. Gold badge holders are invited to the annual prize ceremony.</p>
+<div class="badge-grid" id="badgeGrid">
+<!-- filled by JS -->
+</div>
+</div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ ABOUT ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<section id="about" class="z sec about-bg">
+<div class="wrap rv">
+<div class="about-grid">
+<div>
+<div class="about-tag">About This Portal</div>
+<h2 class="about-h">Organised by the<br><span>PG &amp; Research Department of Computer Science</span></h2>
+<p class="about-p">Quizify is the official academic quiz platform of <strong style="color:var(--ink)">Nilgiri College of Arts &amp; Science</strong>, built and maintained by the PG &amp; Research Department of Computer Science. The weekly quiz programme invites students from <em>all departments</em> to engage with computing, programming, and technology.</p>
+<p class="about-p">Beyond weekly quizzes, Quizify powers live classroom quiz sessions for faculty — create a quiz, share a code, and monitor your students in real time.</p>
+<div class="features">
+<div class="feat">
+<div class="feat-mark"></div>
+<div><div class="feat-title">Weekly Quizzes</div><div class="feat-desc">A fresh CS challenge every Monday, open to all departments across the college.</div></div>
+</div>
+<div class="feat">
+<div class="feat-mark"></div>
+<div><div class="feat-title">Live Classroom Quizzes</div><div class="feat-desc">Faculty create instant quiz sessions with a 6-digit code. Students join and compete live.</div></div>
+</div>
+<div class="feat">
+<div class="feat-mark"></div>
+<div><div class="feat-title">Real-Time Monitoring</div><div class="feat-desc">Faculty track who joined, who left early, and scores as they come in — live.</div></div>
+</div>
+<div class="feat">
+<div class="feat-mark"></div>
+<div><div class="feat-title">Freelance Jobs Board</div><div class="feat-desc">Any department can request a website or app project. CS students and faculty apply through their own portal.</div></div>
+</div>
+</div>
+</div>
+<div class="dept-card">
+<div class="dept-seal">PG</div>
+<div class="dept-n">PG &amp; Research Department of Computer Science</div>
+<div class="dept-sub">Nilgiri College of Arts &amp; Science<br>Affiliated to Bharathiar University<br><br>Dedicated to computing education, applied research, and student excellence.</div>
+<div class="accred">NAAC A++ Accredited</div>
+<div class="stats-row" id="statsRow">
+<div class="stat-box"><div class="stat-n" id="stS">—</div><div class="stat-l">Students</div></div>
+<div class="stat-box"><div class="stat-n" id="stW">—</div><div class="stat-l">Weeks Done</div></div>
+<div class="stat-box"><div class="stat-n" id="stQ">—</div><div class="stat-l">Class Quizzes</div></div>
+<div class="stat-box"><div class="stat-n" id="stD">—</div><div class="stat-l">Departments</div></div>
+</div>
+<button class="portal-btn" id="enterPortalBtn" type="button">Enter the Portal</button>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ FOOTER ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<footer class="z">
+<div class="wrap">
+<div class="ft">
+<div class="ft-brand">
+<h3>QUIZIFY</h3>
+<p>The official weekly academic quiz portal, organised and maintained by the PG &amp; Research Department of Computer Science, Nilgiri College of Arts &amp; Science.</p>
+<div class="ft-badge">NAAC A++ Accredited College</div>
+</div>
+<div class="ft-col">
+<h4>Portal</h4>
+<ul>
+<li class="link"><a href="#" id="ftHomeLink">Home Dashboard</a></li>
+<li class="link"><a href="#" id="ftStudentLink">Student Login</a></li>
+<li class="link"><a href="#" id="ftTeacherLink">Faculty Login</a></li>
+<li class="link"><a href="#" id="ftAdminLink">Admin Panel</a></li>
+</ul>
+</div>
+<div class="ft-col">
+<h4>Programme</h4>
+<ul>
+<li>Weekly Quizzes</li>
+<li>Classroom Quizzes</li>
+<li>Live Monitoring</li>
+<li>Badge Programme</li>
+<li>Semester Awards</li>
+</ul>
+</div>
+<div class="ft-col">
+<h4>Institution</h4>
+<ul>
+<li>PG &amp; Research Dept of CS</li>
+<li>Nilgiri College</li>
+<li>Arts &amp; Science</li>
+<li>Bharathiar University</li>
+<li>NAAC A++ Accredited</li>
+</ul>
+</div>
+</div>
+<div class="ft-bottom">
+<div class="ft-copy">
+<strong>Quizify</strong> &nbsp;·&nbsp; Organised by PG &amp; Research Department of Computer Science &nbsp;·&nbsp;
+Nilgiri College of Arts &amp; Science &nbsp;·&nbsp; NAAC A++ &nbsp;·&nbsp; © 2025 All Rights Reserved
+</div>
+<div class="ft-right">
+Weekly Academic Quiz Programme<br>
+Open to all students across every department
+</div>
+</div>
+</div>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+# PORTAL FILE NAMES — ENTER YOUR ACTUAL FILE NAMES HERE
+# Used by: the Login menu, the "Join Quiz Now" button, the
+# Freelance Jobs board, and the footer links. Change these
+# three lines once and every link on the page updates.
+════════════════════════════════════════════════════════════ */
+const STUDENT_PORTAL_FILE = 'quizify-student.html'; // # <-- ENTER YOUR STUDENT PORTAL FILE NAME HERE
+const TEACHER_PORTAL_FILE = 'quizify-teacher.html'; // # <-- ENTER YOUR TEACHER / FACULTY PORTAL FILE NAME HERE
+const ADMIN_PORTAL_FILE = 'quizify-admin.html'; // # <-- ENTER YOUR ADMIN PORTAL FILE NAME HERE
+
+/* ════════════════════════════════════════════════════════════
+# DATABASE CONNECTION — needed only for the Freelance Jobs
+# board below, which reads live job posts from Google Sheets.
+════════════════════════════════════════════════════════════ */
+const API_URL = 'YOUR_APPS_SCRIPT_DEPLOYMENT_URL'; // # <-- PASTE DEPLOYMENT URL HERE
+const API_TOKEN = 'QUIZIFY_SECRET_CHANGE_ME'; // # <-- MUST MATCH Code.gs SECRET_TOKEN
+
+/* ── Aurora ─────────────────────────────────────────────────────── */
+const cv=document.getElementById('cv'),cx=cv.getContext('2d');
+const rsz=()=>{cv.width=innerWidth;cv.height=innerHeight};rsz();window.addEventListener('resize',rsz);
+const B=[{x:.1,y:.2,r:.48,c:'#a3134f',vx:.00018,vy:.00015},{x:.9,y:.7,r:.52,c:'#c9a7f7',vx:-.00014,vy:.00020},
+{x:.5,y:.92,r:.4,c:'#e8598a',vx:.00024,vy:-.00018},{x:.7,y:.1,r:.32,c:'#7b1049',vx:-.00020,vy:.00026},
+{x:.25,y:.65,r:.35,c:'#d9b8ff',vx:.00016,vy:-.00022}];
+(function anim(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#0b0710';cx.fillRect(0,0,cv.width,cv.height);
+B.forEach(b=>{b.x+=b.vx;b.y+=b.vy;if(b.x<-.15||b.x>1.15)b.vx*=-1;if(b.y<-.15||b.y>1.15)b.vy*=-1;
+const g=cx.createRadialGradient(b.x*cv.width,b.y*cv.height,0,b.x*cv.width,b.y*cv.height,b.r*Math.max(cv.width,cv.height));
+g.addColorStop(0,b.c+'40');g.addColorStop(1,'transparent');cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});
+requestAnimationFrame(anim);})();
+
+/* ── Data — everything below reads live from Google Sheets via Code.gs.
+No demo data, no localStorage seed data, no hardcoded names or
+numbers anywhere on this page. ─────────────────────────────── */
+async function GET(action,p={}){
+const url=new URL(API_URL);url.searchParams.set('action',action);url.searchParams.set('token',API_TOKEN);
+Object.entries(p).forEach(([k,v])=>url.searchParams.set(k,v));
+const r=await fetch(url.toString());const j=await r.json();
+if(j.status==='error')throw new Error(j.message);return j.data;
+}
+function esc(s){return(s==null?'':String(s)).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+function pad(n){return String(n).padStart(2,'0')}
+
+/* ── Portal navigation — session-aware, skips login if already signed in ── */
+function goPortal(kind, hash){
+hash = hash || '';
+const file = kind==='student' ? STUDENT_PORTAL_FILE : kind==='teacher' ? TEACHER_PORTAL_FILE : ADMIN_PORTAL_FILE;
+location.href = file + hash;
+}
+// Used by actions that either role (student or teacher) can perform, like Freelance Jobs.
+function goPortalSmart(hash){
+hash = hash || '';
+if(sessionStorage.getItem('qf_student')){ location.href = STUDENT_PORTAL_FILE + hash; return; }
+if(sessionStorage.getItem('qf_teacher')){ location.href = TEACHER_PORTAL_FILE + hash; return; }
+// Not signed in yet — open the Login menu so they can choose Student or Faculty.
+openLoginMenu();
+}
+function openLoginMenu(){
+document.getElementById('nav-top-anchor')?.scrollIntoView({behavior:'smooth',block:'start'});
+const dd=document.getElementById('dropdownMenu');
+if(dd) dd.classList.add('show');
+}
+
+/* ── Quiz Card — live active weekly quiz from Code.gs ────────────── */
+async function renderQuizCard(){
+const mount=document.getElementById('quizCardMount');
+const notice=document.getElementById('notice');
+try{
+const active=await GET('getActiveWeeklyQuiz');
+
+if(active&&active.id){
+const num=active.weekNumber||'—';
+notice.style.display='flex';
+document.getElementById('noticeText').textContent=`Week ${num} quiz is live now — "${esc(active.title||'Weekly CS Challenge')}"`;
+mount.innerHTML=`<div class="qcard-wrap">
+<div class="qcard-inner">
+<div class="qlive-row">
+<span class="qlive-dot"></span>
+<span class="qlive-tag">Live Now</span>
+<span class="qlive-week">Week ${num}</span>
+</div>
+<div class="qtitle">${esc(active.title||'Weekly CS Challenge')}</div>
+<div class="qmeta">
+<span class="qmeta-item">${(active.questionList||[]).length} Questions</span>
+<span class="qmeta-item">${active.timer||15} Minutes</span>
+<span class="qmeta-item">All Departments</span>
+</div>
+<button class="btn-join" type="button" onclick="goPortal('student')">
+Join Quiz Now
+</button>
+<div class="btn-join-note">Login required &nbsp;·&nbsp; Registration with photo</div>
+</div>
+</div>`;
+} else {
+notice.style.display='none';
+const allQ=await GET('getAllWeeklyQuizzes');
+const nextN=((allQ||[]).length)+1;
+mount.innerHTML=`<div class="qwait-wrap">
+<div class="qwait-inner">
+<div class="qwait-title">Week ${nextN} Quiz — Coming Soon</div>
+<div class="qwait-sub">The admin is preparing this week's challenge. Stay tuned — it drops every Monday morning.</div>
+<div class="shim" style="width:75%;margin:0 auto 8px"></div>
+<div class="shim" style="width:50%;margin:0 auto"></div>
+<div style="margin-top:20px;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:2px;color:var(--dim);text-transform:uppercase">Next quiz drops in</div>
+<div class="cd" id="cdRow">
+<div class="cdu"><b id="cdd">00</b><span>Days</span></div>
+<span class="cdsp">:</span>
+<div class="cdu"><b id="cdh">00</b><span>Hrs</span></div>
+<span class="cdsp">:</span>
+<div class="cdu"><b id="cdm">00</b><span>Min</span></div>
+<span class="cdsp">:</span>
+<div class="cdu"><b id="cds">00</b><span>Sec</span></div>
+</div>
+<button class="btn-join" type="button" style="margin-top:6px;background:linear-gradient(135deg,rgba(163,19,79,.6),rgba(201,167,247,.6));animation:none;box-shadow:none" onclick="openLoginMenu()">
+Login to Portal
+</button>
+</div>
+</div>`;
+countdown();
+}
+}catch(e){
+notice.style.display='none';
+mount.innerHTML=`<div class="qwait-wrap">
+<div class="qwait-inner">
+<div class="qwait-title">Weekly Quiz — Coming Soon</div>
+<div class="qwait-sub">The admin is preparing this week's challenge. Stay tuned — it drops every Monday morning.</div>
+<div class="shim" style="width:75%;margin:0 auto 8px"></div>
+<div class="shim" style="width:50%;margin:0 auto"></div>
+<div style="margin-top:20px;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:2px;color:var(--dim);text-transform:uppercase">Next quiz drops in</div>
+<div class="cd" id="cdRow">
+<div class="cdu"><b id="cdd">00</b><span>Days</span></div>
+<span class="cdsp">:</span>
+<div class="cdu"><b id="cdh">00</b><span>Hrs</span></div>
+<span class="cdsp">:</span>
+<div class="cdu"><b id="cdm">00</b><span>Min</span></div>
+<span class="cdsp">:</span>
+<div class="cdu"><b id="cds">00</b><span>Sec</span></div>
+</div>
+<button class="btn-join" type="button" style="margin-top:6px;background:linear-gradient(135deg,rgba(163,19,79,.6),rgba(201,167,247,.6));animation:none;box-shadow:none" onclick="openLoginMenu()">
+Login to Portal
+</button>
+</div>
+</div>`;
+countdown();
+}
+}
+
+function countdown(){
+const tick=()=>{
+const now=new Date(),day=now.getDay(),diff=(day===1?7:(8-day)%7)||7;
+const nxt=new Date(now);nxt.setDate(now.getDate()+diff);nxt.setHours(9,0,0,0);
+const ms=Math.max(0,nxt-now);
+const u=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=pad(v)};
+u('cdd',Math.floor(ms/864e5));u('cdh',Math.floor(ms%864e5/36e5));
+u('cdm',Math.floor(ms%36e5/6e4));u('cds',Math.floor(ms%6e4/1e3));
+};tick();setInterval(tick,1000);
+}
+
+/* ── Champions (only #1 per week) — live from Responses sheet ────── */
+async function renderChampions(){
+const row=document.getElementById('champRow');
+try{
+const allQ=await GET('getAllWeeklyQuizzes');
+const completed=(allQ||[]).filter(q=>q.status==='completed')
+.sort((a,b)=>Number(b.weekNumber)-Number(a.weekNumber));
+
+if(!completed.length){
+row.innerHTML=`<div class="no-champs">No completed weeks yet — be the first champion.</div>`;
+return;
+}
+
+const results=await Promise.all(completed.map(q=>
+GET('getResponsesByQuiz',{quizId:q.id}).then(rs=>({q,rs:rs||[]})).catch(()=>({q,rs:[]}))
+));
+
+let cards='';
+results.forEach(({q,rs})=>{
+if(!rs.length)return;
+const top=rs.slice().sort((a,b)=>Number(b.score)-Number(a.score))[0];
+cards+=champCard(top.studentName,top.department,top.score,top.total,`Week ${q.weekNumber}`,q.title);
+});
+row.innerHTML=cards||`<div class="no-champs">No completed weeks yet — be the first champion.</div>`;
+}catch(e){
+row.innerHTML=`<div class="no-champs">Could not load champions. Check API_URL.</div>`;
+}
+}
+
+function champCard(name,dept,score,total,week,title){
+const ini=(name||'?')[0].toUpperCase();
+return`<div class="champ-card">
+<div class="champ-week">${esc(week)}${title?' — '+esc(title.split('–').slice(-1)[0].trim()):''}</div>
+<span class="champ-rank">Top Scorer</span>
+<div class="champ-avatar">${ini}</div>
+<div class="champ-name">${esc(name)}</div>
+<div class="champ-dept">${esc(dept||'—')}</div>
+<div class="champ-score">${score}/${total}</div>
+</div>`;
+}
+
+/* ── Badges — live from Students sheet, no fallback holders ──────── */
+async function renderBadges(){
+const grid=document.getElementById('badgeGrid');
+const tiers=[
+{k:'gold',icon:'I',name:'Gold Badge',desc:'Semester champion. Recognised at the annual prize ceremony with a cash award.',av:'hav-gold',c:'bt-gold'},
+{k:'silver',icon:'II',name:'Silver Badge',desc:'Outstanding performer. Consistently top 10 across multiple weeks.',av:'hav-silver',c:'bt-silver'},
+{k:'bronze',icon:'III',name:'Bronze Badge',desc:'Dedicated participant. Regular engagement in the weekly quiz programme.',av:'hav-bronze',c:'bt-bronze'},
+];
+try{
+const students=await GET('getAllStudents');
+grid.innerHTML=tiers.map(t=>{
+const holders=(students||[]).filter(s=>s.badge===t.k);
+return`<div class="badge-tier ${t.c}">
+<div class="bt-head"><span class="bt-icon">${t.icon}</span><div class="bt-name">${t.name}</div></div>
+<div class="bt-desc">${t.desc}</div>
+<div class="bt-divider"></div>
+${holders.length?holders.map(u=>`<div class="holder-row">
+<div class="hav ${t.av}">${(u.name||'?')[0].toUpperCase()}</div>
+<div><div class="hname">${esc(u.name)}</div><div class="hdept">${esc(u.department||'')}</div></div>
+</div>`).join(''):`<div class="no-hold">No ${t.name.toLowerCase()} holders yet</div>`}
+</div>`;
+}).join('');
+}catch(e){
+grid.innerHTML=`<div class="no-champs" style="grid-column:1/-1">Could not load badges. Check API_URL.</div>`;
+}
+}
+
+/* ── Stats — live counts from Code.gs, no fallback numbers ───────── */
+async function renderStats(){
+try{
+const [d,allQ]=await Promise.all([GET('getDashboardData'),GET('getAllWeeklyQuizzes')]);
+const c=(d&&d.counts)||{};
+const weeksDone=(allQ||[]).filter(q=>q.status==='completed').length;
+document.getElementById('stS').textContent=c.students??0;
+document.getElementById('stW').textContent=weeksDone;
+document.getElementById('stQ').textContent=c.cQuizzes??0;
+document.getElementById('stD').textContent=c.departments??0;
+}catch(e){
+['stS','stW','stQ','stD'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='—';});
+}
+}
+
+/* ── Freelance Jobs Board — live from Google Sheets via Code.gs ─── */
+function flFmt(j){
+const s=j.currency==='USD'?'$':'₹';
+if(!j.budgetMin&&!j.budgetMax)return'Budget open';
+if(j.budgetMin&&j.budgetMax)return s+Number(j.budgetMin).toLocaleString()+' – '+s+Number(j.budgetMax).toLocaleString();
+if(j.budgetMin)return'From '+s+Number(j.budgetMin).toLocaleString();
+return'Up to '+s+Number(j.budgetMax).toLocaleString();
+}
+async function loadFreelanceJobs(){
+const grid=document.getElementById('flJobsGrid');
+if(!grid)return;
+grid.innerHTML='<div class="no-champs">Loading jobs…</div>';
+try{
+const r=await fetch(API_URL+'?action=getOpenFreelanceJobs&token='+API_TOKEN);
+const d=await r.json();
+const jobs=d.data||[];
+if(!jobs.length){
+grid.innerHTML='<div class="no-champs">No open jobs right now — sign in to post the first one.</div>';
+return;
+}
+grid.innerHTML=jobs.map(j=>`
+<div class="champ-card" style="text-align:left;background:linear-gradient(160deg,rgba(201,167,247,.06),rgba(11,7,16,.95))">
+<div class="champ-week" style="margin-bottom:10px">${esc(j.type||'Project')}</div>
+<div class="hname" style="font-size:.95rem;margin-bottom:6px;line-height:1.35">${esc(j.title)}</div>
+<div style="font-size:.78rem;color:var(--mu);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(j.description)}</div>
+<div class="champ-score" style="margin-bottom:12px">${flFmt(j)}</div>
+<div style="font-size:.72rem;color:var(--dim);margin-bottom:16px">${esc(j.postedByDept||'Department')} &middot; ${esc(j.postedBy)}</div>
+<button type="button" class="btn-join fl-apply-btn" style="padding:12px;font-size:.78rem;letter-spacing:1px;animation:none;box-shadow:0 4px 16px rgba(163,19,79,.3)">Apply — Sign In</button>
+</div>`).join('');
+grid.querySelectorAll('.fl-apply-btn').forEach(btn=>{
+btn.addEventListener('click',()=>goPortalSmart('#jobs'));
+});
+}catch(e){
+grid.innerHTML='<div class="no-champs">Could not load jobs. Paste your API_URL at the top of this file to connect the database.</div>';
+}
+}
+
+/* ── Scroll reveal ──────────────────────────────────────────────── */
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')}),{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+/* ── Init ───────────────────────────────────────────────────────── */
+renderQuizCard();
+renderChampions();
+renderBadges();
+renderStats();
+loadFreelanceJobs();
+setInterval(renderQuizCard,30000);
+setInterval(loadFreelanceJobs,60000);
+
+/* ── Wire up all portal-navigation buttons and links ─────────────── */
+document.getElementById('enterPortalBtn').addEventListener('click',openLoginMenu);
+document.getElementById('flPostBtn').addEventListener('click',()=>goPortalSmart('#jobs'));
+document.getElementById('flRefreshBtn').addEventListener('click',loadFreelanceJobs);
+document.getElementById('noticeJoinLink').addEventListener('click',(e)=>{e.preventDefault();goPortal('student');});
+document.getElementById('ftHomeLink').addEventListener('click',(e)=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});});
+document.getElementById('ftStudentLink').addEventListener('click',(e)=>{e.preventDefault();goPortal('student');});
+document.getElementById('ftTeacherLink').addEventListener('click',(e)=>{e.preventDefault();goPortal('teacher');});
+document.getElementById('ftAdminLink').addEventListener('click',(e)=>{e.preventDefault();goPortal('admin');});
+</script>
+<script>
+const loginBtn = document.getElementById("loginBtn");
+const dropdown = document.getElementById("dropdownMenu");
+
+loginBtn.onclick = function (e) {
+e.stopPropagation();
+dropdown.classList.toggle("show");
+};
+document.addEventListener("click", function(e){
+if (!dropdown.contains(e.target) && !loginBtn.contains(e.target)) {
+dropdown.classList.remove("show");
+}
+});
+</script>
+</body>
+</html>

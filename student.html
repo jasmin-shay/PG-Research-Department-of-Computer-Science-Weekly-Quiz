@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Quizify — Student Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+--bg:#0c0716;--lav:#c084fc;--lav2:#a855f7;--lavl:#f3e8ff;
+--pink:#f472b6;--pink2:#ec4899;--pinkl:#fce7f3;
+--peach:#fb923c;--peachl:#fff7ed;
+--mint:#34d399;--rose:#f43f5e;--sky:#38bdf8;
+--gold:#fbbf24;--goldl:#fffbeb;
+--mist:#f8f4ff;--fog:rgba(248,244,255,.62);--dim:rgba(248,244,255,.32);
+--nav-h:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);font-family:"Inter",sans-serif;
+color:var(--mist);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+#aur{position:fixed;inset:0;z-index:0;pointer-events:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+background:rgba(255,255,255,.09);backdrop-filter:blur(16px);
+border:1px solid rgba(255,255,255,.2);border-radius:10px;color:var(--mist);
+font-family:"Cinzel",serif;font-weight:700;font-size:.72rem;letter-spacing:1px;
+padding:10px 20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;white-space:nowrap;
+box-shadow:0 0 10px rgba(255,255,255,.05),inset 0 1px 0 rgba(255,255,255,.14)}
+.btn::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 55%);pointer-events:none;border-radius:inherit}
+.btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.32);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn-lav{background:rgba(192,132,252,.18);border-color:rgba(192,132,252,.42);color:var(--lavl);box-shadow:0 0 18px rgba(192,132,252,.28)}
+.btn-lav:hover{background:rgba(192,132,252,.28);box-shadow:0 0 36px rgba(192,132,252,.5)}
+.btn-pink{background:rgba(244,114,182,.16);border-color:rgba(244,114,182,.38);color:var(--pinkl);box-shadow:0 0 16px rgba(244,114,182,.22)}
+.btn-pink:hover{background:rgba(244,114,182,.26);box-shadow:0 0 32px rgba(244,114,182,.45)}
+.btn-peach{background:rgba(251,146,60,.16);border-color:rgba(251,146,60,.38);color:var(--peachl);box-shadow:0 0 16px rgba(251,146,60,.22)}
+.btn-peach:hover{background:rgba(251,146,60,.26);box-shadow:0 0 32px rgba(251,146,60,.45)}
+.btn-mint{background:rgba(52,211,153,.16);border-color:rgba(52,211,153,.35);color:#d1fae5;box-shadow:0 0 16px rgba(52,211,153,.2)}
+.btn-mint:hover{background:rgba(52,211,153,.26);box-shadow:0 0 32px rgba(52,211,153,.4)}
+.btn-rose{background:rgba(244,63,94,.13);border-color:rgba(244,63,94,.3);color:#ffe4e6}
+.btn-rose:hover{background:rgba(244,63,94,.22);box-shadow:0 0 28px rgba(244,63,94,.38)}
+.btn-sm{padding:7px 14px;font-size:.66rem;border-radius:8px}
+.btn-lg{padding:14px 28px;font-size:.8rem;border-radius:12px}
+.btn-block{width:100%;justify-content:center}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.fl{font-family:"Cinzel",serif;font-size:.62rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase;display:block;margin-bottom:8px}
+.fi{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:11px;padding:14px 17px;color:var(--mist);font-family:"Inter",sans-serif;font-size:.92rem;outline:none;transition:all .2s}
+.fi:focus{border-color:var(--lav);box-shadow:0 0 0 3px rgba(192,132,252,.15)}
+.fi::placeholder{color:var(--dim)}
+select.fi{background:rgba(12,7,22,.8);cursor:pointer}
+select.fi option{background:#180c2e;color:var(--mist)}
+.fg{margin-bottom:16px}
+.spinner{width:17px;height:17px;border:2px solid rgba(192,132,252,.18);border-top-color:var(--lav);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* LOGIN */
+#loginScreen{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.login-brand{text-align:center;margin-bottom:34px}
+.login-logo{font-family:"Cinzel",serif;font-weight:900;font-size:3rem;letter-spacing:8px;
+background:linear-gradient(135deg,var(--lav),var(--pink),var(--peach));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+filter:drop-shadow(0 0 20px rgba(192,132,252,.45));margin-bottom:8px}
+.login-brand-sub{font-family:"Cinzel",serif;font-size:.68rem;color:rgba(248,244,255,.38);letter-spacing:3px;text-transform:uppercase;line-height:1.8}
+.login-card{width:100%;max-width:440px;border-radius:22px;
+background:rgba(255,255,255,.065);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+border:1px solid rgba(192,132,252,.2);padding:36px;
+box-shadow:0 0 80px rgba(192,132,252,.08),0 24px 64px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1)}
+.step-row{display:flex;align-items:center;margin-bottom:10px}
+.step-node{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+font-family:"Space Mono",monospace;font-size:.72rem;font-weight:700;flex-shrink:0;
+transition:all .3s;border:1.5px solid rgba(248,244,255,.2);color:var(--dim);background:rgba(255,255,255,.04)}
+.step-node.active{background:rgba(192,132,252,.22);border-color:rgba(192,132,252,.55);color:var(--lavl);box-shadow:0 0 14px rgba(192,132,252,.35)}
+.step-node.done{background:rgba(52,211,153,.2);border-color:rgba(52,211,153,.45);color:#a7f3d0}
+.step-line{flex:1;height:1px;background:rgba(248,244,255,.12);margin:0 6px}
+.step-line.done{background:rgba(52,211,153,.35)}
+.step-labels{display:flex;justify-content:space-between;margin-bottom:26px}
+.step-lbl{font-family:"Cinzel",serif;font-size:.58rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase;text-align:center;flex:1;padding:0 4px}
+.step-lbl.active{color:var(--lav)}
+.lcard-eye{font-family:"Cinzel",serif;font-size:.62rem;font-weight:700;letter-spacing:3px;color:var(--lav);text-transform:uppercase;margin-bottom:8px}
+.lcard-title{font-family:"Cinzel",serif;font-size:1.5rem;font-weight:700;margin-bottom:6px;letter-spacing:.3px;color:var(--mist)}
+.lcard-sub{font-size:.84rem;color:var(--fog);line-height:1.65;margin-bottom:22px}
+.lerr{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.22);border-radius:9px;padding:10px 14px;font-size:.82rem;color:#fda4af;display:none;margin-bottom:14px;line-height:1.55}
+.back-link{font-family:"Cinzel",serif;font-size:.68rem;color:var(--dim);cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;transition:color .18s}
+.back-link:hover{color:var(--fog)}
+.linfo{padding:13px 15px;border-radius:11px;margin-bottom:16px;font-size:.8rem;line-height:1.6}
+.linfo-mint{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);color:#a7f3d0}
+
+/* DASHBOARD */
+#dashboard{display:none;position:relative;z-index:10;min-height:100vh}
+.top-nav{position:fixed;top:0;inset-x:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;padding:0 32px;background:rgba(12,7,22,.82);backdrop-filter:blur(28px);border-bottom:1px solid rgba(192,132,252,.15);box-shadow:0 2px 32px rgba(0,0,0,.4)}
+.nav-logo{font-family:"Cinzel",serif;font-weight:900;font-size:1.2rem;letter-spacing:5px;background:linear-gradient(135deg,var(--lav),var(--pink),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(192,132,252,.4));margin-right:32px;white-space:nowrap;cursor:pointer;line-height:1}
+.nav-logo small{font-size:.48rem;letter-spacing:2.5px;display:block;margin-top:3px;-webkit-text-fill-color:rgba(248,244,255,.4);background:none;filter:none}
+.nav-menu{display:flex;align-items:center;gap:2px;flex:1}
+.nav-direct{display:flex;align-items:center;gap:8px;font-family:"Cinzel",serif;font-size:.7rem;font-weight:700;letter-spacing:.8px;color:var(--fog);padding:8px 14px;border-radius:9px;cursor:pointer;transition:all .18s;border:none;background:none;white-space:nowrap}
+.nav-direct:hover,.nav-direct.active{background:rgba(192,132,252,.14);color:var(--lavl)}
+.nav-group{position:relative}
+.nav-drop-btn{display:flex;align-items:center;gap:8px;font-family:"Cinzel",serif;font-size:.7rem;font-weight:700;letter-spacing:.8px;color:var(--fog);padding:8px 14px;border-radius:9px;cursor:pointer;transition:all .18s;border:none;background:none;white-space:nowrap}
+.nav-drop-btn:hover,.nav-group.open .nav-drop-btn,.nav-drop-btn.active{background:rgba(192,132,252,.14);color:var(--lavl)}
+.drop-chev{transition:transform .2s;display:flex}
+.nav-group.open .drop-chev{transform:rotate(180deg)}
+.dropdown{position:absolute;top:calc(100% + 10px);left:0;min-width:200px;z-index:300;background:rgba(16,8,28,.96);backdrop-filter:blur(28px);border:1px solid rgba(192,132,252,.2);border-radius:14px;padding:8px;box-shadow:0 16px 48px rgba(0,0,0,.55);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .2s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.nav-group.open .dropdown{opacity:1;visibility:visible;transform:translateY(0);pointer-events:all}
+.drop-slbl{font-family:"Cinzel",serif;font-size:.54rem;font-weight:700;letter-spacing:2.5px;color:rgba(192,132,252,.55);text-transform:uppercase;padding:8px 12px 4px}
+.drop-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;cursor:pointer;transition:all .15s;color:var(--fog);font-size:.82rem}
+.drop-item:hover{background:rgba(192,132,252,.12);color:var(--mist)}
+.drop-item.danger{color:rgba(244,63,94,.7)}
+.drop-item.danger:hover{background:rgba(244,63,94,.1);color:#fda4af}
+.drop-sep{height:1px;background:rgba(255,255,255,.07);margin:6px 0}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.nav-pg{position:relative}
+.nav-pb{display:flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;border-radius:10px;cursor:pointer;transition:background .18s;border:none;background:none}
+.nav-pb:hover,.nav-pg.open .nav-pb{background:rgba(255,255,255,.07)}
+.nav-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Cinzel",serif;font-size:.9rem;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--lav),var(--pink));border:2px solid rgba(192,132,252,.4);box-shadow:0 0 12px rgba(192,132,252,.3);overflow:hidden;flex-shrink:0}
+.nav-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.nav-uname{font-family:"Cinzel",serif;font-size:.7rem;font-weight:700;color:var(--mist);white-space:nowrap}
+.nav-udept{font-size:.6rem;color:var(--dim);white-space:nowrap}
+.nav-pg .dropdown{left:auto;right:0;min-width:180px}
+main{position:relative;z-index:10;padding:calc(var(--nav-h) + 32px) 40px 48px;min-height:100vh}
+.sec{display:none;animation:fadeUp .28s ease}
+.sec.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page-head{margin-bottom:30px}
+.page-eye{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;display:inline-block;margin-bottom:8px;background:linear-gradient(90deg,var(--lav),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-title{font-family:"Cinzel",serif;font-size:1.9rem;font-weight:700;letter-spacing:.5px;color:var(--mist);line-height:1.15;text-shadow:0 0 40px rgba(192,132,252,.2)}
+.page-sub{font-size:.87rem;color:var(--fog);line-height:1.75;margin-top:6px}
+.card{background:rgba(255,255,255,.07);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.11);border-radius:18px;padding:26px;margin-bottom:20px;box-shadow:0 4px 28px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.08)}
+.card-lav{border-color:rgba(192,132,252,.22);background:rgba(192,132,252,.05)}
+.card-pink{border-color:rgba(244,114,182,.22);background:rgba(244,114,182,.04)}
+.card-mint{border-color:rgba(52,211,153,.2);background:rgba(52,211,153,.04)}
+.card-label{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,var(--lav),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.card-label::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.07)}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-panel{display:flex;overflow:hidden;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.18);transition:all .22s}
+.stat-panel:hover{transform:translateY(-2px)}
+.stat-accent{width:4px;flex-shrink:0}
+.sa-lav{background:linear-gradient(to bottom,var(--lav),var(--lav2))}.sa-pink{background:linear-gradient(to bottom,var(--pink),var(--pink2))}.sa-peach{background:linear-gradient(to bottom,var(--peach),#ea580c)}.sa-mint{background:linear-gradient(to bottom,var(--mint),#059669)}.sa-gold{background:linear-gradient(to bottom,var(--gold),#f59e0b)}
+.stat-body{padding:20px 18px;flex:1}
+.stat-number{font-family:"Space Mono",monospace;font-size:2.6rem;font-weight:700;line-height:1;letter-spacing:-2px;display:block}
+.sn-lav{background:linear-gradient(135deg,var(--lav),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(192,132,252,.3))}
+.sn-pink{background:linear-gradient(135deg,var(--pink),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(244,114,182,.3))}
+.sn-peach{background:linear-gradient(135deg,var(--peach),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(251,146,60,.3))}
+.sn-mint{background:linear-gradient(135deg,var(--mint),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(52,211,153,.3))}
+.stat-label{font-family:"Cinzel",serif;font-size:.58rem;font-weight:700;letter-spacing:2.5px;color:var(--dim);text-transform:uppercase;margin-top:8px;display:block}
+.stat-sub{font-size:.72rem;color:rgba(248,244,255,.2);margin-top:3px}
+.badge-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 14px;border-radius:20px;font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.bc-bronze{background:rgba(180,83,9,.18);border:1px solid rgba(180,83,9,.35);color:#fbbf24}
+.bc-silver{background:rgba(156,163,175,.14);border:1px solid rgba(156,163,175,.3);color:#e5e7eb}
+.bc-gold{background:rgba(251,191,36,.16);border:1px solid rgba(251,191,36,.35);color:var(--goldl);box-shadow:0 0 12px rgba(251,191,36,.2)}
+.data-table{width:100%;border-collapse:collapse}
+.data-table thead tr{border-bottom:1px solid rgba(255,255,255,.1)}
+.data-table th{padding:12px 16px;text-align:left;font-family:"Cinzel",serif;font-size:.57rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase;background:rgba(255,255,255,.025)}
+.data-table td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.05);font-size:.84rem;color:var(--mist);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tbody tr:hover td{background:rgba(255,255,255,.04)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-family:"Cinzel",serif;font-size:.57rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.badge-done{background:rgba(52,211,153,.09);color:#6ee7b7;border:1px solid rgba(52,211,153,.2)}
+.badge-active{background:rgba(244,63,94,.12);color:#fda4af;border:1px solid rgba(244,63,94,.25)}
+.badge-wait{background:rgba(251,146,60,.12);color:#fdba74;border:1px solid rgba(251,146,60,.25)}
+.badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:bdot 1.2s ease infinite}
+@keyframes bdot{0%,100%{opacity:1}50%{opacity:.3}}
+/* LEADERBOARD */
+.lb-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:12px;margin-bottom:8px;transition:all .2s;border:1px solid transparent}
+.lb-row:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.07)}
+.lb-row.me{background:rgba(192,132,252,.08);border-color:rgba(192,132,252,.22);box-shadow:0 0 18px rgba(192,132,252,.1)}
+.lb-rank{font-family:"Space Mono",monospace;font-size:.9rem;font-weight:700;width:32px;text-align:center;flex-shrink:0}
+.lb-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--lav),var(--pink));display:flex;align-items:center;justify-content:center;font-family:"Cinzel",serif;font-size:.9rem;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0}
+.lb-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.lb-name{font-weight:600;font-size:.88rem;color:var(--mist)}
+.lb-dept{font-size:.72rem;color:var(--dim)}
+.lb-score{font-family:"Space Mono",monospace;font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,var(--lav),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(192,132,252,.3));margin-left:auto;flex-shrink:0}
+/* QUIZ ROOM */
+#quizRoom{display:none;position:fixed;inset:0;z-index:500;background:var(--bg);overflow-y:auto}
+.qr-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative;z-index:1}
+.qr-head{width:100%;max-width:700px;display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.qr-title{font-family:"Cinzel",serif;font-size:.82rem;font-weight:700;color:var(--fog);letter-spacing:1px}
+.qr-timer{font-family:"Space Mono",monospace;font-size:1.6rem;font-weight:700;padding:8px 20px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);transition:all .3s}
+.qr-timer.warn{color:var(--peach);border-color:rgba(251,146,60,.4);background:rgba(251,146,60,.08);box-shadow:0 0 20px rgba(251,146,60,.2)}
+.qr-timer.danger{color:var(--rose);border-color:rgba(244,63,94,.4);background:rgba(244,63,94,.08);box-shadow:0 0 20px rgba(244,63,94,.25);animation:tpulse .5s ease infinite}
+@keyframes tpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.qr-prog{width:100%;max-width:700px;height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:28px;overflow:hidden}
+.qr-prog-fill{height:100%;background:linear-gradient(90deg,var(--lav),var(--pink));border-radius:2px;transition:width .3s}
+.qr-card{width:100%;max-width:700px;background:rgba(255,255,255,.07);backdrop-filter:blur(20px);border:1px solid rgba(192,132,252,.18);border-radius:20px;padding:32px;box-shadow:0 0 60px rgba(192,132,252,.08),0 24px 48px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.1)}
+.qr-qnum{font-family:"Cinzel",serif;font-size:.62rem;font-weight:700;letter-spacing:3px;color:var(--lav);text-transform:uppercase;margin-bottom:12px}
+.qr-qtext{font-family:"Cinzel",serif;font-size:1.12rem;font-weight:700;color:var(--mist);line-height:1.55;margin-bottom:24px}
+.qr-opts{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
+.qr-opt{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1)}
+.qr-opt:hover{background:rgba(192,132,252,.1);border-color:rgba(192,132,252,.3)}
+.qr-opt.selected{background:rgba(192,132,252,.16);border-color:rgba(192,132,252,.5);box-shadow:0 0 20px rgba(192,132,252,.2)}
+.qr-opt.correct{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.45);box-shadow:0 0 16px rgba(52,211,153,.2)}
+.qr-opt.wrong{background:rgba(244,63,94,.1);border-color:rgba(244,63,94,.35)}
+.qr-opt-ltr{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-family:"Space Mono",monospace;font-size:.72rem;font-weight:700;flex-shrink:0;transition:all .2s}
+.qr-opt.selected .qr-opt-ltr{background:rgba(192,132,252,.3);border-color:rgba(192,132,252,.6);color:var(--lavl)}
+.qr-opt.correct .qr-opt-ltr{background:rgba(52,211,153,.3);border-color:rgba(52,211,153,.6);color:#a7f3d0}
+.qr-opt.wrong .qr-opt-ltr{background:rgba(244,63,94,.2);border-color:rgba(244,63,94,.5);color:#fda4af}
+.qr-opt-text{font-size:.9rem;color:var(--mist);line-height:1.4}
+.qr-nav{display:flex;justify-content:space-between;align-items:center;gap:12px}
+/* RESULT SCREEN */
+.result-screen{text-align:center;padding:20px}
+.result-ring{width:140px;height:140px;border-radius:50%;margin:0 auto 20px;position:relative;display:flex;align-items:center;justify-content:center}
+.result-score{font-family:"Space Mono",monospace;font-size:2.4rem;font-weight:700;line-height:1}
+.result-pct{font-size:.78rem;color:var(--dim);font-family:"Cinzel",serif;letter-spacing:1px;margin-top:4px}
+/* PROFILE */
+.profile-layout{display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:start}
+.photo-area{text-align:center;padding:28px 20px;background:rgba(192,132,252,.06);border:1px solid rgba(192,132,252,.2);border-radius:18px;margin-bottom:18px}
+.photo-wrap{position:relative;width:130px;height:130px;margin:0 auto 14px;cursor:pointer}
+.photo-ring{position:absolute;inset:-3px;border-radius:50%;z-index:0;background:conic-gradient(var(--lav),var(--pink),var(--peach),var(--lav));animation:cring 5s linear infinite;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask-composite:xor;padding:3px}
+@keyframes cring{to{transform:rotate(360deg)}}
+.photo-el{width:130px;height:130px;border-radius:50%;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,var(--lav),var(--pink));border:3px solid var(--bg);font-family:"Cinzel",serif;font-size:3rem;font-weight:700;color:#fff;box-shadow:0 0 28px rgba(192,132,252,.35)}
+.photo-el img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.photo-overlay{position:absolute;inset:3px;border-radius:50%;z-index:2;background:rgba(0,0,0,.65);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;gap:4px}
+.photo-wrap:hover .photo-overlay{opacity:1}
+.po-text{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:1.5px;color:#fff;text-transform:uppercase}
+.empty-state{text-align:center;padding:48px 24px}
+.empty-title{font-family:"Cinzel",serif;font-size:.92rem;color:var(--fog);margin-bottom:8px;margin-top:12px}
+.empty-desc{font-size:.8rem;color:var(--dim);line-height:1.7}
+.loading-row{display:flex;align-items:center;gap:10px;font-size:.84rem;color:var(--fog);padding:16px 0}
+.dash-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:20px}
+@media(max-width:1000px){.stat-row{grid-template-columns:1fr 1fr}.dash-grid,.profile-layout{grid-template-columns:1fr}.preview-panel{position:static}}
+@media(max-width:700px){.stat-row{grid-template-columns:1fr 1fr}.nav-menu{display:none}main{padding-top:calc(var(--nav-h) + 20px);padding-left:18px;padding-right:18px}}
+
+/* ── FREELANCE BOARD ── */
+.job-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:16px;padding:20px;transition:all .22s;cursor:default}
+.job-card:hover{border-color:rgba(251,146,60,.28);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.25)}
+.job-type-chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-family:"Cinzel",serif;font-size:.57rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;background:rgba(251,146,60,.12);color:#fdba74;border:1px solid rgba(251,146,60,.25);margin-bottom:10px}
+.job-title{font-family:"Cinzel",serif;font-size:.96rem;font-weight:700;color:var(--mist);margin-bottom:5px;line-height:1.3}
+.job-desc{font-size:.8rem;color:var(--fog);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.job-budget{font-family:"Space Mono",monospace;font-size:1.05rem;font-weight:700;background:linear-gradient(135deg,var(--mint),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(52,211,153,.3));margin-bottom:4px}
+.job-meta{font-size:.72rem;color:var(--dim);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.job-dot{width:3px;height:3px;border-radius:50%;background:var(--dim);flex-shrink:0}
+.jobs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px}
+.status-open{background:rgba(52,211,153,.09);color:#6ee7b7;border:1px solid rgba(52,211,153,.2)}
+.status-progress{background:rgba(251,146,60,.1);color:#fdba74;border:1px solid rgba(251,146,60,.22)}
+.status-done{background:rgba(192,132,252,.09);color:var(--lavl);border:1px solid rgba(192,132,252,.2)}
+.j-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:20px;font-family:"Cinzel",serif;font-size:.56rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+/* post form */
+.post-form{background:rgba(251,146,60,.05);border:1px solid rgba(251,146,60,.18);border-radius:16px;padding:24px;margin-bottom:24px}
+.budget-row{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}.modal-overlay.open{display:flex;animation:fadeUp .2s ease}.modal-box{background:rgba(18,10,30,.97);border:1px solid rgba(255,255,255,.12);border-radius:20px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.6)}.modal-head{padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center}.modal-head h3{font-family:"Cinzel",serif;font-size:.9rem;font-weight:700;color:var(--lav)}.modal-close{background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer;padding:2px 6px;border-radius:5px;transition:color .2s}.modal-close:hover{color:var(--mist)}.modal-body{padding:22px 24px}.detail-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.84rem;align-items:center}.detail-row:last-child{border-bottom:none}.dk{font-family:"Cinzel",serif;font-size:.6rem;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase}.dv{color:var(--mist);font-weight:600}
+</style></head><body>
+<canvas id="aur"></canvas>
+<input type="file" id="photoIn" accept="image/*" style="display:none" onchange="handlePhoto(event)"/>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+<div class="login-brand">
+<div class="login-logo">QUIZIFY</div>
+<div class="login-brand-sub">Student Portal &middot; Nilgiri College of<br>Arts &amp; Science</div>
+</div>
+<div class="login-card">
+<div class="step-row"><div class="step-node active" id="sn1">1</div><div class="step-line" id="sl1"></div><div class="step-node" id="sn2">2</div></div>
+<div class="step-labels"><span class="step-lbl active" id="slbl1">Email</span><span class="step-lbl" id="slbl2">Access</span></div>
+
+<!-- S1 EMAIL -->
+<div id="s-email">
+<div class="lcard-eye">Step 1 of 2</div>
+<div class="lcard-title">Enter Your Email</div>
+<div class="lcard-sub">Use your college email. New students will be asked to register. Returning students will sign in with their password.</div>
+<div class="lerr" id="emailErr"></div>
+<div class="fg"><label class="fl">College Email</label><input class="fi" id="emailIn" type="email" placeholder="yourname@nilgiri.edu" autocomplete="email"/></div>
+<button class="btn btn-lav btn-block btn-lg" id="emailBtn" onclick="checkEmail()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+Continue
+</button>
+</div>
+
+<!-- S2A PASSWORD (returning student) -->
+<div id="s-password" style="display:none">
+<div class="back-link" onclick="backToEmail()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>Change email</div>
+<div class="lcard-eye">Step 2 of 2</div>
+<div class="lcard-title">Welcome Back</div>
+<div class="lcard-sub">Enter your password to sign in to the Student Portal.</div>
+<div class="lerr" id="passErr"></div>
+<div class="fg"><label class="fl">Password</label><input class="fi" id="passIn" type="password" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" autocomplete="current-password"/></div>
+<button class="btn btn-lav btn-block btn-lg" id="passBtn" onclick="doLogin()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+Sign In
+</button>
+</div>
+
+<!-- S2B REGISTER (first time) -->
+<div id="s-register" style="display:none">
+<div class="back-link" onclick="backToEmail()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>Change email</div>
+<div class="lcard-eye">Step 2 of 2</div>
+<div class="lcard-title">Create Your Account</div>
+<div class="lcard-sub">First time here. Fill in your details to get started.</div>
+<div class="linfo linfo-mint" style="margin-bottom:18px">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle;margin-right:6px"><polyline points="20 6 9 17 4 12"/></svg>
+You only register once. After this, sign in with your email and password.
+</div>
+<div class="lerr" id="regErr"></div>
+<div class="fg"><label class="fl">Full Name</label><input class="fi" id="regName" placeholder="Your full name"/></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+<div class="fg"><label class="fl">Roll Number</label><input class="fi" id="regRoll" placeholder="e.g. 22CS01"/></div>
+<div class="fg"><label class="fl">Year</label>
+<select class="fi" id="regYear" style="background:rgba(12,7,22,.8)">
+<option value="">Year</option>
+<option>I Year</option><option>II Year</option><option>III Year</option><option>PG I Year</option><option>PG II Year</option>
+</select>
+</div>
+</div>
+<div class="fg"><label class="fl">Department</label>
+<select class="fi" id="regDept" style="background:rgba(12,7,22,.8)">
+<option value="">Select department</option>
+<option>Computer Science</option><option>Mathematics</option><option>Physics</option>
+<option>Chemistry</option><option>Electronics</option><option>Commerce</option>
+<option>English</option><option>Tamil</option><option>Biotechnology</option>
+</select>
+</div>
+<div class="fg"><label class="fl">Password</label><input class="fi" id="regPass" type="password" placeholder="Minimum 6 characters"/></div>
+<div class="fg"><label class="fl">Confirm Password</label><input class="fi" id="regPass2" type="password" placeholder="Repeat password"/></div>
+<button class="btn btn-pink btn-block btn-lg" id="regBtn" onclick="doRegister()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+Create Student Account
+</button>
+</div>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+<nav class="top-nav">
+<div class="nav-logo" onclick="show('home')">QUIZIFY<small>Student Portal</small></div>
+<div class="nav-menu">
+<button class="nav-direct active" id="nd-home" onclick="show('home',this)">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+Home
+</button>
+<div class="nav-group" id="ng-quiz">
+<button class="nav-drop-btn" id="nd-quiz" onclick="toggleDrop('ng-quiz')">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="3"/></svg>
+Quizzes
+<span class="drop-chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+</button>
+<div class="dropdown">
+<div class="drop-slbl">Take a Quiz</div>
+<div class="drop-item" onclick="show('weekly','nd-quiz');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Weekly Quiz</div>
+<div class="drop-item" onclick="show('join','nd-quiz');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Join with Code</div>
+</div>
+</div>
+<button class="nav-direct" id="nd-jobs" onclick="show('jobs',this)">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+Jobs Board
+</button>
+<button class="nav-direct" id="nd-results" onclick="show('results',this)">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+My Results
+</button>
+<button class="nav-direct" id="nd-leaders" onclick="show('leaders',this)">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+Leaderboard
+</button>
+</div>
+<div class="nav-right">
+<div class="nav-pg" id="ng-profile">
+<button class="nav-pb" onclick="toggleDrop('ng-profile')">
+<div class="nav-av" id="navAv">S</div>
+<div style="text-align:left"><div class="nav-uname" id="navName">Student</div><div class="nav-udept" id="navDept">Department</div></div>
+<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="color:var(--dim)"><polyline points="6 9 12 15 18 9"/></svg>
+</button>
+<div class="dropdown">
+<div class="drop-item" onclick="show('profile');closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile</div>
+<div class="drop-item" onclick="document.getElementById('photoIn').click();closeDrop()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Change Photo</div>
+<div class="drop-sep"></div>
+<div class="drop-item danger" onclick="doLogout()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</div>
+</div>
+</div>
+</div>
+</nav>
+
+<main>
+<!-- HOME -->
+<section class="sec on" id="sec-home">
+<div class="page-head"><div class="page-eye">Student Home</div><h1 class="page-title" id="greetTitle">Good day</h1><p class="page-sub">Your quiz hub. Take weekly quizzes, join classroom sessions, track your progress.</p></div>
+<div class="stat-row">
+<div class="stat-panel"><div class="stat-accent sa-lav"></div><div class="stat-body"><span class="stat-number sn-lav" id="stQuizzes">0</span><span class="stat-label">Quizzes Taken</span><div class="stat-sub">All time</div></div></div>
+<div class="stat-panel"><div class="stat-accent sa-pink"></div><div class="stat-body"><span class="stat-number sn-pink" id="stScore">0</span><span class="stat-label">Total Score</span><div class="stat-sub">Cumulative</div></div></div>
+<div class="stat-panel"><div class="stat-accent sa-peach"></div><div class="stat-body"><span class="stat-number sn-peach" id="stRank">&#x2014;</span><span class="stat-label">Leaderboard Rank</span><div class="stat-sub">Campus-wide</div></div></div>
+<div class="stat-panel"><div class="stat-accent sa-mint"></div><div class="stat-body"><span class="stat-number sn-mint" id="stAvg">&#x2014;</span><span class="stat-label">Avg Score</span><div class="stat-sub">Per quiz</div></div></div>
+</div>
+<div class="dash-grid">
+<div>
+<div id="weeklyBanner"></div>
+<div class="card">
+<div class="card-label">Recent Activity</div>
+<div id="recentActivity"><div class="loading-row"><div class="spinner"></div> Loading...</div></div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div class="card" id="badgeCard" style="display:none">
+<div class="card-label">Your Badge</div>
+<div id="badgeDisplay"></div>
+</div>
+<div class="card card-lav">
+<div class="card-label">Quick Actions</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<button class="btn btn-lav btn-block" onclick="show('weekly','nd-quiz')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Join Weekly Quiz</button>
+<button class="btn btn-pink btn-block" onclick="show('join','nd-quiz')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Enter Classroom Code</button>
+
+<div class="card" style="background:rgba(251,146,60,.04);border-color:rgba(251,146,60,.2)">
+<div class="card-label" style="background:linear-gradient(90deg,var(--peach),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Freelance Jobs Board</div>
+<div id="jobsHomePreview"><div class="loading-row" style="padding:4px 0"><div class="spinner"></div> Loading...</div></div>
+<button class="btn btn-peach btn-block" style="margin-top:14px" onclick="show('jobs',document.getElementById('nd-jobs'))">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+Browse All Jobs
+</button>
+</div>
+<button class="btn btn-block" onclick="show('leaders',document.getElementById('nd-leaders'))"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>Leaderboard</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- WEEKLY QUIZ -->
+<section class="sec" id="sec-weekly">
+<div class="page-head"><div class="page-eye">Weekly Quiz</div><h1 class="page-title">This Week's Quiz</h1><p class="page-sub">The campus-wide quiz for all students. Results go to the leaderboard.</p></div>
+<div id="weeklyContent"><div class="loading-row"><div class="spinner"></div> Checking for active quiz...</div></div>
+</section>
+
+<!-- JOIN WITH CODE -->
+<section class="sec" id="sec-join">
+<div class="page-head"><div class="page-eye">Classroom Quiz</div><h1 class="page-title">Join with Code</h1><p class="page-sub">Enter the 6-digit code your teacher shared to join a live classroom quiz.</p></div>
+<div style="max-width:420px">
+<div class="card">
+<div class="card-label">Enter Quiz Code</div>
+<div class="fg" style="margin-bottom:20px">
+<label class="fl">6-Digit Code</label>
+<input class="fi" id="joinCode" placeholder="e.g. 847291" maxlength="6" style="font-family:'Space Mono',monospace;font-size:1.6rem;letter-spacing:10px;text-align:center;text-transform:uppercase" oninput="this.value=this.value.replace(/[^0-9]/g,'')"/>
+</div>
+<div id="joinErr" style="display:none;color:#fda4af;font-size:.82rem;margin-bottom:12px;padding:10px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:9px"></div>
+<button class="btn btn-pink btn-block btn-lg" id="joinBtn" onclick="joinByCode()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+Join Quiz
+</button>
+</div>
+</div>
+</section>
+
+<!-- MY RESULTS -->
+<section class="sec" id="sec-results">
+<div class="page-head"><div class="page-eye">History</div><h1 class="page-title">My Results</h1><p class="page-sub">All your quiz submissions fetched from Google Sheets.</p></div>
+<div class="card" style="padding:0;overflow:hidden"><div id="resultsTable"><div class="loading-row" style="padding:24px 20px"><div class="spinner"></div> Loading...</div></div></div>
+</section>
+
+<!-- LEADERBOARD -->
+<section class="sec" id="sec-leaders">
+<div class="page-head"><div class="page-eye">Campus Rankings</div><h1 class="page-title">Leaderboard</h1><p class="page-sub">Top students across all departments ranked by cumulative score.</p></div>
+<div class="card"><div id="leaderboardEl"><div class="loading-row"><div class="spinner"></div> Loading...</div></div></div>
+</section>
+
+<!-- PROFILE -->
+<section class="sec" id="sec-profile">
+<div class="page-head"><div class="page-eye">Account</div><h1 class="page-title">My Profile</h1><p class="page-sub">Update your photo and display name.</p></div>
+<div class="profile-layout">
+<div>
+<div class="photo-area">
+<div class="photo-wrap" onclick="document.getElementById('photoIn').click()">
+<div class="photo-ring"></div>
+<div class="photo-overlay"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><div class="po-text">Change Photo</div></div>
+<div class="photo-el" id="photoEl">S</div>
+</div>
+<div style="font-family:'Cinzel',serif;font-size:1.05rem;font-weight:700;margin-bottom:4px" id="profName">Student</div>
+<div style="font-size:.74rem;color:var(--lav);font-family:'Cinzel',serif;letter-spacing:1px;margin-bottom:4px" id="profDept">Department</div>
+<div style="font-size:.7rem;color:var(--dim);font-family:'Space Mono',monospace" id="profEmail">—</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
+<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center">
+<div style="font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--lav),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(192,132,252,.3))" id="profQ">0</div>
+<div style="font-family:'Cinzel',serif;font-size:.56rem;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px">Quizzes</div>
+</div>
+<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center">
+<div style="font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--pink),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(244,114,182,.3))" id="profS">0</div>
+<div style="font-family:'Cinzel',serif;font-size:.56rem;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px">Total Score</div>
+</div>
+</div>
+<div style="margin-top:14px;text-align:center" id="profBadgeArea"></div>
+</div>
+</div>
+<div>
+<div class="card">
+<div class="card-label">Edit Profile</div>
+<div class="fg"><label class="fl">Display Name</label><input class="fi" id="editName" placeholder="Your full name"/></div>
+<div id="profMsg"></div>
+<button class="btn btn-lav btn-block" onclick="saveProfile()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Save Changes</button>
+</div>
+<div class="card" style="background:rgba(192,132,252,.05);border-color:rgba(192,132,252,.18)">
+<div class="card-label">Account Details</div>
+<div style="font-size:.84rem;line-height:2.4">
+<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase">Email</span><span style="font-family:'Space Mono',monospace;font-size:.74rem;color:var(--lavl)" id="acEmail">—</span></div>
+<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase">Roll No</span><span style="font-family:'Space Mono',monospace;font-size:.74rem;color:var(--lavl)" id="acRoll">—</span></div>
+<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase">Department</span><span style="color:var(--mint);font-size:.76rem" id="acDept">—</span></div>
+<div style="display:flex;justify-content:space-between;padding:6px 0"><span style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase">Year</span><span style="color:var(--mint);font-size:.76rem" id="acYear">—</span></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- JOBS BOARD -->
+<section class="sec" id="sec-jobs">
+<div class="page-head"><div class="page-eye">Freelance Board</div><h1 class="page-title">Jobs Board</h1><p class="page-sub">Other department students and teachers post web/app projects here. CS students and teachers can apply to take them.</p></div>
+
+<!-- POST A JOB -->
+<div class="post-form" id="postJobCollapse">
+<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="togglePostForm()">
+<div style="font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;letter-spacing:1.5px;color:var(--peach);text-transform:uppercase">Post a Job Request</div>
+<svg id="postChev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--peach)" stroke-width="2.5" stroke-linecap="round" style="transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>
+</div>
+<div id="postJobForm" style="display:none;margin-top:18px">
+<div class="fg"><label class="fl">Project Title</label><input class="fi" id="jTitle" placeholder="e.g. College Club Website, Lab Inventory App"/></div>
+<div class="fg"><label class="fl">Project Type</label>
+<select class="fi" id="jType" style="background:rgba(12,7,22,.8)">
+<option value="">Select type</option>
+<option>Website</option><option>Web Application</option><option>Mobile App Design</option>
+<option>Dashboard / Admin Panel</option><option>E-commerce Site</option>
+<option>Landing Page</option><option>Database Design</option><option>API Integration</option><option>Other</option>
+</select>
+</div>
+<div class="fg"><label class="fl">Description</label><textarea class="fi" id="jDesc" rows="3" placeholder="Describe what you need, features, pages, any reference sites..."></textarea></div>
+<div class="budget-row">
+<div class="fg" style="margin-bottom:0"><label class="fl">Budget Min</label><input class="fi" id="jBudgetMin" type="number" placeholder="500"/></div>
+<div class="fg" style="margin-bottom:0"><label class="fl">Budget Max</label><input class="fi" id="jBudgetMax" type="number" placeholder="2000"/></div>
+<div class="fg" style="margin-bottom:0"><label class="fl">Currency</label><select class="fi" id="jCurrency" style="background:rgba(12,7,22,.8)"><option value="INR">INR ₹</option><option value="USD">USD $</option></select></div>
+</div>
+<div class="fg" style="margin-top:14px"><label class="fl">Your Contact Info</label><input class="fi" id="jContact" placeholder="Phone / WhatsApp / Email for CS team to reach you"/></div>
+<div id="postJobMsg"></div>
+<button class="btn btn-peach btn-block" style="margin-top:4px" onclick="submitJob()">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+Post Job Request
+</button>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+<div style="font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:2.5px;color:var(--dim);text-transform:uppercase" id="jobsCount">Open Jobs</div>
+<button class="btn btn-sm" onclick="loadJobs()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.4"/></svg>Refresh</button>
+</div>
+<div id="jobsList"><div class="loading-row"><div class="spinner"></div> Loading jobs...</div></div>
+</section>
+</main>
+</div>
+
+<!-- QUIZ ROOM (fullscreen overlay) -->
+<div id="quizRoom">
+<canvas id="aurQ" style="position:fixed;inset:0;z-index:0"></canvas>
+<div class="qr-wrap">
+<div class="qr-head">
+<div><div class="qr-title" id="qrTitle">Quiz</div><div style="font-size:.72rem;color:var(--dim);margin-top:3px" id="qrSubtitle">—</div></div>
+<div class="qr-timer" id="qrTimer">00:00</div>
+</div>
+<div class="qr-prog"><div class="qr-prog-fill" id="qrProgFill" style="width:0%"></div></div>
+<div class="qr-card">
+<div class="qr-qnum" id="qrQNum">Question 1 of 10</div>
+<div class="qr-qtext" id="qrQText">Loading...</div>
+<div class="qr-opts" id="qrOpts"></div>
+<div class="qr-nav">
+<div style="font-size:.76rem;color:var(--dim)" id="qrHint">Select an answer to continue</div>
+<button class="btn btn-lav" id="qrNext" onclick="nextQ()">
+Next <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// # DATABASE CONNECTION — PASTE YOUR VALUES HERE
+// # 1. API_URL -> Your Google Apps Script Web App deployment URL
+// # 2. API_TOKEN -> Must exactly match SECRET_TOKEN in Code.gs
+// # Everything below this line reads/writes live Google Sheets data.
+// # There is NO demo/hardcoded data anywhere in this file.
+// ════════════════════════════════════════════════════════════
+const API_URL='https://script.google.com/macros/s/AKfycbw0yYvF_vXTWl5ukxtRqcnhCeFCAvrTSM8LFEAvAzj9OtvwevZ8M2gZb-mhd6BnEPnc4A/exec'; // # <-- PASTE DEPLOYMENT URL HERE
+const API_TOKEN='quizify-pgcs'; // # <-- MUST MATCH Code.gs SECRET_TOKEN
+
+// AURORA (main + quiz room)
+function startAurora(canvasId,colors){
+const cv=document.getElementById(canvasId);if(!cv)return;
+const cx=cv.getContext('2d');
+const rsz=()=>{cv.width=innerWidth;cv.height=innerHeight};rsz();window.addEventListener('resize',rsz);
+const B=colors.map((c,i)=>({x:[.04,.94,.5,.78,.2][i],y:[.1,.72,.94,.05,.6][i],r:[.56,.62,.5,.4,.44][i],c,vx:[.00013,-.00011,.00016,-.00014,.00012][i],vy:[.00011,.00015,-.00012,.00018,-.00016][i]}));
+(function anim(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#0c0716';cx.fillRect(0,0,cv.width,cv.height);
+B.forEach(b=>{b.x+=b.vx;b.y+=b.vy;if(b.x<-.2||b.x>1.2)b.vx*=-1;if(b.y<-.2||b.y>1.2)b.vy*=-1;
+const g=cx.createRadialGradient(b.x*cv.width,b.y*cv.height,0,b.x*cv.width,b.y*cv.height,b.r*Math.max(cv.width,cv.height));
+g.addColorStop(0,b.c+'5a');g.addColorStop(.45,b.c+'1e');g.addColorStop(1,'transparent');
+cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});requestAnimationFrame(anim);})();
+}
+startAurora('aur',['#c084fc','#f472b6','#fb923c','#c084fc','#f472b6']);
+startAurora('aurQ',['#c084fc','#f472b6','#c084fc','#f472b6','#fb923c']);
+
+// API
+async function GET(action,p={}){
+const url=new URL(API_URL);url.searchParams.set('action',action);url.searchParams.set('token',API_TOKEN);
+Object.entries(p).forEach(([k,v])=>url.searchParams.set(k,v));
+const r=await fetch(url.toString());const j=await r.json();
+if(j.status==='error')throw new Error(j.message);return j.data;
+}
+async function POST(action,data={}){
+const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({action,token:API_TOKEN,data})});
+const j=await r.json();if(j.status==='error')throw new Error(j.message);return j.data;
+}
+
+// STATE
+let student=null,history=[],leaders=[];
+function esc(s){return(s==null?'':String(s)).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
+function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v}
+function showMsg(id,html,type){
+const e=document.getElementById(id);if(!e)return;
+const c={lav:'rgba(192,132,252,.09)|rgba(192,132,252,.22)|#d8b4fe',mint:'rgba(52,211,153,.07)|rgba(52,211,153,.2)|#a7f3d0',rose:'rgba(244,63,94,.08)|rgba(244,63,94,.22)|#fda4af',pink:'rgba(244,114,182,.08)|rgba(244,114,182,.22)|#f9a8d4'}[type||'lav'].split('|');
+e.innerHTML=`<div style="background:${c[0]};border:1px solid ${c[1]};color:${c[2]};border-radius:9px;padding:10px 14px;font-size:.82rem;line-height:1.55;margin:10px 0">${html}</div>`;
+setTimeout(()=>{if(e)e.innerHTML=''},6000);
+}
+function btnLoad(id,t){const b=document.getElementById(id);if(!b)return;b.disabled=true;b.innerHTML='<div class="spinner"></div> '+t;}
+function btnReset(id,h){const b=document.getElementById(id);if(!b)return;b.disabled=false;b.innerHTML=h;}
+
+// LOGIN
+let loginEmail='';
+function showErr(id,m){const e=document.getElementById(id);if(!e)return;e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',5500);}
+function stepDone(n){const sn=document.getElementById('sn'+n);sn.className='step-node done';sn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';const sl=document.getElementById('sl'+n);if(sl)sl.className='step-line done';}
+function stepActive(n){document.getElementById('sn'+n).className='step-node active';document.getElementById('slbl'+n).className='step-lbl active';}
+function showPanel(id){['s-email','s-password','s-register'].forEach(p=>document.getElementById(p).style.display='none');document.getElementById(id).style.display='block';}
+function backToEmail(){showPanel('s-email');document.getElementById('sn1').className='step-node active';document.getElementById('sn2').className='step-node';document.getElementById('slbl1').className='step-lbl active';document.getElementById('slbl2').className='step-lbl';}
+
+async function checkEmail(){
+const email=document.getElementById('emailIn').value.trim().toLowerCase();
+if(!email){showErr('emailErr','Please enter your email address.');return}
+if(!email.endsWith('@nilgiri.edu')){showErr('emailErr','Please use your college email ending with @nilgiri.edu');return}
+loginEmail=email;
+btnLoad('emailBtn','Checking...');
+try{
+const r=await GET('checkStudentExists',{email});
+stepDone(1);stepActive(2);
+if(r.exists)showPanel('s-password');
+else showPanel('s-register');
+}catch(e){showErr('emailErr','Connection error: '+e.message);}
+finally{btnReset('emailBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> Continue');}
+}
+
+async function doLogin(){
+const pass=document.getElementById('passIn').value;
+if(!pass){showErr('passErr','Please enter your password.');return}
+btnLoad('passBtn','Signing in...');
+try{
+const r=await GET('loginCheck',{email:loginEmail,password:pass,role:'student'});
+if(r.success){student=r.user;sessionStorage.setItem('qf_student',JSON.stringify(student));initDash();}
+else showErr('passErr',r.message||'Incorrect password.');
+}catch(e){showErr('passErr','Error: '+e.message);}
+finally{btnReset('passBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Sign In');}
+}
+
+async function doRegister(){
+const name=document.getElementById('regName').value.trim();
+const roll=document.getElementById('regRoll').value.trim();
+const year=document.getElementById('regYear').value;
+const dept=document.getElementById('regDept').value;
+const pass=document.getElementById('regPass').value;
+const pass2=document.getElementById('regPass2').value;
+if(!name||!roll||!year||!dept||!pass){showErr('regErr','Please fill in all fields.');return}
+if(pass.length<6){showErr('regErr','Password must be at least 6 characters.');return}
+if(pass!==pass2){showErr('regErr','Passwords do not match.');return}
+btnLoad('regBtn','Creating account...');
+try{
+const r=await POST('registerStudent',{name,email:loginEmail,rollNumber:roll,department:dept,year,password:pass});
+if(r.success){student=r.user;sessionStorage.setItem('qf_student',JSON.stringify(student));initDash();}
+else showErr('regErr',r.message||'Registration failed.');
+}catch(e){showErr('regErr','Error: '+e.message);}
+finally{btnReset('regBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Create Student Account');}
+}
+
+document.addEventListener('keydown',e=>{
+if(e.key!=='Enter'||!document.getElementById('loginScreen')||document.getElementById('loginScreen').style.display==='none')return;
+if(document.getElementById('s-email').style.display!=='none')checkEmail();
+else if(document.getElementById('s-password').style.display!=='none')doLogin();
+});
+
+// DROPDOWNS
+function toggleDrop(id){const g=document.getElementById(id);const was=g.classList.contains('open');document.querySelectorAll('.nav-group,.nav-pg').forEach(x=>x.classList.remove('open'));if(!was)g.classList.add('open');}
+function closeDrop(){document.querySelectorAll('.nav-group,.nav-pg').forEach(x=>x.classList.remove('open'));}
+document.addEventListener('click',e=>{if(!e.target.closest('.nav-group')&&!e.target.closest('.nav-pg'))closeDrop();});
+
+// INIT
+function initDash(){
+document.getElementById('loginScreen').style.display='none';
+document.getElementById('dashboard').style.display='block';
+const n=(student.name||'Student').split(' ').slice(-1)[0];
+const h=new Date().getHours();
+// greeting handled below
+set('greetTitle',(h<12?'Good morning, ':h<17?'Good afternoon, ':'Good evening, ')+n);
+set('navName',student.name||'Student');set('navDept',student.department||'');
+set('profName',student.name||'Student');set('profDept',student.department||'');
+set('profEmail',student.email||'');set('acEmail',student.email||'');
+set('acRoll',student.rollNumber||'—');set('acDept',student.department||'—');
+set('acYear',student.year||'—');
+document.getElementById('editName').value=student.name||'';
+document.getElementById('navAv').textContent=(student.name||'S')[0].toUpperCase();
+const photo=localStorage.getItem('qf_s_photo_'+student.email);
+if(photo)applyPhoto(photo);
+if(student.badge)showBadge(student.badge);
+loadHome();
+loadJobs();
+}
+function doLogout(){sessionStorage.removeItem('qf_student');student=null;history=[];leaders=[];document.getElementById('dashboard').style.display='none';document.getElementById('loginScreen').style.display='flex';backToEmail();document.getElementById('emailIn').value='';}
+
+// NAV
+function show(sec,activeBtnId){
+document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+document.getElementById('sec-'+sec).classList.add('on');
+document.querySelectorAll('.nav-direct,.nav-drop-btn').forEach(b=>b.classList.remove('active'));
+if(activeBtnId&&typeof activeBtnId!=='string')activeBtnId.classList.add('active');
+else if(activeBtnId)document.getElementById(activeBtnId)?.classList.add('active');
+if(sec==='home')loadHome();
+if(sec==='weekly')loadWeekly();
+if(sec==='results')loadResults();
+if(sec==='leaders')loadLeaders();
+if(sec==='profile')loadProfile();
+if(sec==='jobs')loadJobs();
+}
+
+// HOME
+async function loadHome(){
+try{
+history=await GET('getStudentHistory',{email:student.email})||[];
+const total=history.reduce((a,r)=>a+(Number(r.score)||0),0);
+const avg=history.length?Math.round(total/history.length):0;
+set('stQuizzes',history.length);set('stScore',total);set('stAvg',history.length?avg+'%':'—');
+set('profQ',history.length);set('profS',total);
+
+// Get rank from leaderboard
+const lb=await GET('getLeaderboard');
+const myRank=(lb||[]).findIndex(s=>s.email===student.email)+1;
+set('stRank',myRank>0?'#'+myRank:'—');
+
+// Recent activity
+const recent=history.slice(-5).reverse();
+document.getElementById('recentActivity').innerHTML=recent.length
+?recent.map(r=>`<div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+<div style="width:38px;height:38px;border-radius:10px;background:rgba(192,132,252,.1);border:1px solid rgba(192,132,252,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(192,132,252,.8)" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+</div>
+<div style="flex:1;min-width:0">
+<div style="font-weight:500;font-size:.86rem;color:var(--mist)">${esc(r.quizTitle||'Quiz')}</div>
+<div style="font-size:.72rem;color:var(--dim)">${esc(r.submittedAt)}</div>
+</div>
+<div style="font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;color:var(--lav);filter:drop-shadow(0 0 6px rgba(192,132,252,.3))">${r.score}/${r.total}</div>
+</div>`).join('')
+:'<div style="color:var(--dim);font-size:.84rem;padding:8px 0">No quiz activity yet. Take your first quiz!</div>';
+
+// Weekly quiz banner
+const wq=await GET('getActiveWeeklyQuiz');
+document.getElementById('weeklyBanner').innerHTML=wq
+?`<div class="card" style="background:rgba(244,114,182,.06);border-color:rgba(244,114,182,.22);margin-bottom:20px">
+<div class="card-label" style="background:linear-gradient(90deg,var(--pink),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">This Week's Quiz is Live</div>
+<div style="font-size:.92rem;font-weight:600;color:var(--mist);margin-bottom:4px">${esc(wq.title)}</div>
+<div style="font-size:.78rem;color:var(--fog);margin-bottom:14px">Week ${wq.weekNumber} &middot; ${wq.timer} min &middot; ${(wq.questionList||[]).length} questions</div>
+<span class="badge badge-active" style="margin-bottom:12px"><span class="badge-dot"></span>Live Now</span>
+<br><button class="btn btn-pink" style="margin-top:12px" onclick="startQuiz(null,'weekly')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Start Weekly Quiz</button>
+</div>`:'';
+}catch(e){document.getElementById('recentActivity').innerHTML=`<div style="color:#fda4af;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+
+function showBadge(badge){
+const icons={bronze:'🥉',silver:'🥈',gold:'🥇'};
+const cls={bronze:'bc-bronze',silver:'bc-silver',gold:'bc-gold'};
+const html=`<span class="badge-chip ${cls[badge]||'bc-bronze'}">${icons[badge]||''} ${badge.charAt(0).toUpperCase()+badge.slice(1)} Badge</span>`;
+const bc=document.getElementById('badgeCard');if(bc){bc.style.display='block';document.getElementById('badgeDisplay').innerHTML=html;}
+const pa=document.getElementById('profBadgeArea');if(pa)pa.innerHTML=html;
+}
+
+// WEEKLY QUIZ
+async function loadWeekly(){
+document.getElementById('weeklyContent').innerHTML='<div class="loading-row"><div class="spinner"></div> Checking for active quiz...</div>';
+try{
+const wq=await GET('getActiveWeeklyQuiz');
+if(!wq){
+document.getElementById('weeklyContent').innerHTML=`<div class="empty-state"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="rgba(248,244,255,.15)" stroke-width="1.2" stroke-linecap="round" style="margin:0 auto"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><div class="empty-title">No Weekly Quiz Active</div><div class="empty-desc">No weekly quiz is live right now. Check back soon — admin publishes a new one each week.</div></div>`;
+return;
+}
+const alreadyDone=history.find(r=>r.quizId===wq.id);
+document.getElementById('weeklyContent').innerHTML=`
+<div style="max-width:560px">
+<div class="card" style="background:rgba(244,114,182,.06);border-color:rgba(244,114,182,.22);margin-bottom:20px">
+<div class="card-label" style="background:linear-gradient(90deg,var(--pink),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Weekly Quiz — Live</div>
+<div style="font-size:1.15rem;font-family:'Cinzel',serif;font-weight:700;color:var(--mist);margin-bottom:8px">${esc(wq.title)}</div>
+<div style="display:flex;gap:20px;margin-bottom:18px">
+<div><div style="font-family:'Space Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--pink);filter:drop-shadow(0 0 10px rgba(244,114,182,.4))">${(wq.questionList||[]).length}</div><div style="font-family:'Cinzel',serif;font-size:.56rem;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px">Questions</div></div>
+<div><div style="font-family:'Space Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--peach);filter:drop-shadow(0 0 10px rgba(251,146,60,.4))">${wq.timer}</div><div style="font-family:'Cinzel',serif;font-size:.56rem;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px">Minutes</div></div>
+</div>
+${alreadyDone
+?`<div style="background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);border-radius:9px;padding:12px 14px;font-size:.82rem;color:#a7f3d0;margin-bottom:12px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle;margin-right:6px"><polyline points="20 6 9 17 4 12"/></svg>You already submitted this quiz &mdash; Score: ${alreadyDone.score}/${alreadyDone.total}</div>`
+:`<div style="background:rgba(192,132,252,.07);border:1px solid rgba(192,132,252,.18);border-radius:9px;padding:10px 14px;font-size:.8rem;color:var(--lavl);margin-bottom:14px">Once you start, the timer begins immediately. You can only submit this quiz once.</div>`}
+${!alreadyDone?`<button class="btn btn-pink btn-lg" onclick="startQuiz(null,'weekly')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Start Quiz Now</button>`:''}
+</div>
+</div>`;
+}catch(e){document.getElementById('weeklyContent').innerHTML=`<div style="color:#fda4af;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+
+// JOIN BY CODE
+async function joinByCode(){
+const code=document.getElementById('joinCode').value.trim();
+if(!code||code.length<4){document.getElementById('joinErr').style.display='block';document.getElementById('joinErr').textContent='Please enter a valid quiz code.';return}
+btnLoad('joinBtn','Looking up quiz...');
+try{
+const cq=await GET('getClassroomQuizByCode',{code});
+if(!cq){document.getElementById('joinErr').style.display='block';document.getElementById('joinErr').textContent='No active quiz found for this code. Check with your teacher.';return}
+if(cq.error){document.getElementById('joinErr').style.display='block';document.getElementById('joinErr').textContent=cq.error;return}
+document.getElementById('joinErr').style.display='none';
+startQuiz(cq,'classroom');
+}catch(e){document.getElementById('joinErr').style.display='block';document.getElementById('joinErr').textContent='Error: '+e.message;}
+finally{btnReset('joinBtn','<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Join Quiz');}
+}
+
+// QUIZ ENGINE
+let qzData=null,qzType='',qzIdx=0,qzAnswers=[],qzTimer=null,qzSecs=0;
+
+async function startQuiz(quizData,type){
+if(!quizData){
+// fetch weekly
+quizData=await GET('getActiveWeeklyQuiz');
+if(!quizData){alert('No active quiz found.');return}
+}
+qzData=quizData;qzType=type;qzIdx=0;
+qzAnswers=new Array((qzData.questionList||[]).length).fill(-1);
+qzSecs=Number(qzData.timer||10)*60;
+document.getElementById('quizRoom').style.display='block';
+document.getElementById('dashboard').style.display='none';
+set('qrTitle',qzData.title);
+set('qrSubtitle',type==='weekly'?'Weekly Quiz':'Classroom Quiz — Code: '+qzData.code);
+renderQ();startTimer();
+}
+
+function renderQ(){
+const qs=qzData.questionList||[];
+const q=qs[qzIdx];if(!q)return;
+const total=qs.length;
+set('qrQNum','Question '+(qzIdx+1)+' of '+total);
+set('qrQText',q.question);
+document.getElementById('qrProgFill').style.width=((qzIdx)/total*100)+'%';
+const opts=['A','B','C','D'];
+document.getElementById('qrOpts').innerHTML=(q.options||[]).map((o,i)=>`
+<div class="qr-opt${qzAnswers[qzIdx]===i?' selected':''}" onclick="selectOpt(${i})">
+<div class="qr-opt-ltr">${opts[i]}</div>
+<div class="qr-opt-text">${esc(o)}</div>
+</div>`).join('');
+const isLast=qzIdx===total-1;
+document.getElementById('qrNext').innerHTML=isLast
+?'Submit <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>'
+:'Next <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+set('qrHint',qzAnswers[qzIdx]===-1?'Select an answer to continue':'');
+}
+
+function selectOpt(i){
+qzAnswers[qzIdx]=i;
+document.querySelectorAll('.qr-opt').forEach((el,idx)=>{
+el.classList.toggle('selected',idx===i);
+});
+set('qrHint','');
+}
+
+function nextQ(){
+if(qzAnswers[qzIdx]===-1){set('qrHint','Please select an answer.');return}
+const total=(qzData.questionList||[]).length;
+if(qzIdx<total-1){qzIdx++;renderQ();}
+else submitQuiz();
+}
+
+function startTimer(){
+clearInterval(qzTimer);
+const tick=()=>{
+const m=Math.floor(qzSecs/60),s=qzSecs%60;
+const el=document.getElementById('qrTimer');
+if(el){el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+el.className='qr-timer'+(qzSecs<=60?' danger':qzSecs<=180?' warn':'');}
+if(qzSecs<=0){clearInterval(qzTimer);submitQuiz(true);return}
+qzSecs--;
+};
+tick();qzTimer=setInterval(tick,1000);
+}
+
+async function submitQuiz(timeUp=false){
+clearInterval(qzTimer);
+const qs=qzData.questionList||[];
+let score=0;
+qs.forEach((q,i)=>{if(qzAnswers[i]===Number(q.answer))score++;});
+const total=qs.length;
+// Show result screen in quiz room
+document.getElementById('qrOpts').innerHTML='';
+document.getElementById('qrNext').style.display='none';
+document.getElementById('qrQNum').textContent='';
+const pct=Math.round(score/total*100);
+const col=pct>=70?'var(--mint)':pct>=40?'var(--peach)':'var(--rose)';
+document.getElementById('qrQText').innerHTML='';
+document.getElementById('qrHint').textContent='';
+document.getElementById('qrProgFill').style.width='100%';
+// build result inside qr-card
+document.querySelector('.qr-card').innerHTML=`
+<div class="result-screen">
+<div class="result-ring" style="background:conic-gradient(${col} ${pct*3.6}deg, rgba(255,255,255,.06) 0);box-shadow:0 0 40px ${col.includes('mint')?'rgba(52,211,153,.3)':col.includes('peach')?'rgba(251,146,60,.3)':'rgba(244,63,94,.3)'}">
+<div style="width:110px;height:110px;border-radius:50%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center">
+<div class="result-score" style="color:${col};filter:drop-shadow(0 0 12px ${col.includes('mint')?'rgba(52,211,153,.5)':col.includes('peach')?'rgba(251,146,60,.5)':'rgba(244,63,94,.5)'})">${score}<span style="font-size:1.4rem;opacity:.5">/${total}</span></div>
+<div class="result-pct">${pct}%</div>
+</div>
+</div>
+<div style="font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;color:var(--mist);margin-bottom:6px">${pct>=70?'Excellent!':pct>=40?'Good effort!':'Keep practising!'}</div>
+<div style="font-size:.84rem;color:var(--fog);margin-bottom:22px">${timeUp?'Time up — ':''}You scored <strong style="color:${col}">${score} out of ${total}</strong> (${pct}%)</div>
+<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+<button class="btn btn-lav" onclick="closeQuizRoom()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Back to Dashboard</button>
+<button class="btn btn-mint" onclick="show('leaders',document.getElementById('nd-leaders'));closeQuizRoom()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>Leaderboard</button>
+</div>
+</div>`;
+// Submit to database
+try{
+await POST('submitResponse',{
+quizId:qzData.id, quizType:qzType,
+studentId:student.id||student.email,
+studentEmail:student.email, studentName:student.name,
+department:student.department, rollNumber:student.rollNumber,
+answers:JSON.stringify(qzAnswers), score, total,
+leftEarly:timeUp?'true':'false',
+photo:localStorage.getItem('qf_s_photo_'+student.email)||''
+});
+}catch(e){console.warn('Submit error:',e.message);}
+}
+
+function closeQuizRoom(){
+document.getElementById('quizRoom').style.display='none';
+document.getElementById('dashboard').style.display='block';
+// rebuild quiz card
+document.querySelector('.qr-card').innerHTML=`
+<div class="qr-qnum" id="qrQNum">Question 1 of 10</div>
+<div class="qr-qtext" id="qrQText">Loading...</div>
+<div class="qr-opts" id="qrOpts"></div>
+<div class="qr-nav"><div style="font-size:.76rem;color:var(--dim)" id="qrHint">Select an answer to continue</div>
+<button class="btn btn-lav" id="qrNext" onclick="nextQ()">Next <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></div>`;
+document.getElementById('qrNext').style.display='';
+history=[];loadHome();
+}
+
+// MY RESULTS
+async function loadResults(){
+try{
+history=await GET('getStudentHistory',{email:student.email})||[];
+document.getElementById('resultsTable').innerHTML=history.length
+?`<table class="data-table"><thead><tr><th>Quiz</th><th>Type</th><th>Score</th><th>Percentage</th><th>Status</th><th>Date</th></tr></thead><tbody>${history.slice().reverse().map(r=>{
+const pct=r.total>0?Math.round(+r.score/+r.total*100):0;
+return`<tr>
+<td style="font-weight:500">${esc(r.quizTitle||'Quiz')}</td>
+<td><span class="badge badge-${r.quizType==='weekly'?'wait':'done'}" style="font-size:.6rem">${r.quizType||'—'}</span></td>
+<td style="font-family:'Space Mono',monospace;color:var(--lav)">${r.score}/${r.total}</td>
+<td style="font-family:'Space Mono',monospace;color:${pct>=70?'var(--mint)':pct>=40?'var(--peach)':'var(--rose)'}">${pct}%</td>
+<td><span class="badge badge-done"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Submitted</span></td>
+<td style="color:var(--dim);font-size:.76rem">${esc(r.submittedAt)}</td>
+</tr>`;}).join('')}</tbody></table>`
+:'<div class="empty-state" style="padding:44px"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="rgba(248,244,255,.15)" stroke-width="1.2" stroke-linecap="round" style="margin:0 auto"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg><div class="empty-title">No results yet</div><div class="empty-desc">Take a quiz and your results will appear here.</div></div>';
+}catch(e){document.getElementById('resultsTable').innerHTML=`<div style="color:#fda4af;padding:20px;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+
+// LEADERBOARD
+async function loadLeaders(){
+try{
+leaders=await GET('getLeaderboard')||[];
+document.getElementById('leaderboardEl').innerHTML=leaders.length
+?leaders.map((s,i)=>{
+const isMe=s.email===student.email;
+const medals=['🥇','🥈','🥉'];
+return`<div class="lb-row${isMe?' me':''}">
+<div class="lb-rank" style="color:${i<3?['var(--gold)','rgba(248,244,255,.7)','rgba(251,146,60,.8)'][i]:'var(--dim)'}">${i<3?medals[i]:'#'+(i+1)}</div>
+<div class="lb-av">${s.photo?`<img src="${esc(s.photo)}">`:(s.name||'?')[0].toUpperCase()}</div>
+<div style="flex:1;min-width:0"><div class="lb-name">${esc(s.name)}${isMe?' <span style="font-family:Cinzel,serif;font-size:.55rem;color:var(--lav);letter-spacing:1px;background:rgba(192,132,252,.12);padding:2px 8px;border-radius:10px;margin-left:6px">You</span>':''}</div><div class="lb-dept">${esc(s.department)}</div></div>
+<div class="lb-score">${s.totalScore||0}</div>
+</div>`;}).join('')
+:'<div class="empty-state"><div class="empty-title">No rankings yet</div><div class="empty-desc">Leaderboard populates as students complete quizzes.</div></div>';
+}catch(e){document.getElementById('leaderboardEl').innerHTML=`<div style="color:#fda4af;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+
+// PROFILE
+function applyPhoto(data){
+const nav=document.getElementById('navAv');nav.innerHTML=`<img src="${data}" style="width:36px;height:36px;border-radius:50%;object-fit:cover">`;
+const pel=document.getElementById('photoEl');pel.style.background='none';pel.style.padding='0';
+pel.innerHTML=`<img src="${data}" style="width:130px;height:130px;border-radius:50%;object-fit:cover">`;
+}
+function handlePhoto(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const d=ev.target.result;localStorage.setItem('qf_s_photo_'+student.email,d);applyPhoto(d);};r.readAsDataURL(f);}
+async function loadProfile(){
+set('profName',student.name||'Student');set('profDept',student.department||'');
+set('profEmail',student.email||'');set('acEmail',student.email||'');
+set('acRoll',student.rollNumber||'—');set('acDept',student.department||'—');
+set('acYear',student.year||'—');
+if(!history.length){try{history=await GET('getStudentHistory',{email:student.email})||[];}catch(e){}}
+const total=history.reduce((a,r)=>a+(Number(r.score)||0),0);
+set('profQ',history.length);set('profS',total);
+if(student.badge)showBadge(student.badge);
+}
+function saveProfile(){
+const name=document.getElementById('editName').value.trim();
+if(!name){showMsg('profMsg','Please enter your name.','rose');return}
+student.name=name;sessionStorage.setItem('qf_student',JSON.stringify(student));
+set('navName',name);set('profName',name);
+set('greetTitle','Good day, '+name.split(' ').slice(-1)[0]);
+if(!document.getElementById('navAv').querySelector('img'))document.getElementById('navAv').textContent=name[0].toUpperCase();
+showMsg('profMsg','Profile saved.','mint');
+}
+
+
+// ════════════════════════════════════════
+// FREELANCE BOARD
+// ════════════════════════════════════════
+let allJobs=[], openJobModal_data=null;
+
+async function loadJobs(showForm){
+const listEl=document.getElementById('jobsList');
+const hpEl=document.getElementById('jobsHomePreview');
+if(listEl) listEl.innerHTML='<div class="loading-row"><div class="spinner"></div> Loading jobs...</div>';
+try{
+allJobs=await GET('getOpenFreelanceJobs')||[];
+renderJobs(allJobs);
+// home preview
+if(hpEl){
+if(allJobs.length){
+hpEl.innerHTML=`<div style="font-size:.82rem;color:var(--fog);margin-bottom:12px">${allJobs.length} open job${allJobs.length!==1?'s':''} waiting for CS talent</div>`+
+allJobs.slice(0,2).map(j=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)"><div style="flex:1;min-width:0"><div style="font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;color:var(--mist)">${esc(j.title)}</div><div style="font-size:.71rem;color:var(--dim)">${esc(j.type)} &middot; ${formatBudget(j)}</div></div></div>`).join('')+
+(allJobs.length>2?`<div style="font-size:.72rem;color:var(--dim);padding:6px 0">+${allJobs.length-2} more jobs</div>`:'');
+} else {
+hpEl.innerHTML='<div style="font-size:.82rem;color:var(--dim);padding:4px 0">No open jobs right now. Be the first to post one.</div>';
+}
+}
+if(showForm){const f=document.getElementById('postJobForm');if(f)f.style.display='block';}
+}catch(e){if(listEl)listEl.innerHTML=`<div style="color:#fda4af;font-size:.84rem">Error: ${esc(e.message)}</div>`;}
+}
+
+function formatBudget(j){
+const sym=j.currency==='USD'?'$':'₹';
+if(!j.budgetMin&&!j.budgetMax)return 'Budget open';
+if(j.budgetMin&&j.budgetMax)return sym+Number(j.budgetMin).toLocaleString()+' \u2013 '+sym+Number(j.budgetMax).toLocaleString();
+if(j.budgetMin)return 'From '+sym+Number(j.budgetMin).toLocaleString();
+return 'Up to '+sym+Number(j.budgetMax).toLocaleString();
+}
+
+function renderJobs(jobs){
+const el=document.getElementById('jobsList');if(!el)return;
+if(!jobs.length){
+el.innerHTML=`<div class="empty-state"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="rgba(248,244,255,.15)" stroke-width="1.2" stroke-linecap="round" style="margin:0 auto"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><div class="empty-title">No open jobs right now</div><div class="empty-desc">Be the first to post a freelance request.</div></div>`;
+return;
+}
+el.innerHTML=`<div class="jobs-grid">${jobs.map(j=>`
+<div class="job-card">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+<span class="job-type-chip">${esc(j.type)}</span>
+<span class="j-badge status-open"><span class="badge-dot"></span>Open</span>
+</div>
+<div class="job-title">${esc(j.title)}</div>
+<div class="job-desc">${esc(j.description)}</div>
+<div class="job-budget">${formatBudget(j)}</div>
+<div class="job-meta">
+<span>${esc(j.postedByDept||'Department')}</span>
+<span class="job-dot"></span>
+<span>${esc(j.postedAt)}</span>
+</div>
+<button class="btn btn-peach btn-sm btn-block" style="margin-top:14px" onclick='openJob(${JSON.stringify(JSON.stringify(j))})'>
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+View Details &amp; Apply
+</button>
+</div>`).join('')}</div>`;
+}
+
+function openJob(jStr){
+const j=JSON.parse(jStr);openJobModal_data=j;
+const sym=j.currency==='USD'?'$':'₹';
+document.getElementById('jobModalHead').innerHTML=`<h3 style="font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:var(--peach)">${esc(j.title)}</h3><button class="modal-close" onclick="closeJobModal()">&#x2715;</button>`;
+document.getElementById('jobModalBody').innerHTML=`
+<div style="margin-bottom:16px">
+<span class="job-type-chip">${esc(j.type)}</span>
+<div style="font-size:.84rem;color:var(--fog);line-height:1.7;margin-top:8px">${esc(j.description)}</div>
+</div>
+<div class="detail-row"><span class="dk">Budget</span><span class="dv" style="font-family:'Space Mono',monospace;color:var(--mint)">${formatBudget(j)}</span></div>
+<div class="detail-row"><span class="dk">Project Type</span><span class="dv">${esc(j.type)}</span></div>
+<div class="detail-row"><span class="dk">Requested By</span><span class="dv">${esc(j.postedBy)} &mdash; ${esc(j.postedByDept)}</span></div>
+<div class="detail-row"><span class="dk">Contact</span><span class="dv" style="font-family:'Space Mono',monospace;font-size:.76rem;color:var(--lav)">${esc(j.contactInfo)}</span></div>
+<div class="detail-row"><span class="dk">Posted On</span><span class="dv">${esc(j.postedAt)}</span></div>
+<div style="margin-top:20px">
+<div style="font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:10px">Send Application</div>
+<textarea class="fi" id="interestMsg" placeholder="Tell them why you can do this project, your skills, timeline, etc..." rows="3" style="margin-bottom:12px"></textarea>
+<div class="fg"><label class="fl">Your Contact Info</label><input class="fi" id="interestContact" placeholder="Phone / WhatsApp / Email" value="${esc((typeof student!=='undefined'?student?.email:teacher?.email)||'')}"/></div>
+<div id="interestMsg2"></div>
+<button class="btn btn-mint btn-block" onclick="applyForJob()">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+I Can Do This &mdash; Apply Now
+</button>
+</div>`;
+document.getElementById('jobModal').classList.add('open');
+}
+function closeJobModal(){document.getElementById('jobModal').classList.remove('open');openJobModal_data=null;}
+document.getElementById('jobModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeJobModal();});
+
+async function applyForJob(){
+if(!openJobModal_data){return}
+const msg=document.getElementById('interestMsg')?.value.trim();
+const contact=document.getElementById('interestContact')?.value.trim();
+if(!contact){document.getElementById('interestMsg2').innerHTML='<div style="color:#fda4af;font-size:.8rem;margin-bottom:8px">Please enter your contact info so the requester can reach you.</div>';return}
+const user=typeof student!=='undefined'?student:teacher;
+try{
+const r=await POST('expressInterest',{
+jobId:openJobModal_data.id,
+interestedBy:user.name, interestedByEmail:user.email,
+interestedByDept:user.department||'Computer Science',
+interestedByRole:typeof student!=='undefined'?'student':'teacher',
+message:msg, contactInfo:contact
+});
+document.getElementById('jobModalBody').innerHTML=`
+<div style="text-align:center;padding:24px">
+<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--mint)" stroke-width="1.5" stroke-linecap="round" style="margin:0 auto 14px;display:block"><circle cx="12" cy="12" r="10"/><polyline points="20 6 9 17 4 12"/></svg>
+<div style="font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--mint);margin-bottom:8px">${r.success?'Application Sent!':'Already Applied'}</div>
+<div style="font-size:.84rem;color:var(--fog);line-height:1.65;margin-bottom:18px">${r.message}</div>
+${r.success?`<div style="background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);border-radius:10px;padding:12px;font-size:.8rem;color:#a7f3d0;line-height:1.6">The requester from <strong>${esc(openJobModal_data.postedByDept)}</strong> can now see your contact details:<br><strong>${esc(contact)}</strong></div>`:''}
+<button class="btn btn-sm" style="margin-top:16px" onclick="closeJobModal()">Close</button>
+</div>`;
+}catch(e){document.getElementById('interestMsg2').innerHTML=`<div style="color:#fda4af;font-size:.8rem;margin-bottom:8px">Error: ${esc(e.message)}</div>`;}
+}
+
+async function submitJob(){
+const user=typeof student!=='undefined'?student:teacher;
+const title=document.getElementById('jTitle')?.value.trim();
+const desc=document.getElementById('jDesc')?.value.trim();
+const type=document.getElementById('jType')?.value;
+const bMin=document.getElementById('jBudgetMin')?.value;
+const bMax=document.getElementById('jBudgetMax')?.value;
+const curr=document.getElementById('jCurrency')?.value||'INR';
+const contact=document.getElementById('jContact')?.value.trim()||user.email;
+if(!title||!desc){showMsg('postJobMsg','Please fill in the title and description.','rose');return}
+try{
+const r=await POST('postFreelanceJob',{
+title, description:desc, type:type||'Other',
+budgetMin:bMin||0, budgetMax:bMax||0, currency:curr,
+postedBy:user.name, postedByEmail:user.email,
+postedByDept:user.department||'',
+postedByRole:typeof student!=='undefined'?'student':'teacher',
+contactInfo:contact
+});
+showMsg('postJobMsg',r.message,'mint');
+['jTitle','jDesc','jBudgetMin','jBudgetMax','jContact'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+loadJobs();
+}catch(e){showMsg('postJobMsg','Error: '+e.message,'rose');}
+}
+
+function togglePostForm(){const f=document.getElementById('postJobForm');const c=document.getElementById('postChev');f.style.display=f.style.display==='none'?'block':'none';c.style.transform=f.style.display==='none'?'':'rotate(180deg)';}
+
+// ══════════════════════════════════════════════
+// SESSION RESTORE — DATABASE ORIENTED
+// Every login goes through Code.gs (checkStudentExists,
+// loginCheck, registerStudent) which reads/writes the
+// Students sheet in Google Sheets. No local/demo data.
+// ══════════════════════════════════════════════
+const saved=sessionStorage.getItem('qf_student');
+if(saved){student=JSON.parse(saved);initDash();}
+</script></body></html>
