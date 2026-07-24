@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Quizify — Weekly Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0c0716;--lav:#c084fc;--lav2:#a855f7;--lavl:#f3e8ff;
+  --pink:#f472b6;--pink2:#ec4899;--pinkl:#fce7f3;
+  --peach:#fb923c;--peachl:#fff7ed;
+  --mint:#34d399;--rose:#f43f5e;--gold:#fbbf24;
+  --mist:#f8f4ff;--fog:rgba(248,244,255,.62);--dim:rgba(248,244,255,.30);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);font-family:"Inter",sans-serif;color:var(--mist);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh}
+#aur{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── SHARED ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:rgba(255,255,255,.09);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.2);border-radius:12px;color:var(--mist);
+  font-family:"Cinzel",serif;font-weight:700;font-size:.78rem;letter-spacing:1px;
+  padding:13px 26px;cursor:pointer;transition:all .2s;text-decoration:none}
+.btn:hover{background:rgba(255,255,255,.15);transform:translateY(-2px)}
+.btn-lav{background:rgba(192,132,252,.18);border-color:rgba(192,132,252,.45);color:var(--lavl);box-shadow:0 0 22px rgba(192,132,252,.28)}
+.btn-lav:hover{background:rgba(192,132,252,.28);box-shadow:0 0 40px rgba(192,132,252,.48)}
+.btn-mint{background:rgba(52,211,153,.16);border-color:rgba(52,211,153,.4);color:#d1fae5;box-shadow:0 0 18px rgba(52,211,153,.22)}
+.btn-mint:hover{background:rgba(52,211,153,.26);box-shadow:0 0 36px rgba(52,211,153,.4)}
+.btn-ghost{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:var(--fog)}
+.btn-block{width:100%;justify-content:center}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.fl{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:2px;color:var(--dim);text-transform:uppercase;display:block;margin-bottom:8px}
+.fi{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:11px;padding:14px 17px;color:var(--mist);font-family:"Inter",sans-serif;font-size:.92rem;outline:none;transition:all .2s}
+.fi:focus{border-color:var(--lav);box-shadow:0 0 0 3px rgba(192,132,252,.15)}
+.fi::placeholder{color:var(--dim)}
+.fg{margin-bottom:16px}
+.spinner{width:16px;height:16px;border:2px solid rgba(192,132,252,.18);border-top-color:var(--lav);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.lerr{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.22);border-radius:9px;padding:10px 14px;font-size:.82rem;color:#fda4af;display:none;margin-bottom:14px}
+.logo-wm{font-family:"Cinzel",serif;font-weight:900;letter-spacing:6px;
+  background:linear-gradient(135deg,var(--lav),var(--pink),var(--peach));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 18px rgba(192,132,252,.45))}
+
+/* ── TOP EXIT BAR ── */
+.exit-bar{position:fixed;top:0;inset-x:0;z-index:100;height:56px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 24px;background:rgba(12,7,22,.7);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,.06)}
+.exit-logo{font-size:1rem}
+.exit-link{font-family:"Cinzel",serif;font-size:.66rem;font-weight:700;letter-spacing:1px;color:var(--dim);
+  display:flex;align-items:center;gap:6px;text-decoration:none;transition:color .2s}
+.exit-link:hover{color:var(--fog)}
+
+/* ── SCREEN WRAPPER ── */
+.screen{display:none;min-height:100vh;padding:96px 24px 48px;align-items:center;justify-content:center;
+  flex-direction:column;text-align:center;position:relative;z-index:10}
+.screen.on{display:flex}
+.panel{width:100%;max-width:480px;background:rgba(255,255,255,.07);backdrop-filter:blur(24px);
+  border:1px solid rgba(192,132,252,.2);border-radius:26px;padding:38px 34px;
+  box-shadow:0 0 70px rgba(192,132,252,.1),0 24px 56px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.1)}
+
+/* ── ROBOT MASCOT ── */
+.robot-wrap{width:120px;height:120px;margin:0 auto 20px;position:relative}
+.robot-wrap svg{width:100%;height:100%;filter:drop-shadow(0 8px 24px rgba(192,132,252,.35))}
+.robot-float{animation:rfloat 3.4s ease-in-out infinite}
+@keyframes rfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* ── STEP DOTS (5-page indicator) ── */
+.page-dots{display:flex;gap:8px;justify-content:center;margin-bottom:28px}
+.page-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s}
+.page-dot.on{background:var(--lav);box-shadow:0 0 10px var(--lav);width:22px;border-radius:5px}
+.page-dot.done{background:var(--mint)}
+
+/* ── WELCOME SCREEN ── */
+.wc-eyebrow{font-family:"Cinzel",serif;font-size:.62rem;font-weight:700;letter-spacing:3px;color:rgba(192,132,252,.75);text-transform:uppercase;margin-bottom:10px}
+.wc-title{font-family:"Cinzel",serif;font-size:1.9rem;font-weight:700;color:var(--mist);line-height:1.25;margin-bottom:10px}
+.wc-sub{font-size:.9rem;color:var(--fog);line-height:1.7;margin-bottom:26px}
+.wc-stats{display:flex;gap:12px;justify-content:center;margin-bottom:28px}
+.wc-stat{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:16px 10px}
+.wc-stat-n{font-family:"Space Mono",monospace;font-size:1.5rem;font-weight:700;
+  background:linear-gradient(135deg,var(--lav),var(--pink));-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text}
+.wc-stat-l{font-family:"Cinzel",serif;font-size:.54rem;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px}
+
+/* ── RESULT SCREEN ── */
+.result-ring{width:150px;height:150px;border-radius:50%;margin:0 auto 20px;position:relative;display:flex;align-items:center;justify-content:center}
+.result-score{font-family:"Space Mono",monospace;font-size:2.6rem;font-weight:700;line-height:1}
+.result-pct{font-size:.8rem;color:var(--dim);font-family:"Cinzel",serif;letter-spacing:1px;margin-top:4px}
+.confetti-dot{position:absolute;border-radius:50%;animation:confetti 1.8s ease-out forwards}
+@keyframes confetti{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-60px) scale(0);opacity:0}}
+
+/* ── LEADERBOARD MINI ── */
+.lb-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;margin-bottom:6px;
+  background:rgba(255,255,255,.04);border:1px solid transparent;transition:all .2s;text-align:left}
+.lb-row.me{background:rgba(192,132,252,.09);border-color:rgba(192,132,252,.25);box-shadow:0 0 16px rgba(192,132,252,.12)}
+.lb-rank{font-family:"Space Mono",monospace;font-size:.85rem;font-weight:700;width:26px;text-align:center;flex-shrink:0;color:var(--dim)}
+.lb-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--lav),var(--pink));
+  display:flex;align-items:center;justify-content:center;font-family:"Cinzel",serif;font-size:.8rem;font-weight:700;
+  color:#fff;overflow:hidden;flex-shrink:0}
+.lb-av img{width:100%;height:100%;object-fit:cover}
+.lb-name{font-size:.85rem;font-weight:600;color:var(--mist)}
+.lb-dept{font-size:.68rem;color:var(--dim)}
+.lb-score{font-family:"Space Mono",monospace;font-size:.95rem;font-weight:700;color:var(--lav);margin-left:auto}
+
+/* ── QUIZ ROOM (page 3) ── */
+.qr-head{width:100%;max-width:560px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.qr-title{font-family:"Cinzel",serif;font-size:1.05rem;font-weight:700;color:var(--mist);text-align:left}
+.qr-sub{font-size:.72rem;color:var(--fog);margin-top:2px;text-align:left}
+.qr-timer{font-family:"Space Mono",monospace;font-size:1.5rem;font-weight:700;padding:8px 18px;border-radius:12px;
+  background:rgba(255,255,255,.07);border:1.5px solid rgba(192,132,252,.25);display:flex;align-items:center;gap:7px}
+.qr-timer::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--lav);box-shadow:0 0 7px var(--lav)}
+.qr-timer.warn{color:var(--peach);border-color:rgba(251,146,60,.4);background:rgba(251,146,60,.08)}
+.qr-timer.warn::before{background:var(--peach);box-shadow:0 0 7px var(--peach)}
+.qr-timer.danger{color:var(--rose);border-color:rgba(244,63,94,.4);background:rgba(244,63,94,.08);animation:tpulse .5s infinite}
+.qr-timer.danger::before{background:var(--rose);box-shadow:0 0 7px var(--rose)}
+@keyframes tpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.qr-steps{width:100%;max-width:560px;display:flex;gap:5px;margin-bottom:20px}
+.qr-step-dot{flex:1;min-width:14px;height:5px;border-radius:3px;background:rgba(255,255,255,.09);transition:all .3s}
+.qr-step-dot.done{background:linear-gradient(90deg,var(--mint),#10b981)}
+.qr-step-dot.current{background:linear-gradient(90deg,var(--lav),var(--pink));box-shadow:0 0 8px rgba(192,132,252,.5)}
+.qr-card-stack{position:relative;width:100%;max-width:560px;margin:0 auto 110px}
+.qr-holdbot{position:absolute;left:50%;top:100%;transform:translate(-50%,-26px);width:190px;
+  z-index:5;pointer-events:none;filter:drop-shadow(0 14px 22px rgba(192,132,252,.3))}
+.qr-holdbot-float{animation:rfloat 3.6s ease-in-out infinite}
+.qr-card{width:100%;max-width:560px;background:rgba(255,255,255,.06);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);
+  border:1px solid rgba(192,132,252,.35);border-radius:20px;padding:30px 26px;text-align:left;position:relative;z-index:1;
+  box-shadow:0 0 50px rgba(192,132,252,.22),0 0 100px rgba(244,114,182,.1),0 24px 48px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.14);overflow:hidden}
+/* holographic corner bracket accents, top-right and bottom-left, like a tech ID card */
+.qr-card::before,.qr-card::after{content:'';position:absolute;width:26px;height:26px;pointer-events:none;z-index:2}
+.qr-card::before{top:10px;right:10px;border-top:2px solid rgba(192,132,252,.7);border-right:2px solid rgba(192,132,252,.7);border-radius:0 6px 0 0}
+.qr-card::after{bottom:10px;left:10px;border-bottom:2px solid rgba(251,146,60,.6);border-left:2px solid rgba(251,146,60,.6);border-radius:0 0 0 6px}
+/* faint circuit-pattern watermark in the corner, purely decorative */
+.qr-circuit{position:absolute;top:-10px;right:-10px;width:120px;height:120px;opacity:.14;pointer-events:none;z-index:0}
+.qr-card-inner{position:relative;z-index:1}
+
+/* ── In-card header — QUIZIFY branding + shield badge, matching reference ── */
+.qr-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+  margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.09)}
+.qr-brand-logo{font-family:"Cinzel",serif;font-weight:900;font-size:1.35rem;letter-spacing:4px;
+  background:linear-gradient(135deg,var(--lav),var(--pink),var(--peach));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 10px rgba(192,132,252,.35))}
+.qr-tagline{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--fog);margin-top:5px}
+.qr-shield{width:42px;height:42px;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(192,132,252,.4))}
+
+.qr-qprefix{color:var(--lav);font-weight:900;margin-right:4px}
+.qr-qnum{font-family:"Cinzel",serif;font-size:.6rem;font-weight:700;letter-spacing:2.5px;color:var(--lav);text-transform:uppercase;margin-bottom:12px}
+.qr-qtext{font-family:"Cinzel",serif;font-size:1.18rem;font-weight:700;color:var(--mist);line-height:1.5;margin-bottom:22px}
+.qr-opts{display:flex;flex-direction:column;gap:11px;margin-bottom:6px}
+.qr-opt{display:flex;align-items:center;gap:14px;padding:15px 18px;border-radius:14px;cursor:pointer;transition:all .2s;
+  background:rgba(255,255,255,.045);border:1.5px solid rgba(255,255,255,.1)}
+.qr-opt:hover{background:rgba(255,255,255,.075);transform:translateX(2px)}
+.qr-opt.selected{border-color:var(--opt-c,var(--lav))}
+.qr-opt.c0.selected{background:linear-gradient(90deg,rgba(192,132,252,.18),rgba(255,255,255,.04));box-shadow:0 0 20px rgba(192,132,252,.28)}
+.qr-opt.c1.selected{background:linear-gradient(90deg,rgba(244,114,182,.18),rgba(255,255,255,.04));box-shadow:0 0 20px rgba(244,114,182,.28)}
+.qr-opt.c2.selected{background:linear-gradient(90deg,rgba(251,146,60,.18),rgba(255,255,255,.04));box-shadow:0 0 20px rgba(251,146,60,.28)}
+.qr-opt.c3.selected{background:linear-gradient(90deg,rgba(52,211,153,.18),rgba(255,255,255,.04));box-shadow:0 0 20px rgba(52,211,153,.28)}
+.qr-opt-check{width:22px;height:22px;border-radius:50%;background:var(--opt-c,var(--lav));display:none;
+  align-items:center;justify-content:center;flex-shrink:0;margin-left:auto;box-shadow:0 0 10px var(--opt-c,var(--lav))}
+.qr-opt.selected .qr-opt-check{display:flex}
+.qr-opt-ltr{width:34px;height:34px;border-radius:50%;background:var(--opt-c,var(--lav));opacity:.22;border:1.5px solid var(--opt-c,var(--lav));
+  display:flex;align-items:center;justify-content:center;font-family:"Cinzel",serif;font-size:.78rem;font-weight:700;flex-shrink:0;color:var(--mist);transition:all .2s}
+.qr-opt.selected .qr-opt-ltr{opacity:1;color:#1a0b26}
+
+/* ── Score / Level / Counter stat bar, matching reference ── */
+.qr-statbar{display:flex;align-items:center;gap:22px;margin-top:14px;padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.09);flex-wrap:wrap}
+.qr-stat-score{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.qr-stat-score-n{font-family:"Space Mono",monospace;font-weight:700;font-size:1.05rem;color:var(--lav)}
+.qr-stat-level{flex:1;min-width:110px}
+.qr-level-track{width:100%;height:6px;border-radius:3px;background:rgba(255,255,255,.08);margin-top:6px;overflow:hidden}
+.qr-level-fill{height:100%;background:linear-gradient(90deg,var(--lav),var(--pink));border-radius:3px;transition:width .4s}
+.qr-stat-counter{font-family:"Space Mono",monospace;font-weight:700;color:var(--fog);font-size:.98rem;flex-shrink:0}
+.qr-opt-text{font-size:.92rem;color:var(--mist);font-weight:500;line-height:1.4}
+.qr-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.qr-hint{font-size:.74rem;color:var(--dim)}
+
+.empty-state{padding:28px;color:var(--dim);font-size:.84rem;font-family:"Cinzel",serif;line-height:1.7}
+@media(max-width:560px){.panel{padding:30px 22px}.wc-title{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<canvas id="aur"></canvas>
+
+<div class="exit-bar">
+  <div class="exit-logo logo-wm">QUIZIFY</div>
+  <a class="exit-link" href="quizify-home.html" id="exitLink">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Back to Quizify
+  </a>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE 1 — WELCOME
+═══════════════════════════════════════ -->
+<section class="screen on" id="scr-welcome">
+  <div class="panel">
+    <div class="page-dots">
+      <div class="page-dot on" id="dot1"></div><div class="page-dot" id="dot2"></div>
+      <div class="page-dot" id="dot3"></div><div class="page-dot" id="dot4"></div><div class="page-dot" id="dot5"></div>
+    </div>
+    <div class="robot-wrap robot-float" id="robotWelcome"></div>
+    <div class="wc-eyebrow">PG &amp; Research Dept of Computer Science</div>
+    <div class="wc-title" id="wcTitle">This Week's Quiz</div>
+    <div class="wc-sub" id="wcSub">Loading this week's challenge…</div>
+    <div class="wc-stats" id="wcStats" style="display:none">
+      <div class="wc-stat"><div class="wc-stat-n" id="wcQCount">—</div><div class="wc-stat-l">Questions</div></div>
+      <div class="wc-stat"><div class="wc-stat-n" id="wcTime">—</div><div class="wc-stat-l">Minutes</div></div>
+      <div class="wc-stat"><div class="wc-stat-n" id="wcWeek">—</div><div class="wc-stat-l">Week</div></div>
+    </div>
+    <div id="wcErr" class="lerr"></div>
+    <button class="btn btn-lav btn-block" id="wcStartBtn" onclick="goToNext()">
+      <span id="wcStartLabel">Checking…</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PAGE 2 — SIGN IN / REGISTER
+═══════════════════════════════════════ -->
+<section class="screen" id="scr-auth">
+  <div class="panel">
+    <div class="page-dots">
+      <div class="page-dot done"></div><div class="page-dot on" id="dot2b"></div>
+      <div class="page-dot"></div><div class="page-dot"></div><div class="page-dot"></div>
+    </div>
+    <div class="robot-wrap robot-float" id="robotAuth"></div>
+
+    <!-- email step -->
+    <div id="auth-email">
+      <div class="wc-title" style="font-size:1.3rem">Who's Taking the Quiz?</div>
+      <div class="wc-sub">Enter your college email to continue.</div>
+      <div class="lerr" id="aeErr"></div>
+      <div class="fg" style="text-align:left"><label class="fl">College Email</label><input class="fi" id="aeEmail" type="email" placeholder="yourname@nilgiri.edu"/></div>
+      <button class="btn btn-lav btn-block" id="aeBtn" onclick="wqCheckEmail()">Continue</button>
+    </div>
+
+    <!-- password step -->
+    <div id="auth-pass" style="display:none">
+      <div class="wc-title" style="font-size:1.3rem">Welcome Back</div>
+      <div class="wc-sub">Enter your password to continue.</div>
+      <div class="lerr" id="apErr"></div>
+      <div class="fg" style="text-align:left"><label class="fl">Password</label><input class="fi" id="apPass" type="password" placeholder="Your password"/></div>
+      <button class="btn btn-lav btn-block" id="apBtn" onclick="wqLogin()">Sign In &amp; Continue</button>
+    </div>
+
+    <!-- register step -->
+    <div id="auth-reg" style="display:none">
+      <div class="wc-title" style="font-size:1.3rem">Quick Registration</div>
+      <div class="wc-sub">First time here — just once, then you're set for every future quiz.</div>
+      <div class="lerr" id="arErr"></div>
+      <div class="fg" style="text-align:left"><label class="fl">Full Name</label><input class="fi" id="arName" placeholder="Your full name"/></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="fg" style="text-align:left"><label class="fl">Roll Number</label><input class="fi" id="arRoll" placeholder="22CS01"/></div>
+        <div class="fg" style="text-align:left"><label class="fl">Year</label>
+          <select class="fi" id="arYear" style="background:rgba(12,7,22,.8)"><option value="">Year</option><option>I Year</option><option>II Year</option><option>III Year</option><option>PG I Year</option><option>PG II Year</option></select>
+        </div>
+      </div>
+      <div class="fg" style="text-align:left"><label class="fl">Department</label>
+        <select class="fi" id="arDept" style="background:rgba(12,7,22,.8)"><option value="">Select department</option><option>Computer Science</option><option>Mathematics</option><option>Physics</option><option>Chemistry</option><option>Electronics</option><option>Commerce</option><option>English</option><option>Tamil</option><option>Biotechnology</option></select>
+      </div>
+      <div class="fg" style="text-align:left"><label class="fl">Set Password</label><input class="fi" id="arPass" type="password" placeholder="Minimum 6 characters"/></div>
+      <button class="btn btn-lav btn-block" id="arBtn" onclick="wqRegister()">Create Account &amp; Continue</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PAGE 3 — QUIZ ROOM
+═══════════════════════════════════════ -->
+<section class="screen" id="scr-quiz" style="padding-top:80px">
+  <div class="page-dots">
+    <div class="page-dot done"></div><div class="page-dot done"></div>
+    <div class="page-dot on" id="dot3b"></div><div class="page-dot"></div><div class="page-dot"></div>
+  </div>
+  <div class="qr-steps" id="qrSteps"></div>
+  <div class="qr-card-stack">
+    <div class="qr-card">
+      <svg class="qr-circuit" viewBox="0 0 120 120" fill="none">
+        <path d="M60 4v20M60 4h30M90 4v14M60 24h-24M36 24v20M36 44H12M12 44v18M100 24h14M114 24v30M100 40h14" stroke="#c084fc" stroke-width="1.5"/>
+        <circle cx="60" cy="4" r="2.5" fill="#f472b6"/><circle cx="90" cy="18" r="2.5" fill="#fb923c"/>
+        <circle cx="36" cy="44" r="2.5" fill="#c084fc"/><circle cx="12" cy="62" r="2.5" fill="#f472b6"/>
+        <circle cx="114" cy="54" r="2.5" fill="#fb923c"/>
+      </svg>
+      <div class="qr-card-inner">
+        <!-- In-card QUIZIFY header, matching reference layout -->
+        <div class="qr-card-header">
+          <div>
+            <div class="qr-brand-logo">QUIZIFY</div>
+            <div class="qr-tagline">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round"><path d="M8 21h8M12 17v4M17 4h3a1 1 0 0 1 1 1v2a4 4 0 0 1-4 4M7 4H4a1 1 0 0 0-1 1v2a4 4 0 0 0 4 4M7 4h10v4a5 5 0 0 1-10 0V4z"/></svg>
+              Earn Badges &middot; Be a Champion
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+            <svg class="qr-shield" viewBox="0 0 48 48" fill="none">
+              <path d="M24 4 L40 10 V22 C40 33 33 40 24 44 C15 40 8 33 8 22 V10 Z" fill="url(#shieldGrad)" opacity=".9"/>
+              <path d="M24 4 L40 10 V22 C40 33 33 40 24 44 C15 40 8 33 8 22 V10 Z" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+              <path d="M24 14 L27 21 L34 22 L29 27 L30 34 L24 30.5 L18 34 L19 27 L14 22 L21 21 Z" fill="rgba(255,255,255,.9)"/>
+              <defs><linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs>
+            </svg>
+            <div class="qr-timer" id="qrTimer">00:00</div>
+          </div>
+        </div>
+
+        <div class="qr-qtext" id="qrQText"><span class="qr-qprefix" id="qrQPrefix">Q1.</span> Loading…</div>
+        <div class="qr-opts" id="qrOpts"></div>
+
+        <!-- Score / Level / Counter stat bar, matching reference -->
+        <div class="qr-statbar">
+          <div class="qr-stat-score">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lav)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.6 5.1L19 9l-5.4 1.9L12 16l-1.6-5.1L5 9l5.4-1.9z"/></svg>
+            <div><div style="font-size:.62rem;color:var(--dim);font-family:'Cinzel',serif;letter-spacing:1px;text-transform:uppercase">Score</div><div class="qr-stat-score-n" id="qrScore">0</div></div>
+          </div>
+          <div class="qr-stat-level">
+            <div style="font-size:.72rem;color:var(--fog);font-family:'Cinzel',serif" id="qrLevelLbl">Level 1</div>
+            <div class="qr-level-track"><div class="qr-level-fill" id="qrLevelFill" style="width:0%"></div></div>
+          </div>
+          <div class="qr-stat-counter" id="qrCounter">1/10</div>
+        </div>
+
+        <div class="qr-nav" style="margin-top:18px">
+          <div class="qr-hint" id="qrHint">Select an answer to continue</div>
+          <button class="btn btn-lav" id="qrNext" onclick="wqNextQ()">
+            Next <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="qr-holdbot qr-holdbot-float" id="qrHoldbot"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PAGE 4 — RESULT
+═══════════════════════════════════════ -->
+<section class="screen" id="scr-result">
+  <div class="panel">
+    <div class="page-dots">
+      <div class="page-dot done"></div><div class="page-dot done"></div><div class="page-dot done"></div>
+      <div class="page-dot on" id="dot4b"></div><div class="page-dot"></div>
+    </div>
+    <div class="robot-wrap" id="robotResult" style="position:relative"></div>
+    <div class="result-ring" id="resultRing">
+      <div style="width:118px;height:118px;border-radius:50%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div class="result-score" id="resScore">0<span style="font-size:1.3rem;opacity:.5">/0</span></div>
+        <div class="result-pct" id="resPct">0%</div>
+      </div>
+    </div>
+    <div class="wc-title" id="resTitle" style="font-size:1.4rem">Great Job!</div>
+    <div class="wc-sub" id="resSub">You scored well this week.</div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-mint" onclick="goToPage(5)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        See Leaderboard
+      </button>
+      <a class="btn btn-ghost" href="index.html">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Done
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PAGE 5 — LEADERBOARD
+═══════════════════════════════════════ -->
+<section class="screen" id="scr-leaderboard">
+  <div class="panel">
+    <div class="page-dots">
+      <div class="page-dot done"></div><div class="page-dot done"></div><div class="page-dot done"></div>
+      <div class="page-dot done"></div><div class="page-dot on" id="dot5b"></div>
+    </div>
+    <div class="robot-wrap" id="robotLeaders" style="width:96px;height:96px"></div>
+    <div class="wc-title" style="font-size:1.4rem">Where You Rank</div>
+    <div class="wc-sub" style="margin-bottom:18px">Top students across the whole campus.</div>
+    <div id="lbList" style="text-align:left;max-height:320px;overflow-y:auto;margin-bottom:20px">
+      <div class="empty-state">Loading leaderboard…</div>
+    </div>
+    <a class="btn btn-lav btn-block" href="quizify-home.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Finish
+    </a>
+  </div>
+</section>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// #  DATABASE CONNECTION — PASTE YOUR VALUES HERE
+// #  1. API_URL   -> Your Google Apps Script Web App deployment URL
+// #  2. API_TOKEN -> Must exactly match SECRET_TOKEN in Code.gs
+// #  Uses the SAME database as quizify-student.html — a student who
+// #  already signed in there is recognised here automatically.
+// ════════════════════════════════════════════════════════════
+const API_URL='https://script.google.com/macros/s/AKfycbw0yYvF_vXTWl5ukxtRqcnhCeFCAvrTSM8LFEAvAzj9OtvwevZ8M2gZb-mhd6BnEPnc4A/exec'; // # <-- PASTE DEPLOYMENT URL HERE
+const API_TOKEN='quizify-pgcs'; // # <-- MUST MATCH Code.gs SECRET_TOKEN
+
+// # Where "Back to Quizify" / "Finish" send people. Change if your
+// # home page file is named differently.
+const HOME_PAGE_FILE = 'quizify-home.html'; // # <-- ENTER YOUR HOME PAGE FILE NAME HERE
+
+// ── AURORA ──────────────────────────────────────────────
+const cv=document.getElementById('aur'),cx=cv.getContext('2d');
+const rsz=()=>{cv.width=innerWidth;cv.height=innerHeight};rsz();window.addEventListener('resize',rsz);
+const B=[{x:.04,y:.1,r:.56,c:'#c084fc',vx:.00013,vy:.00011},{x:.94,y:.72,r:.62,c:'#f472b6',vx:-.00011,vy:.00015},{x:.5,y:.94,r:.5,c:'#fb923c',vx:.00016,vy:-.00012},{x:.78,y:.05,r:.4,c:'#c084fc',vx:-.00014,vy:.00018},{x:.2,y:.6,r:.44,c:'#f472b6',vx:.00012,vy:-.00016}];
+(function anim(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#0c0716';cx.fillRect(0,0,cv.width,cv.height);
+B.forEach(b=>{b.x+=b.vx;b.y+=b.vy;if(b.x<-.2||b.x>1.2)b.vx*=-1;if(b.y<-.2||b.y>1.2)b.vy*=-1;
+const g=cx.createRadialGradient(b.x*cv.width,b.y*cv.height,0,b.x*cv.width,b.y*cv.height,b.r*Math.max(cv.width,cv.height));
+g.addColorStop(0,b.c+'5a');g.addColorStop(.45,b.c+'1e');g.addColorStop(1,'transparent');
+cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});requestAnimationFrame(anim);})();
+
+// ── API ──────────────────────────────────────────────────
+async function GET(action,p={}){
+  const url=new URL(API_URL);url.searchParams.set('action',action);url.searchParams.set('token',API_TOKEN);
+  Object.entries(p).forEach(([k,v])=>url.searchParams.set(k,v));
+  const r=await fetch(url.toString());const j=await r.json();
+  if(j.status==='error')throw new Error(j.message);return j.data;
+}
+async function POST(action,data={}){
+  const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({action,token:API_TOKEN,data})});
+  const j=await r.json();if(j.status==='error')throw new Error(j.message);return j.data;
+}
+function esc(s){return(s==null?'':String(s)).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
+document.getElementById('exitLink').href=HOME_PAGE_FILE;
+
+// ── ROBOT MASCOT — pure SVG, no external images, on-brand colours ──
+function robotSVG(pose){
+  // pose: 'wave' | 'point' | 'celebrate' | 'trophy' | 'think'
+  const armL = {
+    wave:      'M40 66 Q22 58 20 40',
+    point:     'M40 66 Q26 70 18 74',
+    celebrate: 'M40 62 Q24 40 18 24',
+    trophy:    'M40 66 Q28 62 22 56',
+    think:     'M40 66 Q30 62 26 52'
+  }[pose];
+  const armR = {
+    wave:      'M60 66 Q78 62 82 46',
+    point:     'M60 66 Q76 64 88 60',
+    celebrate: 'M60 62 Q76 40 82 24',
+    trophy:    'M60 66 Q72 58 74 46',
+    think:     'M60 66 Q66 56 62 48'
+  }[pose];
+  const extra = pose==='celebrate'
+    ? `<circle cx="14" cy="18" r="3" fill="#f472b6"/><circle cx="88" cy="16" r="2.5" fill="#fb923c"/>
+       <circle cx="8" cy="34" r="2" fill="#c084fc"/><circle cx="94" cy="36" r="2" fill="#34d399"/>
+       <circle cx="20" cy="8" r="2" fill="#fbbf24"/><circle cx="82" cy="6" r="2.5" fill="#f472b6"/>`
+    : pose==='trophy'
+    ? `<g transform="translate(66,38)"><rect x="-8" y="0" width="16" height="12" rx="2" fill="#fbbf24"/>
+       <path d="M-8 2 Q-14 2 -14 8 Q-14 12 -8 12" stroke="#fbbf24" stroke-width="2" fill="none"/>
+       <path d="M8 2 Q14 2 14 8 Q14 12 8 12" stroke="#fbbf24" stroke-width="2" fill="none"/>
+       <rect x="-3" y="12" width="6" height="5" fill="#fbbf24"/><rect x="-7" y="17" width="14" height="3" rx="1" fill="#fbbf24"/></g>`
+    : '';
+  return `<svg viewBox="0 0 100 100" fill="none">
+    <ellipse cx="50" cy="90" rx="22" ry="4" fill="#000" opacity=".18"/>
+    <line x1="50" y1="14" x2="50" y2="4" stroke="#c084fc" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="50" cy="4" r="4" fill="#fb923c"><animate attributeName="opacity" values="1;.4;1" dur="1.6s" repeatCount="indefinite"/></circle>
+    <rect x="28" y="14" width="44" height="34" rx="14" fill="url(#gHead)"/>
+    <circle cx="40" cy="31" r="4.2" fill="#0c0716"/><circle cx="60" cy="31" r="4.2" fill="#0c0716"/>
+    <circle cx="41.4" cy="29.6" r="1.3" fill="#fff"/><circle cx="61.4" cy="29.6" r="1.3" fill="#fff"/>
+    <path d="M42 40 Q50 45 58 40" stroke="#0c0716" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+    <rect x="32" y="50" width="36" height="34" rx="16" fill="url(#gBody)"/>
+    <circle cx="50" cy="64" r="7" fill="rgba(255,255,255,.18)"/>
+    <circle cx="50" cy="64" r="3" fill="#f472b6"><animate attributeName="opacity" values=".5;1;.5" dur="1.4s" repeatCount="indefinite"/></circle>
+    <path d="${armL}" stroke="url(#gArm)" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <path d="${armR}" stroke="url(#gArm)" stroke-width="6" stroke-linecap="round" fill="none"/>
+    ${extra}
+    <defs>
+      <linearGradient id="gHead" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#f472b6"/></linearGradient>
+      <linearGradient id="gBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f472b6"/><stop offset="1" stop-color="#fb923c"/></linearGradient>
+      <linearGradient id="gArm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#fb923c"/></linearGradient>
+    </defs>
+  </svg>`;
+}
+document.getElementById('robotWelcome').innerHTML=robotSVG('wave');
+document.getElementById('robotAuth').innerHTML=robotSVG('point');
+document.getElementById('robotResult').innerHTML=robotSVG('celebrate');
+document.getElementById('robotLeaders').innerHTML=robotSVG('trophy');
+
+// ── HOLDING ROBOT — stands below the quiz card, both arms raised,
+//    hands gripping the card's bottom corners as if holding it up. ──
+function holdingRobotSVG(){
+  return `<svg viewBox="0 0 200 150" fill="none">
+    <ellipse cx="100" cy="144" rx="46" ry="5" fill="#000" opacity=".22"/>
+    <path d="M62 100 L57 24" stroke="url(#hgArm)" stroke-width="16" stroke-linecap="round"/>
+    <path d="M84 96 L80 12" stroke="url(#hgArm)" stroke-width="16" stroke-linecap="round"/>
+    <path d="M104 96 L104 10" stroke="url(#hgArm)" stroke-width="16" stroke-linecap="round"/>
+    <path d="M124 96 L129 14" stroke="url(#hgArm)" stroke-width="16" stroke-linecap="round"/>
+    <path d="M146 104 Q170 92 178 66" stroke="url(#hgArm)" stroke-width="17" stroke-linecap="round"/>
+    <ellipse cx="100" cy="108" rx="62" ry="34" fill="url(#hgBody)"/>
+    <ellipse cx="100" cy="100" rx="50" ry="24" fill="rgba(255,255,255,.1)"/>
+    <circle cx="60" cy="24" r="8" fill="url(#hgArm)"/>
+    <circle cx="82" cy="12" r="8" fill="url(#hgArm)"/>
+    <circle cx="104" cy="10" r="8" fill="url(#hgArm)"/>
+    <circle cx="127" cy="14" r="8" fill="url(#hgArm)"/>
+    <defs>
+      <linearGradient id="hgBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c084fc"/><stop offset=".5" stop-color="#f472b6"/><stop offset="1" stop-color="#fb923c"/></linearGradient>
+      <linearGradient id="hgArm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#f472b6"/></linearGradient>
+    </defs>
+  </svg>`;
+}
+document.getElementById('qrHoldbot').innerHTML=holdingRobotSVG();
+
+// ── PAGE / SCREEN NAVIGATION ──────────────────────────────
+let curPage=1;
+function goToPage(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  const ids=['scr-welcome','scr-auth','scr-quiz','scr-result','scr-leaderboard'];
+  document.getElementById(ids[n-1]).classList.add('on');
+  curPage=n;
+  if(n===5)loadLeaderboardMini();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showMsg(id,msg){const e=document.getElementById(id);if(!e)return;e.textContent=msg;e.style.display='block';setTimeout(()=>e.style.display='none',5000);}
+function btnLoad(id,t){const b=document.getElementById(id);if(!b)return;b.disabled=true;b.innerHTML='<div class="spinner"></div> '+t;}
+function btnReset(id,h){const b=document.getElementById(id);if(!b)return;b.disabled=false;b.innerHTML=h;}
+
+// ── SESSION ──────────────────────────────────────────────
+let student=null,activeQuiz=null,alreadyDone=false;
+const saved=sessionStorage.getItem('qf_student');
+if(saved){try{student=JSON.parse(saved);}catch(e){}}
+
+// ── PAGE 1: WELCOME — load the live active weekly quiz ────
+async function loadWelcome(){
+  try{
+    activeQuiz=await GET('getActiveWeeklyQuiz');
+    if(!activeQuiz||!activeQuiz.id){
+      document.getElementById('wcTitle').textContent='No Quiz Right Now';
+      document.getElementById('wcSub').textContent="The department hasn't published this week's challenge yet. Check back soon.";
+      document.getElementById('wcStartBtn').style.display='none';
+      return;
+    }
+    document.getElementById('wcTitle').textContent=activeQuiz.title||'Weekly Challenge';
+    document.getElementById('wcSub').textContent='Answer '+((activeQuiz.questionList||[]).length)+' questions before the timer runs out. Good luck!';
+    document.getElementById('wcQCount').textContent=(activeQuiz.questionList||[]).length;
+    document.getElementById('wcTime').textContent=activeQuiz.timer||15;
+    document.getElementById('wcWeek').textContent=activeQuiz.weekNumber||'—';
+    document.getElementById('wcStats').style.display='flex';
+
+    // If already logged in, check if they've already submitted this quiz
+    if(student){
+      try{
+        const hist=await GET('getStudentHistory',{email:student.email})||[];
+        alreadyDone=hist.some(r=>r.quizId===activeQuiz.id);
+      }catch(e){}
+    }
+    document.getElementById('wcStartLabel').textContent=alreadyDone?'Already Submitted — View Leaderboard':'Start This Week\'s Quiz';
+    btnReset('wcStartBtn',document.getElementById('wcStartBtn').innerHTML);
+  }catch(e){
+    document.getElementById('wcTitle').textContent='Unable to Connect';
+    document.getElementById('wcSub').textContent='Could not reach the database. Check the API_URL configuration at the top of this file.';
+    document.getElementById('wcStartBtn').style.display='none';
+  }
+}
+function goToNext(){
+  if(!activeQuiz||!activeQuiz.id)return;
+  if(alreadyDone){goToPage(5);return;}
+  if(student){startWeeklyQuiz();}else{goToPage(2);}
+}
+
+// ── PAGE 2: AUTH ─────────────────────────────────────────
+let wqEmail='';
+function wqShowStep(id){['auth-email','auth-pass','auth-reg'].forEach(s=>document.getElementById(s).style.display='none');document.getElementById(id).style.display='block';}
+async function wqCheckEmail(){
+  const email=document.getElementById('aeEmail').value.trim().toLowerCase();
+  if(!email){showMsg('aeErr','Please enter your email.');return}
+  if(!email.endsWith('@nilgiri.edu')){showMsg('aeErr','Please use your college email ending with @nilgiri.edu');return}
+  wqEmail=email;btnLoad('aeBtn','Checking…');
+  try{
+    const r=await GET('checkStudentExists',{email});
+    if(r.exists)wqShowStep('auth-pass');else wqShowStep('auth-reg');
+  }catch(e){showMsg('aeErr','Connection error: '+e.message);}
+  finally{btnReset('aeBtn','Continue');}
+}
+async function wqLogin(){
+  const pass=document.getElementById('apPass').value;
+  if(!pass){showMsg('apErr','Please enter your password.');return}
+  btnLoad('apBtn','Signing in…');
+  try{
+    const r=await GET('loginCheck',{email:wqEmail,password:pass,role:'student'});
+    if(r.success){student=r.user;sessionStorage.setItem('qf_student',JSON.stringify(student));startWeeklyQuiz();}
+    else showMsg('apErr',r.message||'Incorrect password.');
+  }catch(e){showMsg('apErr','Error: '+e.message);}
+  finally{btnReset('apBtn','Sign In &amp; Continue');}
+}
+async function wqRegister(){
+  const name=document.getElementById('arName').value.trim();
+  const roll=document.getElementById('arRoll').value.trim();
+  const year=document.getElementById('arYear').value;
+  const dept=document.getElementById('arDept').value;
+  const pass=document.getElementById('arPass').value;
+  if(!name||!roll||!year||!dept||!pass){showMsg('arErr','Please fill in all fields.');return}
+  if(pass.length<6){showMsg('arErr','Password must be at least 6 characters.');return}
+  btnLoad('arBtn','Creating account…');
+  try{
+    const r=await POST('registerStudent',{name,email:wqEmail,rollNumber:roll,department:dept,year,password:pass});
+    if(r.success){student=r.user;sessionStorage.setItem('qf_student',JSON.stringify(student));startWeeklyQuiz();}
+    else showMsg('arErr',r.message||'Registration failed.');
+  }catch(e){showMsg('arErr','Error: '+e.message);}
+  finally{btnReset('arBtn','Create Account &amp; Continue');}
+}
+
+// ── PAGE 3: QUIZ ROOM ────────────────────────────────────
+let qzIdx=0,qzAnswers=[],qzTimer=null,qzSecs=0;
+const QR_OPT_COLORS=['var(--lav)','var(--pink)','var(--peach)','var(--mint)'];
+
+function startWeeklyQuiz(){
+  qzIdx=0;
+  qzAnswers=new Array((activeQuiz.questionList||[]).length).fill(-1);
+  qzSecs=Number(activeQuiz.timer||15)*60;
+  document.getElementById('qrSteps').innerHTML=(activeQuiz.questionList||[])
+    .map((_,i)=>`<div class="qr-step-dot" id="qrStep${i}"></div>`).join('');
+  goToPage(3);
+  renderWQ();startWQTimer();
+}
+function renderWQ(){
+  const qs=activeQuiz.questionList||[];
+  const q=qs[qzIdx];if(!q)return;
+  document.getElementById('qrQText').innerHTML=`<span class="qr-qprefix" id="qrQPrefix">Q${qzIdx+1}.</span> ${esc(q.question)}`;
+  qs.forEach((_,i)=>{
+    const dot=document.getElementById('qrStep'+i);if(!dot)return;
+    dot.className='qr-step-dot'+(i===qzIdx?' current':qzAnswers[i]!==-1?' done':'');
+  });
+  const opts=['A','B','C','D'];
+  document.getElementById('qrOpts').innerHTML=(q.options||[]).map((o,i)=>`
+    <div class="qr-opt c${i%4}${qzAnswers[qzIdx]===i?' selected':''}" style="--opt-c:${QR_OPT_COLORS[i%4]}" onclick="wqSelectOpt(${i})">
+      <div class="qr-opt-ltr">${opts[i]}</div>
+      <div class="qr-opt-text">${esc(o)}</div>
+      <div class="qr-opt-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1a0b26" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>`).join('');
+  const isLast=qzIdx===qs.length-1;
+  document.getElementById('qrNext').innerHTML=isLast
+    ?'Submit <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>'
+    :'Next <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+  document.getElementById('qrHint').textContent=qzAnswers[qzIdx]===-1?'Select an answer to continue':'';
+  // # Stat bar — Score comes from the student's existing totalScore in the
+  // # database (informational, not live-graded mid-quiz). Level is a simple
+  // # display-only tier derived from that same score. Counter is live.
+  const curScore=Number((student&&student.totalScore)||0);
+  const level=Math.floor(curScore/50)+1;
+  const levelPct=Math.min(100,(curScore%50)/50*100);
+  document.getElementById('qrScore').textContent=curScore;
+  document.getElementById('qrLevelLbl').textContent='Level '+level;
+  document.getElementById('qrLevelFill').style.width=levelPct+'%';
+  document.getElementById('qrCounter').textContent=(qzIdx+1)+'/'+qs.length;
+}
+function wqSelectOpt(i){
+  qzAnswers[qzIdx]=i;
+  document.querySelectorAll('.qr-opt').forEach((el,idx)=>el.classList.toggle('selected',idx===i));
+  const dot=document.getElementById('qrStep'+qzIdx);if(dot)dot.className='qr-step-dot current';
+  document.getElementById('qrHint').textContent='';
+}
+function wqNextQ(){
+  if(qzAnswers[qzIdx]===-1){document.getElementById('qrHint').textContent='Please select an answer.';return}
+  const total=(activeQuiz.questionList||[]).length;
+  if(qzIdx<total-1){qzIdx++;renderWQ();}else{submitWeeklyQuiz();}
+}
+function startWQTimer(){
+  clearInterval(qzTimer);
+  const tick=()=>{
+    const m=Math.floor(qzSecs/60),s=qzSecs%60;
+    const el=document.getElementById('qrTimer');
+    if(el){el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+      el.className='qr-timer'+(qzSecs<=60?' danger':qzSecs<=180?' warn':'');}
+    if(qzSecs<=0){clearInterval(qzTimer);submitWeeklyQuiz(true);return}
+    qzSecs--;
+  };tick();qzTimer=setInterval(tick,1000);
+}
+
+// ── PAGE 4: RESULT ───────────────────────────────────────
+let lastScore=0,lastTotal=0;
+async function submitWeeklyQuiz(timeUp=false){
+  clearInterval(qzTimer);
+  const qs=activeQuiz.questionList||[];
+  let score=0;
+  qs.forEach((q,i)=>{if(qzAnswers[i]===Number(q.answer))score++;});
+  const total=qs.length;
+  lastScore=score;lastTotal=total;
+  const pct=Math.round(score/total*100);
+  const col=pct>=70?'#34d399':pct>=40?'#fb923c':'#f43f5e';
+  document.getElementById('resultRing').style.background=`conic-gradient(${col} ${pct*3.6}deg, rgba(255,255,255,.06) 0)`;
+  document.getElementById('resultRing').style.boxShadow=`0 0 40px ${col}55`;
+  document.getElementById('resScore').innerHTML=score+'<span style="font-size:1.3rem;opacity:.5">/'+total+'</span>';
+  document.getElementById('resScore').style.color=col;
+  document.getElementById('resPct').textContent=pct+'%';
+  document.getElementById('resTitle').textContent=pct>=70?'Excellent Work!':pct>=40?'Good Effort!':'Keep Practising!';
+  document.getElementById('resSub').innerHTML=(timeUp?'Time ran out — ':'')+'You scored <strong style="color:'+col+'">'+score+' out of '+total+'</strong> ('+pct+'%)';
+  goToPage(4);
+  try{
+    await POST('submitResponse',{
+      quizId:activeQuiz.id, quizType:'weekly',
+      studentId:student.id||student.email,
+      studentEmail:student.email, studentName:student.name,
+      department:student.department, rollNumber:student.rollNumber,
+      answers:JSON.stringify(qzAnswers), score, total,
+      leftEarly:timeUp?'true':'false',
+      photo:student.photo||localStorage.getItem('qf_s_photo_'+student.email)||''
+    });
+  }catch(e){console.warn('Submit error:',e.message);}
+}
+
+// ── PAGE 5: LEADERBOARD ──────────────────────────────────
+async function loadLeaderboardMini(){
+  const list=document.getElementById('lbList');
+  list.innerHTML='<div class="empty-state">Loading leaderboard…</div>';
+  try{
+    const leaders=await GET('getLeaderboard')||[];
+    if(!leaders.length){list.innerHTML='<div class="empty-state">No rankings yet.</div>';return;}
+    list.innerHTML=leaders.slice(0,15).map((s,i)=>{
+      const isMe=student&&s.email===student.email;
+      return `<div class="lb-row${isMe?' me':''}">
+        <div class="lb-rank">#${i+1}</div>
+        <div class="lb-av">${s.photo?`<img src="${esc(s.photo)}">`:(s.name||'?')[0].toUpperCase()}</div>
+        <div style="flex:1;min-width:0"><div class="lb-name">${esc(s.name)}${isMe?' <span style="font-family:Cinzel,serif;font-size:.55rem;color:var(--lav);background:rgba(192,132,252,.14);padding:2px 7px;border-radius:8px;margin-left:4px">You</span>':''}</div><div class="lb-dept">${esc(s.department)}</div></div>
+        <div class="lb-score">${s.totalScore||0}</div>
+      </div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<div class="empty-state">Could not load leaderboard.</div>';}
+}
+
+// ── INIT ──────────────────────────────────────────────────
+loadWelcome();
+</script>
+</body>
+</html>

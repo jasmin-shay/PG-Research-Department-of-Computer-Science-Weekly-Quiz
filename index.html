@@ -26,24 +26,28 @@ a{text-decoration:none;color:inherit}
 .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:66px;
-display:flex;align-items:center;justify-content:space-between;padding:0 32px;
+display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:16px;padding:0 32px;
 background:rgba(11,7,16,.75);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
 border-bottom:1px solid rgba(255,255,255,.07)}
-.nlogo{font-family:'Cinzel',serif;font-weight:900;font-size:1.45rem;letter-spacing:5px;
+.nlogo{flex-shrink:0;white-space:nowrap;font-family:'Cinzel',serif;font-weight:900;font-size:1.45rem;letter-spacing:5px;
 background:linear-gradient(135deg,var(--c),var(--v),var(--g));
 -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.nlinks{display:flex;align-items:center;gap:4px}
-.nlinks a{font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;letter-spacing:.8px;
-color:var(--mu);padding:7px 14px;border-radius:8px;transition:all .2s}
+.nlinks{display:flex;align-items:center;gap:2px;flex-shrink:1;min-width:0;overflow:hidden}
+.nlinks a{white-space:nowrap;font-family:'Cinzel',serif;font-size:.68rem;font-weight:600;letter-spacing:.6px;
+color:var(--mu);padding:7px 10px;border-radius:8px;transition:all .2s}
 .nlinks a:hover{color:var(--ink);background:rgba(255,255,255,.06)}
-.nbtn{font-family:'Cinzel',serif;font-weight:700;font-size:.78rem;letter-spacing:1.5px;
-background:linear-gradient(135deg,var(--v),var(--c));color:#fff;border:none;
-border-radius:10px;padding:10px 22px;cursor:pointer;transition:all .2s;
-box-shadow:0 4px 20px rgba(163,19,79,.35)}
-.nbtn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,167,247,.4)}
+.nbtn{display:inline-block;font-family:'Cinzel',serif;font-weight:700;font-size:.7rem;letter-spacing:1.2px;
+background:linear-gradient(135deg,var(--v),var(--c));color:#fff;border:none;white-space:nowrap;
+border-radius:9px;padding:8px 16px;cursor:pointer;transition:all .2s;
+box-shadow:0 4px 16px rgba(163,19,79,.35)}
+.nbtn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,167,247,.4)}
+.login-buttons{display:flex;align-items:center;gap:8px;flex-shrink:0;white-space:nowrap}
+.login-label{font-family:'Cinzel',serif;font-size:.58rem;font-weight:700;letter-spacing:1.5px;
+  color:var(--dim);text-transform:uppercase;white-space:nowrap;line-height:1;margin-right:2px}
+.login-btn-row{display:flex;align-items:center;gap:8px;flex-shrink:0}
 /* HERO */
 #hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;
-justify-content:center;padding:100px 24px 56px;text-align:center}
+justify-content:center;padding:100px 24px 56px;text-align:center;position:relative;overflow:hidden}
 .h-eye{display:inline-flex;align-items:center;gap:8px;font-family:'Cinzel',serif;
 font-size:.68rem;font-weight:700;letter-spacing:3px;color:var(--c);text-transform:uppercase;
 background:rgba(201,167,247,.09);border:1px solid rgba(201,167,247,.22);
@@ -80,9 +84,15 @@ line-height:1.3;margin-bottom:8px}
 /* JOIN BUTTON */
 .btn-join{display:block;width:100%;padding:18px;border:none;cursor:pointer;
 border-radius:14px;font-family:'Cinzel',serif;font-weight:700;font-size:1.1rem;
-letter-spacing:2px;color:#fff;position:relative;overflow:hidden;
+letter-spacing:2px;color:#fff;position:relative;overflow:hidden;text-transform:uppercase;
 background:linear-gradient(135deg,#7b1049,#a3134f,#c2185b);
 background-size:200% 200%;animation:btnShift 3s ease infinite,btnGlow 2s ease infinite}
+.qwait-login-row{display:flex;gap:10px;margin-top:18px}
+.btn-join.qwait-login-btn{flex:1;display:flex;align-items:center;justify-content:center;
+  width:auto;padding:13px 10px;font-size:.78rem;letter-spacing:1px;text-decoration:none;
+  animation:none;background:linear-gradient(135deg,rgba(163,19,79,.55),rgba(201,167,247,.55));
+  box-shadow:0 4px 18px rgba(163,19,79,.25);transition:all .2s}
+.btn-join.qwait-login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(201,167,247,.35)}
 @keyframes btnShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes btnGlow{0%,100%{box-shadow:0 0 24px rgba(201,167,247,.5),0 0 60px rgba(163,19,79,.3)}
 50%{box-shadow:0 0 48px rgba(201,167,247,.8),0 0 100px rgba(163,19,79,.5)}}
@@ -91,8 +101,8 @@ background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.15) 50%,transp
 transform:translateX(-100%);animation:btnShine 3s ease infinite}
 @keyframes btnShine{0%{transform:translateX(-100%)}40%,100%{transform:translateX(100%)}}
 .btn-join:hover{transform:translateY(-2px);filter:brightness(1.1)}
-.btn-join-note{text-align:center;font-size:.72rem;color:var(--dim);
-margin-top:12px;font-family:'Cinzel',serif;letter-spacing:.5px}
+.btn-join-note{text-align:center;font-size:.68rem;color:var(--dim);text-transform:uppercase;
+margin-top:12px;font-family:'Cinzel',serif;letter-spacing:1px}
 /* WAITING card */
 .qwait-inner{background:var(--bg2);border-radius:24px;padding:36px 30px;text-align:center}
 .qwait-wrap{width:min(560px,100%);margin:0 auto;border-radius:26px;padding:3px;
@@ -177,7 +187,7 @@ letter-spacing:2px;color:var(--c);text-transform:uppercase;margin-bottom:14px}
 color:var(--gold);text-transform:uppercase;margin-bottom:10px;display:block}
 .champ-avatar{width:60px;height:60px;border-radius:50%;margin:0 auto 12px;
 background:linear-gradient(135deg,var(--gold),#c2185b);
-display:flex;align-items:center;justify-content:center;
+display:flex;align-items:center;justify-content:center;overflow:hidden;
 font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:#fff;
 border:3px solid rgba(246,173,85,.4);box-shadow:0 0 20px rgba(246,173,85,.3)}
 .champ-name{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;margin-bottom:4px}
@@ -212,7 +222,7 @@ color:var(--mu);border:1px solid var(--gb);border-radius:8px;padding:4px 10px}
 border-bottom:1px solid rgba(255,255,255,.04)}
 .holder-row:last-child{border-bottom:none}
 .hav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
-justify-content:center;font-family:'Cinzel',serif;font-weight:700;font-size:.9rem;flex-shrink:0}
+justify-content:center;overflow:hidden;font-family:'Cinzel',serif;font-weight:700;font-size:.9rem;flex-shrink:0}
 .hav-gold{background:linear-gradient(135deg,var(--gold),#c2185b);color:#fff}
 .hav-silver{background:linear-gradient(135deg,#c9a7f7,#e9d5ff);color:#3b1e52}
 .hav-bronze{background:linear-gradient(135deg,#a3134f,#7b1049);color:#fff}
@@ -339,24 +349,24 @@ visibility:visible;
 transform:translateY(0) scale(1);
 }
 .drop-item{
-display:block;
-width:100%;
-padding:12px 16px;
-color:var(--ink);
-text-decoration:none;
-font-family:'Cinzel',serif;
-font-size:.85rem;
-font-weight:600;
-border-radius:10px;
-cursor:pointer;
-background:none;
-border:none;
-text-align:left;
+    display:block;
+    width:100%;
+    padding:12px 16px;
+    color:var(--ink);
+    text-decoration:none;
+    font-family:'Cinzel',serif;
+    font-size:.85rem;
+    font-weight:600;
+    border-radius:10px;
+    cursor:pointer;
+    background:none;
+    border:none;
+    text-align:left;
 }
 
 .drop-item:hover{
-background:linear-gradient(135deg,rgba(201,167,247,.18),rgba(163,19,79,.18));
-color:#fff;
+    background:linear-gradient(135deg,rgba(201,167,247,.18),rgba(163,19,79,.18));
+    color:#fff;
 }
 </style>
 </head>
@@ -373,22 +383,19 @@ color:#fff;
 <nav class="z" id="nav-top-anchor">
 <div class="nlogo">QUIZIFY</div>
 <div class="nlinks">
+<a href="#" id="navDashboardLink">Dashboard</a>
 <a href="#freelance">Jobs Board</a>
 <a href="#winners">Champions</a>
 <a href="#badges">Badges</a>
 <a href="#steps">How It Works</a>
 <a href="#about">About</a>
 </div>
-<div class="login-dropdown">
-<button class="nbtn" id="loginBtn" type="button">
-Login ▾
-</button>
-
-<div class="dropdown-content" id="dropdownMenu">
-<a class="drop-item" href="https://claude.ai" id="loginStudentLink">Student</a> <!-- ENTER YOUR STUDENT PORTAL LINK HERE -->
-<a class="drop-item" href="https://claude.ai" id="loginTeacherLink">Faculty</a> <!-- ENTER YOUR TEACHER / FACULTY PORTAL LINK HERE -->
-<a class="drop-item" href="https://claude.ai" id="loginAdminLink">Admin</a> <!-- ENTER YOUR ADMIN PORTAL LINK HERE -->
-</div>
+<div class="login-buttons">
+    <span class="login-label">Login</span>
+    <div class="login-btn-row">
+    <a class="nbtn" href="student.html" target="_blank" rel="noopener noreferrer" id="loginStudentLink">Student</a> <!-- ENTER YOUR STUDENT PORTAL FILE NAME HERE -->
+    <a class="nbtn" href="teacher.html" target="_blank" rel="noopener noreferrer" id="loginTeacherLink">Faculty</a> <!-- ENTER YOUR TEACHER / FACULTY PORTAL FILE NAME HERE -->
+    </div>
 </div>
 </nav>
 
@@ -590,64 +597,66 @@ Open to all students across every department
 
 <script>
 /* ════════════════════════════════════════════════════════════
-# PORTAL FILE NAMES — ENTER YOUR ACTUAL FILE NAMES HERE
-# Used by: the Login menu, the "Join Quiz Now" button, the
-# Freelance Jobs board, and the footer links. Change these
-# three lines once and every link on the page updates.
-════════════════════════════════════════════════════════════ */
+   #  PORTAL FILE NAMES — ENTER YOUR ACTUAL FILE NAMES HERE
+   #  Used by: the Login menu, the "Join Quiz Now" button, the
+   #  Freelance Jobs board, and the footer links. Change these
+   #  three lines once and every link on the page updates.
+   ════════════════════════════════════════════════════════════ */
 const STUDENT_PORTAL_FILE = 'student.html'; // # <-- ENTER YOUR STUDENT PORTAL FILE NAME HERE
 const TEACHER_PORTAL_FILE = 'teacher.html'; // # <-- ENTER YOUR TEACHER / FACULTY PORTAL FILE NAME HERE
-const ADMIN_PORTAL_FILE = 'admin.html'; // # <-- ENTER YOUR ADMIN PORTAL FILE NAME HERE
+const ADMIN_PORTAL_FILE   = 'admin.html';   // # <-- ENTER YOUR ADMIN PORTAL FILE NAME HERE
 
 /* ════════════════════════════════════════════════════════════
-# DATABASE CONNECTION — needed only for the Freelance Jobs
-# board below, which reads live job posts from Google Sheets.
-════════════════════════════════════════════════════════════ */
-const API_URL = 'https://script.google.com/macros/s/AKfycbw0yYvF_vXTWl5ukxtRqcnhCeFCAvrTSM8LFEAvAzj9OtvwevZ8M2gZb-mhd6BnEPnc4A/exec'; // # <-- PASTE DEPLOYMENT URL HERE
-const API_TOKEN = 'quizify-pgcs'; // # <-- MUST MATCH Code.gs SECRET_TOKEN
+   #  DATABASE CONNECTION — needed only for the Freelance Jobs
+   #  board below, which reads live job posts from Google Sheets.
+   ════════════════════════════════════════════════════════════ */
+const API_URL='https://script.google.com/macros/s/AKfycbw0yYvF_vXTWl5ukxtRqcnhCeFCAvrTSM8LFEAvAzj9OtvwevZ8M2gZb-mhd6BnEPnc4A/exec'; // # <-- PASTE DEPLOYMENT URL HERE
+const API_TOKEN='quizify-pgcs'; // # <-- MUST MATCH Code.gs SECRET_TOKEN
 
-/* ── Aurora ─────────────────────────────────────────────────────── */
+
+/* ── Aurora — uneven brightness (some spots brighter, some dimmer),
+      covers the entire site as you scroll ── */
 const cv=document.getElementById('cv'),cx=cv.getContext('2d');
 const rsz=()=>{cv.width=innerWidth;cv.height=innerHeight};rsz();window.addEventListener('resize',rsz);
-const B=[{x:.1,y:.2,r:.48,c:'#a3134f',vx:.00018,vy:.00015},{x:.9,y:.7,r:.52,c:'#c9a7f7',vx:-.00014,vy:.00020},
-{x:.5,y:.92,r:.4,c:'#e8598a',vx:.00024,vy:-.00018},{x:.7,y:.1,r:.32,c:'#7b1049',vx:-.00020,vy:.00026},
-{x:.25,y:.65,r:.35,c:'#d9b8ff',vx:.00016,vy:-.00022}];
+const B=[{x:.1,y:.2,r:.48,c:'#a3134f',vx:.00018,vy:.00015,a:'58'},   // bright
+{x:.9,y:.7,r:.52,c:'#c9a7f7',vx:-.00014,vy:.00020,a:'20'},          // dull
+{x:.5,y:.92,r:.4,c:'#e8598a',vx:.00024,vy:-.00018,a:'4a'},          // bright-ish
+{x:.7,y:.1,r:.32,c:'#7b1049',vx:-.00020,vy:.00026,a:'16'},          // dull
+{x:.25,y:.65,r:.35,c:'#d9b8ff',vx:.00016,vy:-.00022,a:'2c'}];       // medium
 (function anim(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#0b0710';cx.fillRect(0,0,cv.width,cv.height);
 B.forEach(b=>{b.x+=b.vx;b.y+=b.vy;if(b.x<-.15||b.x>1.15)b.vx*=-1;if(b.y<-.15||b.y>1.15)b.vy*=-1;
 const g=cx.createRadialGradient(b.x*cv.width,b.y*cv.height,0,b.x*cv.width,b.y*cv.height,b.r*Math.max(cv.width,cv.height));
-g.addColorStop(0,b.c+'40');g.addColorStop(1,'transparent');cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});
+g.addColorStop(0,b.c+b.a);g.addColorStop(1,'transparent');cx.fillStyle=g;cx.fillRect(0,0,cv.width,cv.height);});
 requestAnimationFrame(anim);})();
 
 /* ── Data — everything below reads live from Google Sheets via Code.gs.
-No demo data, no localStorage seed data, no hardcoded names or
-numbers anywhere on this page. ─────────────────────────────── */
+      No demo data, no localStorage seed data, no hardcoded names or
+      numbers anywhere on this page. ─────────────────────────────── */
 async function GET(action,p={}){
-const url=new URL(API_URL);url.searchParams.set('action',action);url.searchParams.set('token',API_TOKEN);
-Object.entries(p).forEach(([k,v])=>url.searchParams.set(k,v));
-const r=await fetch(url.toString());const j=await r.json();
-if(j.status==='error')throw new Error(j.message);return j.data;
+  const url=new URL(API_URL);url.searchParams.set('action',action);url.searchParams.set('token',API_TOKEN);
+  Object.entries(p).forEach(([k,v])=>url.searchParams.set(k,v));
+  const r=await fetch(url.toString());const j=await r.json();
+  if(j.status==='error')throw new Error(j.message);return j.data;
 }
 function esc(s){return(s==null?'':String(s)).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 function pad(n){return String(n).padStart(2,'0')}
 
 /* ── Portal navigation — session-aware, skips login if already signed in ── */
 function goPortal(kind, hash){
-hash = hash || '';
-const file = kind==='student' ? STUDENT_PORTAL_FILE : kind==='teacher' ? TEACHER_PORTAL_FILE : ADMIN_PORTAL_FILE;
-location.href = file + hash;
+  hash = hash || '';
+  const file = kind==='student' ? STUDENT_PORTAL_FILE : kind==='teacher' ? TEACHER_PORTAL_FILE : ADMIN_PORTAL_FILE;
+  location.href = file + hash;
 }
 // Used by actions that either role (student or teacher) can perform, like Freelance Jobs.
 function goPortalSmart(hash){
-hash = hash || '';
-if(sessionStorage.getItem('qf_student')){ location.href = STUDENT_PORTAL_FILE + hash; return; }
-if(sessionStorage.getItem('qf_teacher')){ location.href = TEACHER_PORTAL_FILE + hash; return; }
-// Not signed in yet — open the Login menu so they can choose Student or Faculty.
-openLoginMenu();
+  hash = hash || '';
+  if(sessionStorage.getItem('qf_student')){ location.href = STUDENT_PORTAL_FILE + hash; return; }
+  if(sessionStorage.getItem('qf_teacher')){ location.href = TEACHER_PORTAL_FILE + hash; return; }
+  // Not signed in yet — open the Login menu so they can choose Student or Faculty.
+  openLoginMenu();
 }
 function openLoginMenu(){
-document.getElementById('nav-top-anchor')?.scrollIntoView({behavior:'smooth',block:'start'});
-const dd=document.getElementById('dropdownMenu');
-if(dd) dd.classList.add('show');
+  document.getElementById('nav-top-anchor')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 /* ── Quiz Card — live active weekly quiz from Code.gs ────────────── */
@@ -677,7 +686,7 @@ mount.innerHTML=`<div class="qcard-wrap">
 <button class="btn-join" type="button" onclick="goPortal('student')">
 Join Quiz Now
 </button>
-<div class="btn-join-note">Login required &nbsp;·&nbsp; Registration with photo</div>
+<div class="btn-join-note">Login required &nbsp;·&nbsp; Registration with HOD</div>
 </div>
 </div>`;
 } else {
@@ -700,9 +709,10 @@ mount.innerHTML=`<div class="qwait-wrap">
 <span class="cdsp">:</span>
 <div class="cdu"><b id="cds">00</b><span>Sec</span></div>
 </div>
-<button class="btn-join" type="button" style="margin-top:6px;background:linear-gradient(135deg,rgba(163,19,79,.6),rgba(201,167,247,.6));animation:none;box-shadow:none" onclick="openLoginMenu()">
-Login to Portal
-</button>
+<div class="qwait-login-row">
+<a class="btn-join qwait-login-btn" href="student.html" target="_blank" rel="noopener noreferrer">Student Login</a>
+<a class="btn-join qwait-login-btn" href="teacher.html" target="_blank" rel="noopener noreferrer">Faculty Login</a>
+</div>
 </div>
 </div>`;
 countdown();
@@ -725,9 +735,10 @@ mount.innerHTML=`<div class="qwait-wrap">
 <span class="cdsp">:</span>
 <div class="cdu"><b id="cds">00</b><span>Sec</span></div>
 </div>
-<button class="btn-join" type="button" style="margin-top:6px;background:linear-gradient(135deg,rgba(163,19,79,.6),rgba(201,167,247,.6));animation:none;box-shadow:none" onclick="openLoginMenu()">
-Login to Portal
-</button>
+<div class="qwait-login-row">
+<a class="btn-join qwait-login-btn" href="student.html" target="_blank" rel="noopener noreferrer">Student Login</a>
+<a class="btn-join qwait-login-btn" href="teacher.html" target="_blank" rel="noopener noreferrer">Faculty Login</a>
+</div>
 </div>
 </div>`;
 countdown();
@@ -751,7 +762,7 @@ const row=document.getElementById('champRow');
 try{
 const allQ=await GET('getAllWeeklyQuizzes');
 const completed=(allQ||[]).filter(q=>q.status==='completed')
-.sort((a,b)=>Number(b.weekNumber)-Number(a.weekNumber));
+  .sort((a,b)=>Number(b.weekNumber)-Number(a.weekNumber));
 
 if(!completed.length){
 row.innerHTML=`<div class="no-champs">No completed weeks yet — be the first champion.</div>`;
@@ -759,14 +770,14 @@ return;
 }
 
 const results=await Promise.all(completed.map(q=>
-GET('getResponsesByQuiz',{quizId:q.id}).then(rs=>({q,rs:rs||[]})).catch(()=>({q,rs:[]}))
+  GET('getResponsesByQuiz',{quizId:q.id}).then(rs=>({q,rs:rs||[]})).catch(()=>({q,rs:[]}))
 ));
 
 let cards='';
 results.forEach(({q,rs})=>{
 if(!rs.length)return;
 const top=rs.slice().sort((a,b)=>Number(b.score)-Number(a.score))[0];
-cards+=champCard(top.studentName,top.department,top.score,top.total,`Week ${q.weekNumber}`,q.title);
+cards+=champCard(top.studentName,top.department,top.score,top.total,`Week ${q.weekNumber}`,q.title,top.photo);
 });
 row.innerHTML=cards||`<div class="no-champs">No completed weeks yet — be the first champion.</div>`;
 }catch(e){
@@ -774,12 +785,15 @@ row.innerHTML=`<div class="no-champs">Could not load champions. Check API_URL.</
 }
 }
 
-function champCard(name,dept,score,total,week,title){
+function champCard(name,dept,score,total,week,title,photo){
 const ini=(name||'?')[0].toUpperCase();
+const avatarHtml=photo
+  ?`<img src="${esc(photo)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+  :ini;
 return`<div class="champ-card">
 <div class="champ-week">${esc(week)}${title?' — '+esc(title.split('–').slice(-1)[0].trim()):''}</div>
 <span class="champ-rank">Top Scorer</span>
-<div class="champ-avatar">${ini}</div>
+<div class="champ-avatar">${avatarHtml}</div>
 <div class="champ-name">${esc(name)}</div>
 <div class="champ-dept">${esc(dept||'—')}</div>
 <div class="champ-score">${score}/${total}</div>
@@ -803,7 +817,7 @@ return`<div class="badge-tier ${t.c}">
 <div class="bt-desc">${t.desc}</div>
 <div class="bt-divider"></div>
 ${holders.length?holders.map(u=>`<div class="holder-row">
-<div class="hav ${t.av}">${(u.name||'?')[0].toUpperCase()}</div>
+<div class="hav ${t.av}">${u.photo?`<img src="${esc(u.photo)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:(u.name||'?')[0].toUpperCase()}</div>
 <div><div class="hname">${esc(u.name)}</div><div class="hdept">${esc(u.department||'')}</div></div>
 </div>`).join(''):`<div class="no-hold">No ${t.name.toLowerCase()} holders yet</div>`}
 </div>`;
@@ -881,26 +895,13 @@ setInterval(loadFreelanceJobs,60000);
 /* ── Wire up all portal-navigation buttons and links ─────────────── */
 document.getElementById('enterPortalBtn').addEventListener('click',openLoginMenu);
 document.getElementById('flPostBtn').addEventListener('click',()=>goPortalSmart('#jobs'));
+document.getElementById('navDashboardLink').addEventListener('click',(e)=>{e.preventDefault();openLoginMenu();});
 document.getElementById('flRefreshBtn').addEventListener('click',loadFreelanceJobs);
 document.getElementById('noticeJoinLink').addEventListener('click',(e)=>{e.preventDefault();goPortal('student');});
 document.getElementById('ftHomeLink').addEventListener('click',(e)=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});});
 document.getElementById('ftStudentLink').addEventListener('click',(e)=>{e.preventDefault();goPortal('student');});
 document.getElementById('ftTeacherLink').addEventListener('click',(e)=>{e.preventDefault();goPortal('teacher');});
 document.getElementById('ftAdminLink').addEventListener('click',(e)=>{e.preventDefault();goPortal('admin');});
-</script>
-<script>
-const loginBtn = document.getElementById("loginBtn");
-const dropdown = document.getElementById("dropdownMenu");
-
-loginBtn.onclick = function (e) {
-e.stopPropagation();
-dropdown.classList.toggle("show");
-};
-document.addEventListener("click", function(e){
-if (!dropdown.contains(e.target) && !loginBtn.contains(e.target)) {
-dropdown.classList.remove("show");
-}
-});
 </script>
 </body>
 </html>
